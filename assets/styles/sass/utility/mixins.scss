@@ -1,0 +1,44 @@
+/**
+* Context
+**/
+@mixin context {
+	margin: 0 auto;
+	max-width: $context;
+	width: 95%;
+}
+
+/**
+ * REM values with fallback
+ * http://zerosixthree.se/8-sass-mixins-you-must-have-in-your-toolbox/
+ */
+@function calculateRem($size) {
+	$remSize: $size / 16px;
+	@return $remSize * 1rem;
+}
+
+@mixin font-size($size) {
+	font-size: $size;
+	font-size: calculateRem($size);
+}
+
+/**
+ * Background Retina Sprites
+ * http://chrisltd.com/blog/2013/05/retina-images-sass/
+ */
+@mixin bg-retina($file, $type, $width, $height) {
+	background-image: url("../images/bgs/" + $file + '.' + $type);
+	@media only screen and (-webkit-min-device-pixel-ratio: 2),
+		only screen and (-moz-min-device-pixel-ratio: 2),
+		only screen and (-o-min-device-pixel-ratio: 2/1),
+		only screen and (min-device-pixel-ratio: 2),
+		only screen and (min-resolution: 192dpi),
+		only screen and (min-resolution: 2dppx){
+		& {
+			background-image: url("../images/bgs/" + $file + '@2x.' + $type);
+			-webkit-background-size: $width $height;
+			-moz-background-size: $width $height;
+			-o-background-size: $width $height;
+			background-size: $width $height;
+		}
+	}
+}

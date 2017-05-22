@@ -1,0 +1,71 @@
+/**
+ * overrides
+*/
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	height: 100%;
+}
+
+body {
+	@include font-size(16px);
+}
+
+textarea { overflow: auto; }
+
+::-ms-clear {
+	display: none;
+}
+
+a {
+	transition: all .2s ease-in-out;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+/**
+ * globals
+ */
+.screenreader {
+
+	&:focus {
+		outline: none;
+	}
+
+	outline: none;
+	font-size: 0;
+	padding: 0;
+	position: absolute;
+	clip: rect(1px, 1px, 1px, 1px);
+}
+
+.hidden {
+	display: none;
+}
+
+.clear {
+	clear: both;
+}
+
+.container {
+	overflow: hidden;
+}
+
+/**
+ * example sprite
+ */
+.calendar-icon {
+	@include retina-sprite($calendar-group);
+}
+
+.background-example {
+	@include bg-retina("banner", "jpg", 800px, 517px);
+	width: 800px;
+	height: 517px;
+}
