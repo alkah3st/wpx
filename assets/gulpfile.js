@@ -53,7 +53,7 @@ var jsHintErrorReporter = function(file, cb) {
 					'LINE: ' + err.error.line,
 					'ERROR: ' + err.error.reason
 				];
-				// Emit this error event
+
 				emitter.emit('error', new Error(msg.join(" - ")));
 			}
 		});
@@ -192,7 +192,7 @@ gulp.task('wire', ['exec'], function () { // we need to wait for exec
 /**
  * injects js/modules/*.js, js/vendor/*.js, and js/app.init.js into footer.php 
  */
-gulp.task('inject', function () { // we need to wait for exec
+gulp.task('inject', function () {
 	currentTask = 'inject';
 	gulp.src('../footer.php')
 		.pipe(plugins.plumber({

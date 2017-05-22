@@ -11,7 +11,7 @@
   "license": "CC-BY-SA-4.0",
   "repository": {
     "type": "beanstalk",
-    "url": "git@sneakers.git.beanstalkapp.com:/sneakers/wpx-theme.git"
+    "url": "https://github.com/alkah3st/wpx"
   },
   "devDependencies": {
     "chalk": "^1.1.3",

@@ -14,6 +14,8 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 - [Features](#features)
 - [Installation](#installation)
 - [Theme Organization](#theme-organization)
+  * [Default WordPress Templates](#default-wordpress-templates)
+  * [Hook Organization](#hook-organization)
   * [Available Global Paths](#available-global-paths)
 - [Image Assets](#image-assets)
   * [Inline Images](#inline-images)
@@ -21,16 +23,28 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
   * [Retina Sprites](#retina-sprites)
   * [Retina Background Images](#retina-background-images)
 - [Icon Fonts](#icon-fonts)
-- [Sass Globbing](#sass-globbing)
-  * [CSS Standards](#css-standards)
-- [Writing Semantic HTML](#writing-semantic-html)
-  * [REM Font Sizes](#rem-font-sizes)
-  * [Context Mixin](#context-mixin)
+- [Semantic HTML](#semantic-html)
+  * [Semantic Heading Levels](#semantic-heading-levels)
+- [Styles](#styles)
+  * [SASS Globbing](#sass-globbing)
+  * [Writing Selectors](#writing-selectors)
+    + [Types of Selector-Objects](#types-of-selector-objects)
   * [Sass Variables](#sass-variables)
+  * [REM Font Sizes](#rem-font-sizes)
+  * [Context Mixin & Responsive Layouts](#context-mixin--responsive-layouts)
+- [Enquire (Breakpoints in JS)](#enquire-breakpoints-in-js)
+- [Forcing Matching Heights](#forcing-matching-heights)
 - [Javascript Methodology](#javascript-methodology)
+  * [Build vs. Debug Mode](#build-vs-debug-mode)
   * [Writing Custom JS Modules](#writing-custom-js-modules)
+  * [Concerning JS &Gulp](#concerning-js-gulp)
 - [Gulp Build Script](#gulp-build-script)
-  * [Using Bower](#using-bower)
+  * [Prep Fonts](#prep-fonts)
+  * [Generate Sprites](#generate-sprites)
+  * [Watch with Livereload](#watch-with-livereload)
+  * [Manual Run](#manual-run)
+  * [Run for Build Mode](#run-for-build-mode)
+- [About Bower](#about-bower)
 
 <!-- tocstop -->
 
@@ -51,7 +65,7 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 
 1. Download and install the latest version of WordPress from [WordPress.org](https://wordpress.org/download/).
 
-2. Download and activate the [WPX Utility](http://path-to-plugin) plugin.
+2. Download and activate the WPX Utility plugin (included in this repository).
 
 3. Download and activate the WPX Theme in your ```/wp-content/themes/``` folder. Then cd into ```/assets/``` and run:
 
@@ -546,6 +560,48 @@ This will render the following:
 For the most part, all layout elements should be styled with fluid widths, and you should utilize break points to adjust the rhythm of that scaling when the design looks awkward at any given viewport. This implies defining breakpoints per selector object, rather than globally across the site. By this I mean, if it makes sense to introduce a breakpoint for the primary navigation module (```/assets/styles/sass/modules/primary-nav.scss```) at 800 pixels, 570 pixels, and 400 pixels, we should do that specifically for that module, even if the main content area only needs to break at 1000 pixels and 500 pixels.
 
 The exception here would be things like icons and squares, that aren't meant to scale at all. 
+
+## Enquire (Breakpoints in JS)
+
+There may be situations where you need to trigger Javascript at specific breakpoints. For this, I use Enquire, which is already installed. You should define a set of Enquire breakpoints for each module in which it applies. For example, the layout.js module has a set defined for you (at arbitrary breakpoints);
+
+		/*
+		bind layouts
+		 */
+		bindBreakpoints: function() {
+
+			enquire
+			.register("screen and (min-width: 801px)", {
+
+				// desktop
+				match: function() {},
+
+				// tablet
+				unmatch: function() {}
+
+			})
+			.register("screen and (max-width: 800px)", {
+
+				// tablet
+				match: function() {},
+
+				// desktop
+				unmatch: function() {}
+
+			})
+			.register("screen and (max-width: 600px)", {
+
+				// mobile
+				match: function() {},
+
+				// tablet
+				unmatch: function() {}
+			});
+
+		}
+
+Enquire triggers as the viewport scales, as well as once on initial load.
+ 
 
 ## Forcing Matching Heights
 
