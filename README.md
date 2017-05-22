@@ -636,11 +636,11 @@ Assume each article has a background color, so the elements needs to be the same
 
 To enforce equal heights, simply add a ```.eq-parent``` class to the parent, and a ```.eq``` class to each child:
 
-	<section class="module-articles eq-parent"> 
+	<section class="module-articles"> 
 
 		<h1 class="screenreader">Latest News</h1>
 
-		<div class="articles-inner">
+		<div class="articles-inner eq-parent">
 
 			<div class="article-box eq">
 				<h1>A Really Long Title for this Article</h1>
