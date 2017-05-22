@@ -389,12 +389,14 @@ Let's establish some specific guidelines about writing nested selectors, in the 
 		border: 3px solid transparent;
 		text-decoration: none !important;
 
-		.is-outline {
-			.. // an alternate look/feel 
-		}
-
+		// pseudo class
 		&:hover {
 			...
+		}
+
+		// state modifier
+		.is-outline {
+			.. // an alternate look/feel 
 		}
 
 	}
@@ -405,6 +407,13 @@ As you can see, this selector is an object unto itself: you could place it anywh
 
 	.module-related {
 
+		// special context
+		&.in-sidebar {
+			... styles that alter this module specifically by context
+			... here we can break the rule of 3, because:
+			... .module-related.in-sidebar .related-inner .related-description is still 3 deep
+		}
+
 		.related-inner {
 
 			.related-description {
@@ -413,20 +422,13 @@ As you can see, this selector is an object unto itself: you could place it anywh
 
 		}
 
-		// this module alters the look of the global .button object
-		.button {
-			... // styles that alter the button specifically for this module
-		}
-	
 		.related-title {
 			...
 		}
 
-		// special context
-		&.in-sidebar {
-			... styles that alter this module specifically by context
-			... here we can break the rule of 3, because:
-			... .module-related.in-sidebar .related-inner .related-description is still 3 deep
+		// this module alters the look of the global .button object
+		.button {
+			... // styles that alter the button specifically for this module
 		}
 
 	}
@@ -458,21 +460,22 @@ Whenever you make a new module, puts its styles into a corresponding file ```rel
 	// or 
 
 	.sidebar {
-		
+
+		// indicating an alternative context
+		&.in-left-rail {
+			...
+		}
+
+		&.in-right-rail {
+			...
+		}
+
 		// this module is affected by special styles when it appears
 		// inside a sidebar layout object
 		.module-widget {
 			...
 		}
 
-		// indicating an alternative context
-		&.left-rail {
-			...
-		}
-
-		&.right-rail {
-			...
-		}
 	}
 
 The naming pattern for layout objects should borrow from a fixed list of predefined layout types (such as the list enumerated above), where the topmost selector and nested selectors are prefixed with the layout type: 
@@ -601,7 +604,7 @@ Enquire triggers as the viewport scales, as well as once on initial load.
 
 If you need to force a set of elements be the same height, there is some JS in place to help you.
 
-Assume each article has a background color, so the elements needs to be the same height inside the ```.container``` parent:
+Assume each article has a background color, so the elements needs to be the same height inside the ```.articles-inner``` parent:
 
 	<section class="module-articles">
 
