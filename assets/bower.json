@@ -1,0 +1,34 @@
+{
+  "name": "wpx-theme",
+  "version": "0.1.0",
+  "authors": [
+    "Daniel Quinn <daniel@dquinn.net>"
+  ],
+  "description": "WP Theme bower config.",
+  "main": "styles/sass/screen.scss",
+  "keywords": [
+    "wpx"
+  ],
+  "resolutions": {
+    "jquery": "3.1.1"
+  },
+  "dependencies": {
+    "jquery": "3.1.1",
+    "jquery-placeholder": "latest",
+    "jquery-validation": "latest",
+    "jquery.fitvids": "latest",
+    "enquire": "latest",
+    "slick-carousel": "latest",
+    "dense": "*"
+  },
+  "license": "MIT",
+  "homepage": "http://dquinn.net",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "libraries",
+    "test",
+    "tests"
+  ]
+}

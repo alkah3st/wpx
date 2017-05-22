@@ -1,0 +1,27 @@
+{
+	"lookup": false, 
+	"node": true,
+	"browser": true,
+	"bitwise": false,
+	"curly": true,
+	"eqeqeq": true,
+	"latedef": true,
+	"noarg": true,
+	"undef": true,
+	"nonbsp": true,
+	"maxparams": 4,
+	"nocomma": true,
+	"nonew": true,
+	"notypeof": true,
+	"jquery": true,
+	"unused": false,
+	"strict": true,
+	"predef": [
+		"jQuery",
+		"$",
+		"SITE_ROOT",
+		"SITE_ASSETS",
+		"WPX",
+		"enquire"
+	]
+}

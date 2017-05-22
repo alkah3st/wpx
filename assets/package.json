@@ -1,0 +1,61 @@
+{
+  "name": "wpx-theme",
+  "title": "WordPress Extend Theme",
+  "description": "The WordPress theme for WordPress Extend.",
+  "homepage": "http://dquinn.net",
+  "author": {
+    "name": "Daniel Quinn",
+    "email": "daniel@dquinn.net",
+    "url": "http://dquinn.net"
+  },
+  "license": "CC-BY-SA-4.0",
+  "repository": {
+    "type": "beanstalk",
+    "url": "https://github.com/alkah3st/wpx"
+  },
+  "devDependencies": {
+    "chalk": "^1.1.3",
+    "child_process": "^1.0.2",
+    "events": "^1.1.1",
+    "gulp": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-bower-files": "^0.2.7",
+    "gulp-clean-css": "^2.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-exec": "^2.1.3",
+    "gulp-filter": "^4.0.0",
+    "gulp-fontello": "^0.4.6",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-inject": "^4.2.0",
+    "gulp-jshint": "^2.0.4",
+    "gulp-livereload": "^3.8.1",
+    "gulp-load-plugins": "^1.4.0",
+    "gulp-main-bower-files": "^1.6.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "latest",
+    "gulp-sass-glob": "^1.0.8",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.11",
+    "gulp.spritesmith": "^6.2.1",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "map-stream": "0.0.6",
+    "merge-stream": "^1.0.1",
+    "node-notifier": "^4.6.1",
+    "path": "^0.12.7",
+    "vinyl-buffer": "^1.0.0",
+    "wiredep": "^4.0.0"
+  },
+  "scripts": {
+    "prestart": "npm install",
+    "postinstall": "bower update --unsafe-perm",
+    "start": "gulp"
+  },
+  "dependencies": {
+    "markdown-toc": "^1.1.0"
+  }
+}

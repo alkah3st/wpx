@@ -1,0 +1,40 @@
+# Misc
+*.log
+node_modules/
+assets/js/libraries/**
+
+# Mac-specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Project-specific files
+assets/.sass-cache/**
+.sass-cache/**
+
+# workspace files are user-specific
+assets/*.sublime-workspace
+assets/*.sublime-project
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
