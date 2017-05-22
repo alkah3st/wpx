@@ -666,7 +666,7 @@ To enforce equal heights, simply add a ```.eq-parent``` class to the parent, and
  
 ## Javascript Methodology
 
-My JS setup does not use any frameworks and is not written in ECMA2016.This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
+My JS setup does not use any frameworks and is not written in ECMA2016. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
 
 - We are running jQuery 3.1.1, meaning IE8 and lower is not supported. 
 - Each custom script is considered a "module" and all modules run simultaneously on all pages of the site.
@@ -674,7 +674,7 @@ My JS setup does not use any frameworks and is not written in ECMA2016.This is b
 
 ### Build vs. Debug Mode
 
-When ```WP_DEBUG``` in the ```wp-config.php``` is set to FALSE, we are in "non-build mode." When it is true, we are in "build mode."
+When ```WP_DEBUG``` in the ```wp-config.php``` is set to true, we are in "non-build mode." When it is false, we are in "build mode."
 
 The significance of this is that in non-build mode, all JS scripts are enumerated as individual script tags, un-uglified files in the ```footer.php```, following this order:
 
@@ -837,7 +837,7 @@ This does the following:
 
 ### Run for Build Mode
 
-If the WP_DEBUG value in ```wp-config.php``` is set to FALSE, then WordPress is operating in built mode. It will append only compiled assets to the header and footer of the site: a single ```/js/app.min.js``` file in the footer, and a single ```/styles/screen.min.css```. 
+If the WP_DEBUG value in ```wp-config.php``` is set to false, then WordPress is operating in built mode. It will append only compiled assets to the header and footer of the site: a single ```/js/app.min.js``` file in the footer, and a single ```/styles/screen.min.css```. 
 
 ```gulp build```
 
