@@ -59,7 +59,7 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 
 1. Download and install the latest version of WordPress from [WordPress.org](https://wordpress.org/download/).
 
-2. Download and activate the WPX Utility plugin (included in this repository).
+2. Download and activate the [WPX Utility plugin](https://github.com/alkah3st/wpx-utility).
 
 3. Download and activate the WPX Theme in your ```/wp-content/themes/``` folder. Then cd into ```/assets/``` and run:
 
