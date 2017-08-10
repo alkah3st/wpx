@@ -28,6 +28,10 @@
 		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/slick-carousel/slick/slick.js"></script>
 		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/dense/src/dense.js"></script>
 		<!-- endbower -->
+		<!-- inject:vendor:js -->
+		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.imagesloaded.js"></script>
+		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.matchheight.js"></script>
+		<!-- endinject -->
 		<!-- inject:init:js -->
 		<script src="<?php echo assets_url(); ?>/js/app.init.js"></script>
 		<!-- endinject -->
