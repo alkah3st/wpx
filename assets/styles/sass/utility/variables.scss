@@ -1,15 +1,24 @@
-/*
-global context
-*/
+/**
+ * global context
+ */
 $context: 1200px;
 
-/*
-colors
-*/
+/**
+ * colors
+ */
 $black: #000000;
 $white: #ffffff;
 
 /*
 font families
-*/
+ */
 $helvetica: Helvetica, Arial, sans-serif;
+
+/**
+ * viewports
+ */
+$viewport_ultrawide: 1600px;
+$viewport_desktop: 1200px;
+$viewport_tablet: 800px;
+$viewport_phablet: 600px;
+$viewport_mobile: 500px;

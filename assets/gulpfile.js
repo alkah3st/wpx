@@ -133,7 +133,7 @@ gulp.task('jshint', function() {
 });
 
 /**
- * compiles /js/libraries/ main js -> libraries.js
+ * compiles /js/bower/ main js -> libraries.js
  */
 gulp.task('bower', ['exec'], function() {
 	var filterJS = plugins.filter('**/*.js');
@@ -168,7 +168,7 @@ gulp.task('compile-js', ['exec','bower'], function() { // needs to wait for bowe
 });
 
 /**
- * injects js/libraries/ main js into footer.php
+ * injects js/bower/ main js into footer.php
  */
 gulp.task('wire', ['exec'], function () { // we need to wait for exec
 	currentTask = 'wire';

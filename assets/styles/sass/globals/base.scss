@@ -11,7 +11,11 @@ html, body {
 }
 
 body {
-	@include font-size(16px);
+	@include font-size($size: 16px, $min: 14px, $max: 22px);
+
+	@include breakpoint('mobile') {
+		color: red;
+	}
 }
 
 textarea { overflow: auto; }
@@ -57,15 +61,10 @@ ul {
 	overflow: hidden;
 }
 
-/**
- * example sprite
- */
-.calendar-icon {
-	@include retina-sprite($calendar-group);
+.module {
+	overflow: hidden;
 }
 
-.background-example {
-	@include bg-retina("banner", "jpg", 800px, 517px);
-	width: 800px;
-	height: 517px;
+.wrap {
+	@include context();
 }
