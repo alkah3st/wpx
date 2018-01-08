@@ -1,7 +1,74 @@
 /**
+ * Vertical Align
+ */
+@mixin vertical-align() {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+/**
+ * Strip Units
+ * https://css-tricks.com/snippets/sass/strip-unit-function/
+ */
+@function strip-unit($number) {
+	@if type-of($number) == 'number' and not unitless($number) {
+		@return $number / ($number * 0 + 1);
+	}
+	@return $number;
+}
+
+/**
+ * Minmax for Margins/Padding
+ * @param  {[type]} $style           [description]
+ * @param  {[type]} $percent-top:    auto                [description]
+ * @param  {[type]} $percent-bottom  :                   auto          [description]
+ * @param  {[type]} $max-breakpoint: $viewport_ultrawide [description]
+ * @return {[type]}                  [description]
+ */
+@mixin minmax($style, $percent-top: auto, $percent-bottom : auto, $max-breakpoint: $viewport_desktop) {
+
+	#{$style}-top: $percent-top;
+	#{$style}-bottom: $percent-bottom;
+
+	$size-top: $percent-top;
+
+	@if ($percent-top != auto and $percent-top != 0) {
+		$size-top: strip-unit($percent-top)/10*100;
+	}
+
+	$size-bottom: $percent-bottom;
+
+	@if ($percent-bottom != auto and $percent-bottom != 0) {
+		$size-bottom: strip-unit($percent-bottom)/10*100;
+	}
+
+	@media only screen and (min-width: $max-breakpoint) {
+
+		#{$style}-top: #{$size-top}px;
+		#{$style}-bottom: #{$size-bottom}px;
+
+	}
+
+}
+
+/**
+ * Placeholders
+ * https://engageinteractive.co.uk/blog/top-10-scss-mixins
+ */
+@mixin input-placeholder {
+	&.placeholder { @content; }
+	&:-moz-placeholder { @content; }
+	&::-moz-placeholder { @content; }
+	&:-ms-input-placeholder { @content; }
+	&::-webkit-input-placeholder { @content; }
+}
+
+
+/**
  * Breakpoints
  */
-@mixin breakpoint($point) {
+@mixin breakpoint($point, $minmax: "max-width") {
 	@if $point == "ultrawide" {
 		@media only screen and (min-width: $viewport_ultrawide) { @content; }
 	} @else if $point == "desktop" {
@@ -13,7 +80,7 @@
 	} @else if $point == "mobile" {
 		@media only screen and (max-width: $viewport_mobile) { @content; }
 	} @else {
-		@media only screen and (max-width: $point) { @content; }
+		@media only screen and ($minmax: $point) { @content; }
 	}
 }
 
@@ -47,7 +114,7 @@
 /// @example scss - 5vw font size (with 50px fallback), minumum of 35px and maximum of 150px:
 /// @include responsive-font(50px, 35px, 150px);
 */
-@mixin font-size($size, $min: false, $max: false, $fallback: $size) {
+@mixin font-size($size, $min: $size, $max: $size, $fallback: $size) {
 
 	$vm: px-to-vm($size);
 
@@ -55,13 +122,13 @@
 	$dimension: if(unit($vm) == 'vh', 'height', 'width');
 	$min-breakpoint: $min / $responsive-unitless * 100;
 
-	@media (max-#{$dimension}: #{$min-breakpoint}) {
+	@media only screen and (max-#{$dimension}: #{$min-breakpoint}) {
 		font-size: $min;
 	}
 
 	@if $max {
 		$max-breakpoint: $max / $responsive-unitless * 100;
-		@media (min-#{$dimension}: #{$max-breakpoint}) {
+		@media only screen and (min-#{$dimension}: #{$max-breakpoint}) {
 			font-size: $max;
 		}
 	}
@@ -89,5 +156,56 @@
 			-o-background-size: $width $height;
 			background-size: $width $height;
 		}
+	}
+}
+
+/**
+ * CSS Triangle
+ * https://engageinteractive.co.uk/blog/top-10-scss-mixins
+ */
+@mixin css-triangle($color, $direction, $size: 6px, $position: absolute, $round: false){
+	@include pseudo($pos: $position);
+	width: 0;
+	height: 0;
+	@if $round {
+		border-radius: 3px;
+	}
+	@if $direction == down {
+		border-left: $size solid transparent;
+		border-right: $size solid transparent;
+		border-top: $size solid $color;
+		margin-top: 0 - round( $size / 2.5 );
+	} @else if $direction == up {
+		border-left: $size solid transparent;
+		border-right: $size solid transparent;
+		border-bottom: $size solid $color;
+		margin-bottom: 0 - round( $size / 2.5 );
+	} @else if $direction == right {
+		border-top: $size solid transparent;
+		border-bottom: $size solid transparent;
+		border-left: $size solid $color;
+		margin-right: -$size;
+	} @else if  $direction == left {
+		border-top: $size solid transparent;
+		border-bottom: $size solid transparent;
+		border-right: $size solid $color;
+		margin-left: -$size;
+	}
+}
+
+/**
+ * Responsive Ratio
+ * https://engageinteractive.co.uk/blog/top-10-scss-mixins
+ */
+@mixin responsive-ratio($x,$y, $pseudo: false) {
+	$padding: unquote( ( $y / $x ) * 100 + '%' );
+	@if $pseudo {
+		&:before {
+			@include pseudo($pos: relative);
+			width: 100%;
+			padding-top: $padding;
+		}
+	} @else {
+		padding-top: $padding;
 	}
 }
