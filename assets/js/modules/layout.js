@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
 			$(".flex-video").fitVids();
 
 			// inline retina images
-			$('img.retina[data-2x]').dense();
+			$('img[data-2x]').dense();
 
 		},
 
