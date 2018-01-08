@@ -18,7 +18,7 @@
     "jquery-validation": "latest",
     "jquery.fitvids": "latest",
     "enquire": "latest",
-    "slick-carousel": "latest",
+    "slick-carousel": "1.7.1",
     "dense": "*"
   },
   "license": "MIT",
