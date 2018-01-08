@@ -4,14 +4,9 @@ jQuery(document).ready(function($) {
 
 	WPX.Utility = {
 
-		checkboxArray: false,
-		potatoesExploded: 2,
-
 		init: function() {
 
 			this.bindEvents();
-
-			this.explodePotato();
 
 		},
 
@@ -20,17 +15,6 @@ jQuery(document).ready(function($) {
 		*/
 		bindEvents: function() {
 
-
-			onclick {
-
-				WPX.Utility.checkboxArray.push('');
-
-			}
-
-
-		},
-
-		explodePotato: function(kitten) {
 
 		}
 
