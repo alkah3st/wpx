@@ -53,7 +53,7 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 	* Simple, JS framework-free jQuery objects;
 	* Includes dynamic icon fonts;
 	* Includes inline retina images and retina background images;
-* Bower integration for managing JS libraries
+* Yarn integration for managing JS dependencies
 
 ## Installation
 
@@ -63,8 +63,10 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 
 3. Download and activate the WPX Theme in your ```/wp-content/themes/``` folder. Then cd into ```/assets/``` and run:
 
+Then, install Yarn: [https://yarnpkg.com/lang/en/docs/install/](https://yarnpkg.com/lang/en/docs/install/). Run the following command in terminal:
+
 ```
-npm install
+yarn install
 ```
 
 This will create a ```/node_modules/``` folder in the ```/assets/``` folder of the theme. 
@@ -502,6 +504,12 @@ Use the @font-size mixin to render fonts in viewport-sizes. This allows fonts to
 			@include font-size($size: 16px, $min: 14px, $max: 22px, $fallback: 16px);
 		}
 
+At a minimum, you can just specify the starting size and the minimum size. The starting size will get used as both the fallback and the maximum size:
+
+		h1 {
+			@include font-size(16px, 14px);
+		}
+
 This will render a default size, a minimum size, a maximum size, and a fallback:
 
 		@media (min-width: 1375px) {
@@ -512,6 +520,8 @@ This will render a default size, a minimum size, a maximum size, and a fallback:
 			font-size: 16px; // this will default to $size if you set no $fallback
 			font-size: 1.6vw;
 		}
+
+How does it know what to consider a "maximum" viewport? There is a $viewport_ultrawide variable in ```/styles/sass/utility/variables.scss``` that you can modify, it is set to 1600px by default.
 
 ### Context Mixin & Responsive Layouts
 
@@ -576,6 +586,72 @@ Results in:
 		}
 
 The exception here would be things like icons and squares, that aren't meant to scale at all. 
+
+### The minmax() mixin
+
+The ```@include minmax()``` is very useful for setting rhythmic margins and paddings. If you want to set a responsive top and bottom margin or padding that scales with the viewport and also has a minimum and maximum size, this is the mixin for you:
+
+		.sidebar {
+			@include minmax(margin, 8%, 8%);
+		}
+
+This will result in the margin maxing out at a fixed pixel size for when exceeding the $viewport_desktop width set in ```/styles/sass/utility/variables.scss``` (assuming this was 1200):
+
+		.sidebar {
+			margin-top: 8%;
+			margin-bottom: 8%;
+		}
+
+		@media only screen and (max-width: 1200px) {
+			.sidebar {
+				margin-top: 80px;
+				margin-bottom: 80px;
+			}
+		}
+
+Below that viewport size, the percentage gets used, up until we hit the minimum viewport size, which is by default $viewport_mobile:
+
+		@media only screen and (max-width: 800px) {
+			.sidebar {
+				margin-top: 80px;
+				margin-bottom: 80px;
+			}
+		}
+
+If you wanted to set a different "minimum" for the margin/padding, you could do this:
+
+		.sidebar {
+			@include minmax(margin, 8%, 8%);
+
+			@include breakpoint($viewport_mobile) {
+				@include minmax(margin, 2.5%, 2.5%);
+			}
+		}
+
+Which would result in:
+
+		.sidebar {
+			margin-top: 8%;
+			margin-bottom: 8%;
+		}
+
+		@media only screen and (max-width: 1200px) {
+			.sidebar {
+				margin-top: 80px;
+				margin-bottom: 80px;
+			}
+		}
+
+		@media only screen and (max-width: 800px) {
+			.sidebar {
+				margin-top: 25px;
+				margin-bottom: 25px;
+			}
+		}
+
+You can also tweak the min and max breakpoint from the initial parameters:
+
+```@mixin minmax($style, $percent-top: auto, $percent-bottom : auto, $max-breakpoint: $viewport_desktop, $min-breakpoint: $viewport_mobile)```
 
 ## Enquire (Breakpoints in JS)
 
@@ -686,18 +762,18 @@ To enforce equal heights, simply add a ```.eq-parent``` class to the parent, and
 
 My JS setup does not use any frameworks and is not written in ECMA2016. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
 
-- We are running jQuery 3.1.1, meaning IE8 and lower is not supported. 
+- We are running jQuery 3.3.1, meaning IE8 and lower is not supported. 
 - Each custom script is considered a "module" and all modules run simultaneously on all pages of the site. Target modules by dropping a data-target['my-module'] on the element, instead of a class or ID, unless you can anticipate that there will only ever be one rendered on a page. I know data attributes are technically slower to select than classes, but this will not be an issue in performance for the size sites we are dealing with. Also, I do not subscribe to the separation-of-concerns issue here--that data attributes are not intended to be used this way--because neither are classes, and this makes it easy to see, at a glance, that a module has JS functions attached to it, whereas using classes this not apparent. 
-- Modules are loaded after all libraries from Bower and third-party vendor scripts are globbed.
+- Modules are loaded after all libraries from Yarn and third-party vendor scripts are globbed.
 
 ### Build vs. Debug Mode
 
 When ```WP_DEBUG``` in the ```wp-config.php``` is set to true, we are in "non-build mode." When it is false, we are in "build mode."
 
-The significance of this is that in non-build mode, all JS scripts are enumerated as individual script tags, un-uglified files in the ```footer.php```, following this order:
+The significance of this is that in non-build mode, all JS scripts are enumerated in the ```footer.php```, following this order:
 
-1. Bower libraries (you can add libraries with ```bower install --save mylibrary```)
-2. Vendor libraries (for manually dropping vendor files that cannot be loaded with Bower)
+1. Dependency libraries from package.json (you can add libraries with ```yarn add mylibrary --save```)
+2. Vendor libraries (for manually dropping vendor files that cannot be loaded with Yarn)
 3. ```app.init.js``` (this declares the global WPX object for modules)
 4. Module scripts (your custom scripts)
 
@@ -705,15 +781,9 @@ This looks like the following in the ```footer.php``` file:
 
 	<?php if (WP_DEBUG == true) : ?>
 		
-		<!-- bower:js -->
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/jquery/dist/jquery.js"></script>
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/jquery-placeholder/jquery.placeholder.js"></script>
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/jquery-validation/dist/jquery.validate.js"></script>
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/jquery.fitvids/jquery.fitvids.js"></script>
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/enquire/dist/enquire.js"></script>
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/slick-carousel/slick/slick.js"></script>
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries/dense/src/dense.js"></script>
-		<!-- endbower -->
+		<!-- yarn:js -->
+		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries.js"></script>
+		<!-- endinject-->
 		<!-- inject:vendor:js -->
 		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.imagesloaded.js"></script>
 		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.matchheight.js"></script>
@@ -728,13 +798,24 @@ This looks like the following in the ```footer.php``` file:
 	
 	<?php endif; ?>
 
+The scripts that are globbed into libraries.js are the ones you add through Yarn in your package.json. By default, these are the dependencies WPX loads:
+
+	"dependencies": {
+		"enquire.js": "https://github.com/WickyNilliams/enquire.js/",
+		"fitvids.1.1.0": "^1.1.0",
+		"dense": "https://github.com/gocom/dense",
+		"jquery": "^3.3.1",
+		"jquery-validation": "^1.17.0",
+		"slick-carousel": "^1.8.1"
+	},
+
+You can delete ones you don't want from the package.json, and add new ones with the above yarn command. Notice that you can also put in a git repo to resolve libraries that misbehave. Additionally, if you need to add a library that isn't on Yarn, just drop the .js file into the ```/vendor/``` folder.
+
 In build mode, only ```app.min.js```, generated by running ```gulp build```, is referenced in the footer via an enqueue hook in WordPress.
 
 ### Writing Custom JS Modules
 
-In ```/js/modules/``` you will find each custom JS module. You can create as many as you like, just remember that they all run simultaneously and in the order they are named.
-
-Therefore it is not wise to build synchronous relationships between modules; assume they are running asynchronously, all after jQuery is ready. 
+In ```/js/modules/``` you will find each custom JS module. You can create as many as you like, just remember that they all run simultaneously and in the order they are named. You can artificially control their load order by naming them appropriately but the assumption is that they are being written in such a way that they are not interdependent on each other. Therefore it is not wise to build synchronous relationships between modules; assume they are running asynchronously, all after jQuery is ready. 
 
 Here is what an empty module would look like:
 
@@ -784,23 +865,25 @@ Tips:
 - You can target functions inside modules globally by calling ```WPX.myModule.myFunction();```
 - You can hook onto specific templates in WordPress by checking the body class, for example, or test for the existence of elements on the page: ```if ($('#my-element').length) { ... }```
 
-### Concerning JS &Gulp
+### Concerning JS & Gulp
 
-When you run ```gulp watch``` or ```gulp```, the build script will:
+When you run ```gulp```, the build script will:
 
-- Run ```bower install``` to check if it needs to grab any Bower scripts that are not present, and download them into ```/js/libraries/```.
-- Update the ```footer.php``` file with a script tag to these libraries, all vendor libraries in the ```/js/vendor/``` folder, the ```/js/app.init.js``` file, and then all your ```/js/modules/```.
-- ```jshint``` your modules
-- Run ```gulp watch```.
+1) Compile all your sprites in ```/images/sprites/``` into spritesheet.png and spritesheet@2x.png, and create the relevant scss files in ```/styles/sass/utility/sprites/```;  
+2) Load the fontello.config json to fetch the icon fonts, as well as update the scss related to those icon fonts;
+3) Compile the scss in the ```/styles/sass/``` folder into css  
+4) Retrieve all the dependencies in package.json and compile them into ```js/libraries.js```   
+5) Update the ```footer.php``` file with a script tag to these libraries, all vendor libraries in the ```/js/vendor/``` folder, the ```/js/app.init.js``` file, and then all your ```/js/modules/```.  
+6) ```jshint``` your ```/js/modules/```  
+7) Run ```gulp watch```.  
 
 When you run ```gulp build```, the build script will:
 
-- ```jshint``` your modules
-- Run ```bower install``` to check if it needs to grab any Bower scripts that are not present and download them into ```/js/libraries/```.
-- Compile all Bower scripts into ```/js/libraries.js```.
-- Compile the ```/js/libraries.js``` file with ```/js/vendor/*.js```, ```/js/app.init.js``` and ```/js/modules/*.js``` in that order
-- Uglify the files
-- Generate an ```app.min.js``` containing all the JS in the order above.
+1) Do steps 1 - 3 in ```gulp``` above  
+4) Uglify your css
+5) ```jshint``` your ```/js/modules/```
+6) Compile the ```/js/libraries.js``` file with ```/js/vendor/*.js```, ```/js/app.init.js``` and ```/js/modules/*.js``` in that order and uglify them, then generate an ```app.min.js``` containing the uglified JS  
+7) Minify all images in ```/images/``` 
 
 *Keep in mind that you should not allow WP to inject JS into the theme using the enqueue, and if you must, make sure it loads these scripts in the footer, and does not pull in dependencies like jQuery, etc.*
 
@@ -809,8 +892,6 @@ When you run ```gulp build```, the build script will:
 ## Gulp Build Script
 
 The gulp build script is already written for you and ready to go.
-
-Here are the relevant grunt calls:
 
 ### Prep Fonts
 
@@ -834,55 +915,20 @@ When you're developing, you'll want Gulp to listen for when you save any SASS or
 
 *The difference between ```gulp watch``` vs. ```gulp``` is that ```gulp watch``` will not check for new icon font files or sprites.*
 
-- listens for changed .scss files in ```/styles/sass/```
-- listens for changed .js files in ```/js/*.js``` and ```/js/modules/``` and ```/js/vendor/```
-- listens for changed .php files in theme root, ```/templates/```, and ```/partials/```
+- If a scss file is changed, it will compile your scss into sass
+- If a JS file is changed, it will retrieves all the dependencies in package.json and compile them into ```js/libraries.js```, then update the ```footer.php``` and jshint your modules.
+- If a php file is changed, it will reload the page. Livereload listens for changed .php files in theme root, ```/templates/```, and ```/partials/```  
 
 Make sure you have the Chrome extension [Livereload](https://goo.gl/b1wkQu) installed. You need to run ```gulp watch``` first, then click the Livereload icon in your browser to enable live reloading.
 
-### Manual Run
+## About Yarn
 
-If for whatever reason you want to run the tasks manually, you can call ```gulp```.
+I am using Yarn only to pull JS dependencies listed in package.json into the ```/node_modules/``` folder. 
 
-This does the following:
+Yarn lets you pull scripts from a central repository in the web and install specific versions from the command line. For example, instead of going to the jQuery website and downloading it manually, you can run:
 
-- generates a fresh icon set, and regenerates the sprite map
-- compiles the SASS into CSS
-- runs ```bower install``` to load any new JS libraries
-- updates the ```footer.php``` file with a script tag to these libraries, all vendor libraries in the ```/js/vendor/``` folder, the ```/js/app.init.js``` file, and then all your ```/js/modules/```.
-- runs ```jshint``` on your modules
-- runs ```gulp watch```.
+```yarn add jquery --save```
 
-### Run for Build Mode
+And Yarn will add jquery to the list of package.json dependencies, pull down the latest version of jQuery and put it in the ```/node_modules/``` folder. The build script will pluck out the relevant files via the package.json listing.
 
-If the WP_DEBUG value in ```wp-config.php``` is set to false, then WordPress is operating in built mode. It will append only compiled assets to the header and footer of the site: a single ```/js/app.min.js``` file in the footer, and a single ```/styles/screen.min.css```. 
-
-```gulp build```
-
-Here's what it does:
-
-- generates a fresh icon set, and regenerates the sprite map
-- compiles the SASS into CSS
-- minifies the CSS
-- runs ```jshint``` on your modules
-- runs ```bower install``` to load any new JS libraries
-- compiles all Bower scripts into ```/js/libraries.js```.
-- compiles the ```/js/libraries.js``` file with ```/js/vendor/*.js```, ```/js/app.init.js``` and ```/js/modules/*.js``` in that order
-- uglifies the files
-- minifies the images in the root of ```/assets/images/```.
-
-Run this before you commit built files for deployment to production.
-
-## About Bower
-
-I am using Bower only to manage JS libraries. 
-
-Bower lets you pull scripts from a central repository in the web and install specific versions from the command line. For example, instead of going to the jQuery website and downloading it manually, you can run:
-
-```bower install --save jquery```
-
-And Bower will pull down the latest version of jQuery and put it in the ```/js/libraries/``` folder.
-
-To add a new library, run ```bower install --save mylibrary```
-
-And it will be dropped into ```/js/libraries/```. When you next run ```gulp``` or ```gulp build```, this library will be compiled/available automatically. You can find libraries for just about everything here: [Bower.io Search](http://bower.io/search/).
+You can find libraries for just about everything here: [Yarn Search](https://yarnpkg.com/en/packages).
