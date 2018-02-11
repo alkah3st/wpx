@@ -50,6 +50,13 @@
 
 	}
 
+	@media only screen and (max-width: $viewport_mobile) {
+
+		#{$style}-top: #{$size-top}px;
+		#{$style}-bottom: #{$size-bottom}px;
+
+	}
+
 }
 
 /**
@@ -163,6 +170,12 @@
  * CSS Triangle
  * https://engageinteractive.co.uk/blog/top-10-scss-mixins
  */
+@mixin pseudo($display: block, $pos: absolute, $content: ''){
+	content: $content;
+	display: $display;
+	position: $pos;
+}
+
 @mixin css-triangle($color, $direction, $size: 6px, $position: absolute, $round: false){
 	@include pseudo($pos: $position);
 	width: 0;
