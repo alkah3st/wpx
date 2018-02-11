@@ -34,7 +34,7 @@ add_action( 'wp_enqueue_scripts', '\WPX\Enqueue\enqueue_assets' );
 function enqueue_addthis() { ?>
 	<?php if (WPX_ADDTHIS_ID) : ?><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo WPX_ADDTHIS_ID; ?>"></script><?php endif; ?>
 <?php }
-add_action('wp_footer', '\WPX\Enqueue\enqueue_addthis');
+//add_action('wp_footer', '\WPX\Enqueue\enqueue_addthis');
 
 /**
 * Google Analytics
