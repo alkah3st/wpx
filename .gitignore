@@ -1,7 +1,6 @@
 # Misc
 *.log
 node_modules/
-assets/js/libraries/**
 
 # Mac-specific
 .DS_Store
