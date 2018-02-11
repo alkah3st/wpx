@@ -22,9 +22,6 @@ jQuery(document).ready(function($) {
 		*/
 		bindEvents: function() {
 
-			// placeholders for ie9 inputs
-			$('input, textarea').placeholder();
-
 			// responsive video
 			$(".flex-video").fitVids();
 
@@ -62,7 +59,9 @@ jQuery(document).ready(function($) {
 			.register("screen and (min-width: 801px)", {
 
 				// desktop
-				match: function() {},
+				match: function() {
+					console.log('801px+');
+				},
 
 				// tablet
 				unmatch: function() {}
@@ -71,7 +70,9 @@ jQuery(document).ready(function($) {
 			.register("screen and (max-width: 800px)", {
 
 				// tablet
-				match: function() {},
+				match: function() {
+					console.log('<= 800px');
+				},
 
 				// desktop
 				unmatch: function() {}
@@ -80,7 +81,9 @@ jQuery(document).ready(function($) {
 			.register("screen and (max-width: 600px)", {
 
 				// mobile
-				match: function() {},
+				match: function() {
+					console.log('<= 600px');
+				},
 
 				// tablet
 				unmatch: function() {}

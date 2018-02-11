@@ -3,13 +3,12 @@
  */
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
-var wiredep = require('wiredep').stream;
-var exec = require('child_process').exec;
 var map = require('map-stream');
 var events = require('events');
 var emitter = new events.EventEmitter();
 var path = require('path');
 var gutil = require('gulp-util');
+var mainYarnFiles = require('main-yarn-files');
 var currentTask = '';
 
 /**
@@ -133,26 +132,29 @@ gulp.task('jshint', function() {
 });
 
 /**
- * compiles /js/bower/ main js -> libraries.js
+ * compiles package.json dependencies into libraries.js
  */
-gulp.task('bower', ['exec'], function() {
+gulp.task('yarn', function() {
 	var filterJS = plugins.filter('**/*.js');
-	currentTask = 'bower';
-	return gulp.src('bower.json')
+	currentTask = 'yarn';
+	return gulp.src(mainYarnFiles({
+		paths: {
+			modulesFolder: 'node_modules',
+			jsonFile: 'package.json'
+		}
+	}))
 		.pipe(plugins.plumber({
 			errorHandler: reportError
 		}))
-		.pipe(plugins.mainBowerFiles())
 		.pipe(filterJS)
 		.pipe(plugins.concat('libraries.js'))
-		.pipe(plugins.uglify())
 		.pipe(gulp.dest('js'));
 });
 
 /**
  * compiles js/libraries.js with js/vendor/*.js & js/app.init.js
  */
-gulp.task('compile-js', ['exec','bower'], function() { // needs to wait for bower
+gulp.task('compile-js', ['yarn'], function() { 
 	currentTask = 'compile-js';
 	return gulp.src(['js/libraries.js','js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
 		.pipe(plugins.plumber({
@@ -168,28 +170,6 @@ gulp.task('compile-js', ['exec','bower'], function() { // needs to wait for bowe
 });
 
 /**
- * injects js/bower/ main js into footer.php
- */
-gulp.task('wire', ['exec'], function () { // we need to wait for exec
-	currentTask = 'wire';
-	gulp.src('../footer.php')
-	.pipe(plugins.plumber({
-		errorHandler: reportError
-	}))
-	.pipe(wiredep({
-		fileTypes: {
-			html: {
-				replace: {
-					js: '<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/{{filePath}}"></script>'
-				}
-			}
-		},
-	}))
-	.pipe(gulp.dest('..'))
-	.pipe(plugins.livereload());
-});
-
-/**
  * injects js/modules/*.js, js/vendor/*.js, and js/app.init.js into footer.php 
  */
 gulp.task('inject', function () {
@@ -197,6 +177,12 @@ gulp.task('inject', function () {
 	gulp.src('../footer.php')
 		.pipe(plugins.plumber({
 			errorHandler: reportError
+		}))
+		.pipe(plugins.inject(gulp.src('js/libraries.js', {read: false}), {
+			starttag: '<!-- inject:yarn:{{ext}} -->',
+			transform: function (filepath) {
+				return '<script src="<?php echo assets_url(); ?>'+filepath+'"></script>';
+			}
 		}))
 		.pipe(plugins.inject(gulp.src('js/app.init.js', {read: false}), {
 			starttag: '<!-- inject:init:{{ext}} -->',
@@ -255,49 +241,39 @@ gulp.task('imagemin', function () {
 });
 
 /**
- * runs bower install
- */
-gulp.task('exec', function(cb) {
-	exec('bower install', function (err, stdout, stderr) {
-		console.log(stdout);
-		console.log(stderr);
-		cb(err);
-	});
-});
-
-/**
  * gulp watch:
  * - listens for changed .scss files in /styles/sass, then converts sass partials into css
- * - listens for changed .js files in /js/modules/, /js/vendor, and /js/, then runs bower install, wires bower files, and injects app.init.js, vendor files, and modules
+ * - listens for changed .js files in /js/modules/, /js/vendor, and /js/, collects dependencies from package.json into /js/libraries.js, appends all js to the footer.php, jshints the /js/modules/
  * - listens for changed .php files in theme root, /templates/, and /partials/ and refreshes page
  */
 gulp.task('watch', function() {
 	plugins.livereload.listen();
 	gulp.watch('styles/sass/**/**/**/*.scss', ['sass']);
-	gulp.watch(['js/modules/*.js','js/vendor/*.js','js/*.js'], ['exec','wire','inject','jshint']);
+	gulp.watch(['js/modules/*.js','js/vendor/*.js','js/*.js'], ['yarn','inject','jshint']);
 	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', plugins.livereload.changed);
 });
 
 /**
  * gulp build:
- * - sprites: takes sprites in /images/sprites and creates retina/non-retina sprite map
- * - fontello: uses fontello.json to create icon fonts and collect scss
- * - sass: compiles sass partials into css
+ * - creates sprites from /images/sprites/
+ * - grabs font icons from fontello.json
+ * - creates sass from /styles/sass/
  * - cssmin: minifies css
- * - jshints the js modules
- * - exec: runs bower install
- * - bower: merges bower js into libraries.js
+ * - jshints the /js/modules/
+ * - collects dependencies from package.json into /js/libraries.js
  * - compile-js: merges libraries.js with vendor, modules, app.init & uglifies
  * - imagemin: shrinks images
  */
-gulp.task('build', ['sprites','fontello','sass','cssmin','jshint','exec','bower','compile-js','imagemin']);
+gulp.task('build', ['sprites','fontello','sass','cssmin','jshint','yarn','compile-js','imagemin']);
 
 /**
  * gulp:
- * - runs bower install (wire and inject wait on the exec)
- * - creates sass
- * - jshints the custom modules
- * - wires bower js into footer.php, then injects vendor, app.init, & modules
+ * - creates sprites from /images/sprites/
+ * - grabs font icons from fontello.json
+ * - creates sass from /styles/sass/
+ * - jshints the /js/modules/
+ * - collects dependencies from package.json into /js/libraries.js
+ * - appends all js to the footer.php
  * - kicks off gulp watch
  */
-gulp.task('default', ['sprites','fontello','sass','exec','wire','inject','jshint','watch']);
+gulp.task('default', ['sprites','fontello','sass','yarn','inject','jshint','watch']);
