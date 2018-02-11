@@ -782,7 +782,7 @@ This looks like the following in the ```footer.php``` file:
 	<?php if (WP_DEBUG == true) : ?>
 		
 		<!-- yarn:js -->
-		<script src="<?php bloginfo("url") ?>/wp-content/themes/wpx/assets/js/libraries.js"></script>
+		<script src="<?php echo assets_url(); ?>/js/libraries.js"></script>
 		<!-- endinject-->
 		<!-- inject:vendor:js -->
 		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.imagesloaded.js"></script>
