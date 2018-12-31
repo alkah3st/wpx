@@ -26,12 +26,22 @@ jQuery(document).ready(function($) {
 			$(".flex-video").fitVids();
 
 			// inline retina images
-			$('img[data-2x]').dense();
+			$('img.retina[data-2x]').dense();
+
+			// on scroll throttle
+			$(window).scroll( $.throttle( 10, function() { 
+
+			} ) );
+
+			// on resize throttle
+			$(window).resize( $.throttle( 10, function() { 
+				
+			} ) );
 
 		},
 
-		/*
-		matches heights on element pairs
+		/**
+		 * forces elements to match heights on scale
 		 */
 		matchHeights: function() {
 
@@ -50,8 +60,8 @@ jQuery(document).ready(function($) {
 
 		},
 
-		/*
-		bind layouts
+		/**
+		 * trigger js on breakpoints
 		 */
 		bindBreakpoints: function() {
 
@@ -59,9 +69,7 @@ jQuery(document).ready(function($) {
 			.register("screen and (min-width: 801px)", {
 
 				// desktop
-				match: function() {
-					console.log('801px+');
-				},
+				match: function() {},
 
 				// tablet
 				unmatch: function() {}
@@ -70,20 +78,16 @@ jQuery(document).ready(function($) {
 			.register("screen and (max-width: 800px)", {
 
 				// tablet
-				match: function() {
-					console.log('<= 800px');
-				},
+				match: function() {},
 
 				// desktop
 				unmatch: function() {}
 
 			})
-			.register("screen and (max-width: 600px)", {
+			.register("screen and (max-width: 500px)", {
 
 				// mobile
-				match: function() {
-					console.log('<= 600px');
-				},
+				match: function() {},
 
 				// tablet
 				unmatch: function() {}

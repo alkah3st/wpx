@@ -10,6 +10,8 @@
 */
 get_header(); ?>
 
+<?php the_post(); ?>
+
 <h1>Your Markup Here</h1>
 
 <p>Make as many of these templates as needed to render your front end markup.</p>
@@ -29,5 +31,7 @@ get_header(); ?>
 <h2>Example Retina Background</h2>
 
 <div class="background-example"></div>
+
+<div class="tinymce"><?php the_content(); ?></div>
 
 <?php get_footer(); ?>

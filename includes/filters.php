@@ -36,8 +36,7 @@ add_filter( 'admin_post_thumbnail_html', '\WPX\Filters\add_featured_image_instru
  * @param string $domain
  * @return string 
  */
-function change_excerpt_name( $translation, $original )
-{
+function change_excerpt_name( $translation, $original ) {
 	if ( 'Excerpt' == $original ) {
 		return 'Excerpt';
 	} else {
@@ -109,3 +108,37 @@ function my_acf_init(){
 	acf_update_setting('google_api_key', 'YOUR KEY HERE');
 }
 // add_filter('acf/init', '\WPX\Filters\my_acf_init');
+
+/**
+ * Tell WordPress how to interpret our custom URL structure
+ *
+ * @param array $rules Existing rewrite rules
+ * @return array
+ */
+function add_rewrite_rules( $rules ) {
+  $new = array();
+  $new['magazine/([^/]+)/(.+)/?$'] = 'index.php?wpx-articles=$matches[2]';
+  $new['magazine/(.+)/?$'] = 'index.php?wpx-issues=$matches[1]';
+
+  return array_merge( $new, $rules ); // Ensure our rules come first
+}
+add_filter( 'rewrite_rules_array', '\WPX\Filters\add_rewrite_rules' );
+
+function custom_permalinks( $post_link, $post ){
+	if ( is_object( $post ) && $post->post_type == 'wpx-articles' ){
+		$terms = wp_get_object_terms( $post->ID, 'wpx-issues' );
+		if( $terms ){
+			return str_replace( '%issue%' , $terms[0]->slug , $post_link );
+		}
+	}
+	return $post_link;
+}
+add_filter( 'post_type_link', '\WPX\Filters\custom_permalinks', 1, 2 );
+
+/**
+ * For ACF Icon Field
+ */
+function acf_icon_path_suffix( $path_suffix ) {
+	return 'assets/fonts/icons/svg/';
+}
+add_filter( 'acf_icon_path_suffix', '\WPX\Filters\acf_icon_path_suffix' );

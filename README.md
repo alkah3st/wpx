@@ -45,8 +45,8 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 ## Features
 
 * Install with WPX Utility, a plugin that contains helper functions for use with the theme;
-* Ready for use with Advanced Custom Fields
-* Stripped-down, unopinionated WP templates 
+* Ready for use with Advanced Custom Fields & Gutenberg (using ACF Beta 3)
+* Stripped-down, unopinionated WP templates
 * PHP namespacing for hooks and functions;
 * Includes Gulp-powered build script for the front end;
 	* Simple, CSS framework-free globbed Sass;

@@ -7,6 +7,7 @@ var map = require('map-stream');
 var events = require('events');
 var emitter = new events.EventEmitter();
 var path = require('path');
+var concat = require('gulp-concat');
 var gutil = require('gulp-util');
 var mainYarnFiles = require('main-yarn-files');
 var currentTask = '';
@@ -84,6 +85,27 @@ gulp.task('sass', function () {
 });
 
 /**
+ * sourcemap/globs sass to css
+ */
+gulp.task('gutensass', function () {
+	currentTask = 'gutensass';
+	return gulp.src('styles/gutenberg/*.scss')
+		.pipe(plugins.plumber({
+			errorHandler: reportError
+		}))
+		.pipe(plugins.sourcemaps.init())
+		.pipe(plugins.sassGlob())
+		.pipe(plugins.sass())
+		.pipe(plugins.autoprefixer({
+			browsers: ['last 3 version', 'ie 9', '> 1%'],
+			cascade: false
+		}))
+		.pipe(plugins.sourcemaps.write())
+		.pipe(gulp.dest('styles/gutenberg'))
+		.pipe(plugins.livereload());
+});
+
+/**
  * minifies css
  */
 gulp.task('cssmin', function () {
@@ -94,13 +116,27 @@ gulp.task('cssmin', function () {
 		}))
 		.pipe(plugins.cleanCss())
 		.pipe(plugins.rename({suffix: '.min'}))
-		.pipe(gulp.dest('styles'))
+		.pipe(gulp.dest('styles'));
+});
+
+/**
+ * minifies css
+ */
+gulp.task('gutenmin', function() {
+	currentTask = 'cssmin';
+	return gulp.src('styles/gutenberg/*.css')
+		.pipe(plugins.plumber({
+			errorHandler: reportError
+		}))
+		.pipe(plugins.cleanCss())
+		.pipe(concat('gutenberg.min.css'))
+		.pipe(gulp.dest('styles'));
 });
 
 /**
  * collects /images/sprites/*.png into retina sprite maps
  */
-gulp.task('sprites', function generateSpritesheets () {
+gulp.task('sprites', function generateSpritesheets (done) {
 	currentTask = 'sprites';
 	var spriteData = gulp.src('images/sprites/*.png')
 		.pipe(plugins.plumber({
@@ -114,6 +150,7 @@ gulp.task('sprites', function generateSpritesheets () {
 		}));
 	spriteData.img.pipe(gulp.dest('images'));
 	spriteData.css.pipe(gulp.dest('styles/sass/utility'));
+	done();
 });
 
 /**
@@ -154,7 +191,7 @@ gulp.task('yarn', function() {
 /**
  * compiles js/libraries.js with js/vendor/*.js & js/app.init.js
  */
-gulp.task('compile-js', ['yarn'], function() { 
+gulp.task('compile-js', function() {
 	currentTask = 'compile-js';
 	return gulp.src(['js/libraries.js','js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
 		.pipe(plugins.plumber({
@@ -172,7 +209,7 @@ gulp.task('compile-js', ['yarn'], function() {
 /**
  * injects js/modules/*.js, js/vendor/*.js, and js/app.init.js into footer.php 
  */
-gulp.task('inject', function () {
+gulp.task('inject', function (done) {
 	currentTask = 'inject';
 	gulp.src('../footer.php')
 		.pipe(plugins.plumber({
@@ -204,6 +241,7 @@ gulp.task('inject', function () {
 		}))
 		.pipe(gulp.dest('..'))
 		.pipe(plugins.livereload());
+		done();
 });
 
 /**
@@ -230,14 +268,15 @@ gulp.task('fontello', function () {
 /**
  * minifies /images/*
  */
-gulp.task('imagemin', function () {
+gulp.task('imagemin', function (done) {
 	currentTask = 'imagemin';
 	gulp.src('images/*')
 		.pipe(plugins.plumber({
 			errorHandler: reportError
 		}))
 		.pipe(plugins.imagemin())
-		.pipe(gulp.dest('images'))
+		.pipe(gulp.dest('images'));
+		done();
 });
 
 /**
@@ -248,8 +287,8 @@ gulp.task('imagemin', function () {
  */
 gulp.task('watch', function() {
 	plugins.livereload.listen();
-	gulp.watch('styles/sass/**/**/**/*.scss', ['sass']);
-	gulp.watch(['js/modules/*.js','js/vendor/*.js','js/*.js'], ['yarn','inject','jshint']);
+	gulp.watch(['styles/sass/**/**/**/*.scss','styles/gutenberg/**/**/**/*.scss'],  gulp.series(['sass','gutensass','gutenmin']));
+	gulp.watch(['js/modules/*.js','js/vendor/*.js','js/*.js'], gulp.series(['yarn','inject','jshint']));
 	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', plugins.livereload.changed);
 });
 
@@ -264,7 +303,8 @@ gulp.task('watch', function() {
  * - compile-js: merges libraries.js with vendor, modules, app.init & uglifies
  * - imagemin: shrinks images
  */
-gulp.task('build', ['sprites','fontello','sass','cssmin','jshint','yarn','compile-js','imagemin']);
+gulp.task('build', gulp.series(gulp.parallel(['sprites', 'fontello', 'sass', 'imagemin']), gulp.parallel(gulp.series(['gutensass', 'gutenmin']), 'cssmin'), 'jshint', 'yarn', 'compile-js', function(done) { done(); }));
+
 
 /**
  * gulp:
@@ -276,4 +316,12 @@ gulp.task('build', ['sprites','fontello','sass','cssmin','jshint','yarn','compil
  * - appends all js to the footer.php
  * - kicks off gulp watch
  */
-gulp.task('default', ['sprites','fontello','sass','yarn','inject','jshint','watch']);
+gulp.task('default', gulp.series(gulp.parallel(['sprites', 'fontello', 'sass']), 'gutensass', 'gutenmin', 'yarn', 'inject', 'jshint', 'watch', function() {}));
+
+
+/**
+ * gulp:
+ * - sasses all the gutenberg scss files into css
+ * - combines all the css files into a minified css
+ */
+gulp.task('gutenberg', gulp.series('gutensass', 'gutenmin', function(done) {done();}));

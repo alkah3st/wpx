@@ -23,8 +23,12 @@
 		<script src="<?php echo assets_url(); ?>/js/libraries.js"></script>
 		<!-- endinject -->
 		<!-- inject:vendor:js -->
+		<script src="<?php echo assets_url(); ?>/js/vendor/enquire.js"></script>
 		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.imagesloaded.js"></script>
+		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.inview.js"></script>
+		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.isotope.js"></script>
 		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.matchheight.js"></script>
+		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.throttle.js"></script>
 		<!-- endinject -->
 		<!-- inject:init:js -->
 		<script src="<?php echo assets_url(); ?>/js/app.init.js"></script>

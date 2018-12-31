@@ -6,16 +6,11 @@
 	box-sizing: border-box;
 }
 
-html, body {
-	height: 100%;
-}
-
 body {
-	@include font-size($size: 16px, $min: 14px, $max: 22px);
-
-	@include breakpoint('mobile') {
-		color: red;
-	}
+	@include font-size(16px, 16px, 18px);
+	font-family: $serif;
+	width: 100%;
+	margin: 0;
 }
 
 textarea { overflow: auto; }
@@ -25,7 +20,10 @@ textarea { overflow: auto; }
 }
 
 a {
-	transition: all .2s ease-in-out;
+	transition: $transition;
+	text-decoration: none;
+
+	&:hover {}
 }
 
 ul {
@@ -37,16 +35,16 @@ ul {
  * globals
  */
 .screenreader {
-
-	&:focus {
-		outline: none;
-	}
-
 	outline: none;
 	font-size: 0;
 	padding: 0;
 	position: absolute;
 	clip: rect(1px, 1px, 1px, 1px);
+
+	&:focus {
+		outline: none;
+	}
+
 }
 
 .hidden {
@@ -57,14 +55,30 @@ ul {
 	clear: both;
 }
 
-.container {
-	overflow: hidden;
-}
-
-.module {
-	overflow: hidden;
+.clear {
+	clear: both;
 }
 
 .wrap {
 	@include context();
 }
+
+.inline {
+	display: inline-block;
+}
+
+// buttons
+.wp-block-button a,
+.wp-block-file .wp-block-file__button,
+input[type="button"].ninja-forms-field,
+input[type="button"].button,
+.button {
+
+	&:hover {}
+}
+
+/**
+ * structure
+ */
+
+.bounds {}
