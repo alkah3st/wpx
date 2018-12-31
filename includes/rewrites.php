@@ -21,7 +21,7 @@ function custom_template_redirects() {
 
 	if ( array_key_exists( 'wpx_template', $template ) && 'email' == $template['wpx_template'] ) {
 		$wp_query->set( 'is_404', false );
-		// include( WPX_THEME_PATH.'/templates/api/email.php' ); (put your template here)
+		// include( WPX_THEME_PATH.'/templates/api/email.php' );
 		exit;
 	}
 

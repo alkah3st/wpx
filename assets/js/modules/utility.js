@@ -4,6 +4,9 @@ jQuery(document).ready(function($) {
 
 	WPX.Utility = {
 
+		$jqueryObject: $('body'),
+		variable: false,
+
 		init: function() {
 
 			this.bindEvents();
@@ -14,7 +17,6 @@ jQuery(document).ready(function($) {
 		 * bind all events
 		*/
 		bindEvents: function() {
-
 
 		}
 

@@ -8,6 +8,17 @@
 }
 
 /**
+ * rhythm caps
+ */
+@mixin rhythm-top() {
+	margin-top: 20px;
+}
+
+@mixin rhythm-bottom() {
+	margin-bottom: 20px;
+}
+
+/**
  * Strip Units
  * https://css-tricks.com/snippets/sass/strip-unit-function/
  */
@@ -70,7 +81,6 @@
 	&:-ms-input-placeholder { @content; }
 	&::-webkit-input-placeholder { @content; }
 }
-
 
 /**
  * Breakpoints
@@ -170,12 +180,6 @@
  * CSS Triangle
  * https://engageinteractive.co.uk/blog/top-10-scss-mixins
  */
-@mixin pseudo($display: block, $pos: absolute, $content: ''){
-	content: $content;
-	display: $display;
-	position: $pos;
-}
-
 @mixin css-triangle($color, $direction, $size: 6px, $position: absolute, $round: false){
 	@include pseudo($pos: $position);
 	width: 0;
@@ -203,22 +207,5 @@
 		border-bottom: $size solid transparent;
 		border-right: $size solid $color;
 		margin-left: -$size;
-	}
-}
-
-/**
- * Responsive Ratio
- * https://engageinteractive.co.uk/blog/top-10-scss-mixins
- */
-@mixin responsive-ratio($x,$y, $pseudo: false) {
-	$padding: unquote( ( $y / $x ) * 100 + '%' );
-	@if $pseudo {
-		&:before {
-			@include pseudo($pos: relative);
-			width: 100%;
-			padding-top: $padding;
-		}
-	} @else {
-		padding-top: $padding;
 	}
 }

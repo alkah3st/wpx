@@ -1,18 +1,37 @@
 /**
+ * unset gutenberg max-width
+ */
+.wp-block {
+	max-width: 100%;
+}
+
+/**
  * global context
  */
 $context: 1200px;
+
+/**
+ * animations
+ */
+$transition: all .2s ease-in-out;
 
 /**
  * colors
  */
 $black: #000000;
 $white: #ffffff;
+$gray: #cccccc;
 
-/*
-font families
+/**
+ * rhythm margin
  */
-$helvetica: Helvetica, Arial, sans-serif;
+$rhythm: 20px;
+
+/**
+ * font families
+ */
+$sans-serif: Helvetica, Arial, sans-serif;
+$serif: Georgia, Times, Times New Roman, serif;
 
 /**
  * viewports

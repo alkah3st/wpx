@@ -26,11 +26,14 @@ require_once(WPX_THEME_PATH."includes/filters.php");
 require_once(WPX_THEME_PATH."includes/sidebars.php");
 require_once(WPX_THEME_PATH."includes/enqueue.php");
 require_once(WPX_THEME_PATH."includes/rewrites.php");
+require_once(WPX_THEME_PATH."includes/utility.php");
+require_once(WPX_THEME_PATH."includes/loops.php");
+require_once(WPX_THEME_PATH."includes/blocks.php");
 
 /**
  * Widgets
 */
-require_once(WPX_THEME_PATH."includes/widgets/categories.php");
+require_once(WPX_THEME_PATH."includes/widgets/ve.php");
 
 /**
  * CPTs & Taxonomies
@@ -38,10 +41,11 @@ require_once(WPX_THEME_PATH."includes/widgets/categories.php");
 function wpx_architecture() {
 
 	// include taxonomies
-	require_once(WPX_THEME_PATH."includes/taxonomies/industries.php");
+	require_once(WPX_THEME_PATH."includes/taxonomies/issues.php");
 
 	// include cpts
-	require_once(WPX_THEME_PATH."includes/content-types/portfolio.php");
+	require_once(WPX_THEME_PATH."includes/content-types/articles.php");
+	require_once(WPX_THEME_PATH."includes/content-types/jobs.php");
 
 	// header/footer settings
 	if( function_exists('acf_add_options_page') ) {
@@ -71,9 +75,9 @@ function wpx_architecture() {
 
 	}
 
-
 }
-add_action( 'init', 'wpx_architecture', 5);
+// the 0, 1 forces init to happen before widgets_init
+add_action( 'init', 'wpx_architecture', 0, 1);
 
 /**
  * Theme Setup
@@ -118,41 +122,12 @@ function wpx_setup() {
 		'primary' => 'Primary Navigation'
 	) );
 
-	/*
-	 * Enable support for Post Formats.
-	 *
-	 * See: https://codex.wordpress.org/Post_Formats
-	 */
-	add_theme_support( 'post-formats', array('image', 'video', 'link', 'gallery','audio') );
-
 	// image crops
 	set_post_thumbnail_size( 640, 480, true );
 	add_image_size( 'custom-image-size', 850, 400, true );
 
 }
 add_action( 'after_setup_theme', 'wpx_setup', 0 );
-
-/**
- * Set the content width in pixels, based on the theme's design and stylesheet.
- *
- * Priority 0 to make it available to lower priority callbacks.
- *
- * @global int $content_width
- */
-function wpx_content_width() {
-
-	$content_width = 990;
-
-	/**
-	 * Filter Twenty Seventeen content width of the theme.
-	 *
-	 * @since Twenty Seventeen 1.0
-	 *
-	 * @param $content_width integer
-	 */
-	$GLOBALS['content_width'] = apply_filters( 'twentyseventeen_content_width', $content_width );
-}
-add_action( 'after_setup_theme', 'wpx_content_width', 0 );
 
 /**
 * Pre Get Posts
