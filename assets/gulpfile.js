@@ -288,8 +288,8 @@ gulp.task('imagemin', function (done) {
 gulp.task('watch', function() {
 	plugins.livereload.listen();
 	gulp.watch(['styles/sass/**/**/**/*.scss','styles/gutenberg/**/**/**/*.scss'],  gulp.series(['sass','gutensass','gutenmin']));
-	gulp.watch(['js/modules/*.js','js/vendor/*.js','js/*.js'], gulp.series(['yarn','inject','jshint']));
-	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', plugins.livereload.changed);
+	gulp.watch(['js/modules/*.js','js/vendor/*.js'], gulp.series(['yarn','inject','jshint']));
+	gulp.watch(['!../footer.php','../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', plugins.livereload.changed);
 });
 
 /**
