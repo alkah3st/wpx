@@ -18,6 +18,7 @@
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 
+	<?php // @todo, needs updating ?>
 	<link rel="icon" href="<?php echo WPX_THEME_URL; ?>/favicon.png">
 	<!--[if IE]><link rel="shortcut icon" href="<?php echo WPX_THEME_URL; ?>/favicon.ico"><![endif]-->
 	<meta name="msapplication-TileColor" content="#000000">
