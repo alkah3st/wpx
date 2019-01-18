@@ -63,8 +63,8 @@
 
 	@media only screen and (max-width: $viewport_mobile) {
 
-		#{$style}-top: #{$size-top}px;
-		#{$style}-bottom: #{$size-bottom}px;
+		#{$style}-top: #{$size-top / 2.4}px;
+		#{$style}-bottom: #{$size-bottom / 2.4}px;
 
 	}
 
