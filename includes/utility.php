@@ -1,6 +1,6 @@
 <?php
 /**
- * Custom Utility Functions
+ * Custom Functions
  *
  * @package WordPress
  * @subpackage WPX_Theme

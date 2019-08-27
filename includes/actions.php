@@ -24,6 +24,7 @@ add_action('admin_enqueue_scripts', '\WPX\Actions\add_dashboard_js');
 function admin_style() {
 	wp_enqueue_style('admin-styles', get_template_directory_uri().'/assets/styles/dashboard.css');
 }
+
 add_action('admin_enqueue_scripts', '\WPX\Actions\admin_style');
 
 /**

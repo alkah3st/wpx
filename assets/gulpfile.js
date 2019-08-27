@@ -1,263 +1,254 @@
-/**
- * init gulp plugins
- */
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-var map = require('map-stream');
-var events = require('events');
-var emitter = new events.EventEmitter();
-var path = require('path');
-var concat = require('gulp-concat');
-var gutil = require('gulp-util');
-var mainYarnFiles = require('main-yarn-files');
-var currentTask = '';
+var gulp        	= require('gulp');
+var sass        	= require('gulp-sass');
+var livereload  	= require('gulp-livereload');
+var cleancss    	= require('gulp-clean-css');
+var rename      	= require('gulp-rename');
+var fontello      	= require('gulp-fontello');
+var notify      	= require('gulp-notify');
+var plumber      	= require('gulp-plumber');
+var autoprefixer 	= require('gulp-autoprefixer');
+var imagemin    	= require('gulp-imagemin');
+var spritesmith 	= require('gulp.spritesmith');
+var sassglob    	= require('gulp-sass-glob');
+var uglify      	= require('gulp-uglify');
+var concat      	= require('gulp-concat');
+var sourcemaps  	= require('gulp-sourcemaps');
+var jshint      	= require('gulp-jshint');
 
-/**
- * error reporter object (for plugins)
- */
-var reportError = function (error) {
-	var lineNumber = (error.lineNumber) ? 'LINE ' + error.lineNumber + ' -- ' : '';
-	var pluginName = (error.plugin) ? ': ['+error.plugin+']' : '['+currentTask+']';
-
-	plugins.notify({
-		title: 'Task Failed '+pluginName,
-		message: lineNumber + 'See console.'
-	}).write(error);
-
-	gutil.beep();
-
-	var report = '';
-	var chalk = gutil.colors.white.bgRed;
-
-	report += chalk('TASK:') + pluginName+'\n';
-	report += chalk('ERROR:') + ' ' + error.message + '\n';
-	if (error.lineNumber) { report += chalk('LINE:') + ' ' + error.lineNumber + '\n'; }
-	if (error.fileName)   { report += chalk('FILE:') + ' ' + error.fileName + '\n'; }
-
-	console.error(report);
-
-	this.emit('end');
-}
-
-/**
- * custom reporter for jshint-stylish
- */
-var jsHintErrorReporter = function(file, cb) {
-
-	return map(function (file, cb) {
-		if (!file.jshint.success) {
-			file.jshint.results.forEach(function (err) {
-			if (err) {
-				var msg = [
-					path.basename(file.path),
-					'LINE: ' + err.error.line,
-					'ERROR: ' + err.error.reason
-				];
-
-				emitter.emit('error', new Error(msg.join(" - ")));
-			}
-		});
-		}
-		cb(null, file);
-	});
-
-};
-
-/**
- * sourcemap/globs sass to css
- */
-gulp.task('sass', function () {
-	currentTask = 'sass';
+gulp.task('sass', function(){
 	return gulp.src('styles/sass/screen.scss')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.sourcemaps.init())
-		.pipe(plugins.sassGlob())
-		.pipe(plugins.sass())
-		.pipe(plugins.autoprefixer({
-			browsers: ['last 3 version', 'ie 9', '> 1%'],
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [sass]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(sourcemaps.init())
+		.pipe(sassglob())
+		.pipe(sass())
+		.pipe(autoprefixer({
 			cascade: false
 		}))
-		.pipe(plugins.sourcemaps.write())
+		.pipe(cleancss({
+			compatibility: '*',
+
+		}))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('styles'))
-		.pipe(plugins.livereload());
+		.pipe(livereload());
 });
 
-/**
- * sourcemap/globs sass to css
- */
-gulp.task('gutensass', function () {
-	currentTask = 'gutensass';
-	return gulp.src('styles/gutenberg/*.scss')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.sourcemaps.init())
-		.pipe(plugins.sassGlob())
-		.pipe(plugins.sass())
-		.pipe(plugins.autoprefixer({
-			browsers: ['last 3 version', 'ie 9', '> 1%'],
+gulp.task('sass-build', function(){
+	return gulp.src('styles/sass/screen.scss')
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [sass]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(sassglob())
+		.pipe(sass())
+		.pipe(autoprefixer({
 			cascade: false
 		}))
-		.pipe(plugins.sourcemaps.write())
-		.pipe(gulp.dest('styles/gutenberg'))
-		.pipe(plugins.livereload());
-});
+		.pipe(cleancss({
+			compatibility: '*',
 
-/**
- * minifies css
- */
-gulp.task('cssmin', function () {
-	currentTask = 'cssmin';
-	return gulp.src('styles/screen.css')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
 		}))
-		.pipe(plugins.cleanCss())
-		.pipe(plugins.rename({suffix: '.min'}))
-		.pipe(gulp.dest('styles'));
+		.pipe(rename({suffix: '.min'}))
+		.pipe(gulp.dest('styles'))
 });
 
-/**
- * minifies css
- */
-gulp.task('gutenmin', function() {
-	currentTask = 'cssmin';
-	return gulp.src('styles/gutenberg/*.css')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
+gulp.task('sass-gutenberg', function () {
+	return gulp.src('styles/gutenberg/gutenberg.scss')
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [sass-gutenberg]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(sourcemaps.init())
+		.pipe(sassglob())
+		.pipe(sass())
+		.pipe(autoprefixer({
+			cascade: false
 		}))
-		.pipe(plugins.cleanCss())
-		.pipe(concat('gutenberg.min.css'))
-		.pipe(gulp.dest('styles'));
+		.pipe(cleancss({
+			compatibility: '*',
+
+		}))
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest('styles'))
+		.pipe(livereload());
 });
 
-/**
- * collects /images/sprites/*.png into retina sprite maps
- */
+gulp.task('sass-gutenberg-build', function(){
+	return gulp.src('styles/gutenberg/gutenberg.scss')
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [sass]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(sassglob())
+		.pipe(sass())
+		.pipe(autoprefixer({
+			cascade: false
+		}))
+		.pipe(cleancss({
+			compatibility: '*',
+
+		}))
+		.pipe(rename({suffix: '.min'}))
+		.pipe(gulp.dest('styles'))
+});
+
 gulp.task('sprites', function generateSpritesheets (done) {
-	currentTask = 'sprites';
 	var spriteData = gulp.src('images/sprites/*.png')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.spritesmith({
-			retinaSrcFilter: 'images/sprites/*@2x.png',
-			imgName: '../images/spritesheet.png',
-			retinaImgName: '../images/spritesheet@2x.png',
-			cssName: 'sprites.scss'
-		}));
+	.pipe(plumber({errorHandler: function(err) {
+		notify.onError({
+					title:    "Gulp: [sass-spritesmith]",
+					subtitle: "Error",
+					message:  "<%= error.message %>",
+					sound:    false
+				})(err);
+
+		this.emit('end');
+	}}))
+	.pipe(spritesmith({
+		retinaSrcFilter: 'images/sprites/*@2x.png',
+		imgName: '../images/spritesheet.png',
+		retinaImgName: '../images/spritesheet@2x.png',
+		cssName: 'sprites.scss'
+	}))
 	spriteData.img.pipe(gulp.dest('images'));
 	spriteData.css.pipe(gulp.dest('styles/sass/utility'));
 	done();
 });
 
-/**
- * jshints js/modules/*.js
- */
+gulp.task('svgmin', function(){
+	return gulp.src('images/**/*.{svg}')
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [sass-svgmin]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(imagemin([imagemin.svgo({plugins: [{removeViewBox: true}]})]))
+		.pipe(rename({dirname: ''}))
+		.pipe(gulp.dest('images/'))
+});
+
+gulp.task('imagemin', function(){
+	return gulp.src('images/**/*.{png,gif,jpg,jpeg}')
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [sass-imagemin]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(imagemin())
+		.pipe(rename({dirname: ''}))
+		.pipe(gulp.dest('images/'))
+});
+
 gulp.task('jshint', function() {
 	return gulp.src(['js/app.init.js','js/modules/**/*.js'])
-		.pipe(plugins.jshint('.jshintrc'))
-		.pipe(plugins.jshint.reporter('jshint-stylish'))
-		.pipe(jsHintErrorReporter())
-			.on('error', plugins.notify.onError(function (error) {
-				return error.message;
-			}
-		))
-		.pipe(plugins.livereload());
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [jshint]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(jshint('.jshintrc'))
+		.pipe(jshint.reporter('jshint-stylish'))
+		.pipe(jshint.reporter('fail'));
 });
 
-/**
- * compiles package.json dependencies into libraries.js
- */
-gulp.task('yarn', function() {
-	var filterJS = plugins.filter('**/*.js');
-	currentTask = 'yarn';
-	return gulp.src(mainYarnFiles({
-		paths: {
-			modulesFolder: 'node_modules',
-			jsonFile: 'package.json'
-		}
-	}))
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(filterJS)
-		.pipe(plugins.concat('libraries.js'))
-		.pipe(gulp.dest('js'));
+gulp.task('js', function() {
+	return gulp.src(['js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [js]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(concat('app.js'))
+		.pipe(gulp.dest('js'))
+		.pipe(livereload());
 });
 
-/**
- * compiles js/libraries.js with js/vendor/*.js & js/app.init.js
- */
-gulp.task('compile-js', function() {
-	currentTask = 'compile-js';
-	return gulp.src(['js/libraries.js','js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.concat('app.min.js'))
-		.pipe(plugins.uglify({
+gulp.task('jsmin', function() {
+	return gulp.src(['js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [js]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(concat('app.min.js'))
+		.pipe(uglify({
 			compress: {
 				drop_console: true
 			}
 		}))
-		.pipe(gulp.dest('js'));
+		.pipe(gulp.dest('js'))
+		.pipe(livereload());
 });
 
-/**
- * injects js/modules/*.js, js/vendor/*.js, and js/app.init.js into footer.php 
- */
-gulp.task('inject', function (done) {
-	currentTask = 'inject';
-	gulp.src('../footer.php')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.inject(gulp.src('js/libraries.js', {read: false}), {
-			starttag: '<!-- inject:yarn:{{ext}} -->',
-			transform: function (filepath) {
-				return '<script src="<?php echo assets_url(); ?>'+filepath+'"></script>';
-			}
-		}))
-		.pipe(plugins.inject(gulp.src('js/app.init.js', {read: false}), {
-			starttag: '<!-- inject:init:{{ext}} -->',
-			transform: function (filepath) {
-				return '<script src="<?php echo assets_url(); ?>'+filepath+'"></script>';
-			}
-		}))
-		.pipe(plugins.inject(gulp.src(['js/vendor/*.js'], {read: false}), {
-			starttag: '<!-- inject:vendor:{{ext}} -->',
-			transform: function (filepath) {
-				return '<script src="<?php echo assets_url(); ?>'+filepath+'"></script>';
-			}
-		}))
-		.pipe(plugins.inject(gulp.src(['js/modules/*.js'], {read: false}), {
-			starttag: '<!-- inject:modules:{{ext}} -->',
-			transform: function (filepath) {
-				return '<script src="<?php echo assets_url(); ?>'+filepath+'"></script>';
-			}
-		}))
-		.pipe(gulp.dest('..'))
-		.pipe(plugins.livereload());
-		done();
-});
-
-/**
- * uses fontello.json to create font/ files and /styles/sass/vendor/icon *.scss
- */
 gulp.task('fontello', function () {
-	currentTask = 'fontello';
 	return gulp.src('fontello.json')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.fontello({
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [fontello]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(fontello({
 			font: 'fonts/icons',
 			css: 'styles/sass/vendor/icons'
 		}))
-		.pipe(plugins.rename(function(file) { // we need to rename css files to scss
+		.pipe(rename(function(file) { // we need to rename css files to scss
 			if (file.extname == '.css') {
 				file.extname = '.scss';
 			}
@@ -265,63 +256,40 @@ gulp.task('fontello', function () {
 		.pipe(gulp.dest('../assets/'))
 });
 
-/**
- * minifies /images/*
- */
-gulp.task('imagemin', function (done) {
-	currentTask = 'imagemin';
-	gulp.src('images/*')
-		.pipe(plugins.plumber({
-			errorHandler: reportError
-		}))
-		.pipe(plugins.imagemin())
-		.pipe(gulp.dest('images'));
-		done();
+// renders css for acf-icon-picker
+gulp.task('fontello-acf', function () {
+	return gulp.src('styles/sass/vendor/icons/fontello.scss')
+		.pipe(plumber({errorHandler: function(err) {
+			notify.onError({
+						title:    "Gulp: [fontello-acf]",
+						subtitle: "Error",
+						message:  "<%= error.message %>",
+						sound:    false
+					})(err);
+
+			this.emit('end');
+		}}))
+		.pipe(sourcemaps.init())
+		.pipe(sassglob())
+		.pipe(sass())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest('../assets/styles/'))
 });
 
-/**
- * gulp watch:
- * - listens for changed .scss files in /styles/sass, then converts sass partials into css
- * - listens for changed .js files in /js/modules/, /js/vendor, and /js/, collects dependencies from package.json into /js/libraries.js, appends all js to the footer.php, jshints the /js/modules/
- * - listens for changed .php files in theme root, /templates/, and /partials/ and refreshes page
- */
-gulp.task('watch', function() {
-	plugins.livereload.listen();
-	gulp.watch(['styles/sass/**/**/**/*.scss','styles/gutenberg/**/**/**/*.scss'],  gulp.series(['sass','gutensass','gutenmin']));
-	gulp.watch(['js/modules/*.js','js/vendor/*.js'], gulp.series(['yarn','inject','jshint']));
-	gulp.watch(['!../footer.php','../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', plugins.livereload.changed);
-});
+gulp.task('watch', function(){
+	livereload({ start: true });
+	gulp.watch(['styles/**/**/**/*.scss'], {usePolling: true}, gulp.series(['sass']));
+	gulp.watch(['js/modules/*.js','js/vendor/*.js'], {usePolling: true}, gulp.series(['jshint','js']));
+	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', livereload.changed);
+})
 
-/**
- * gulp build:
- * - creates sprites from /images/sprites/
- * - grabs font icons from fontello.json
- * - creates sass from /styles/sass/
- * - cssmin: minifies css
- * - jshints the /js/modules/
- * - collects dependencies from package.json into /js/libraries.js
- * - compile-js: merges libraries.js with vendor, modules, app.init & uglifies
- * - imagemin: shrinks images
- */
-gulp.task('build', gulp.series(gulp.parallel(['sprites', 'fontello', 'sass', 'imagemin']), gulp.parallel(gulp.series(['gutensass', 'gutenmin']), 'cssmin'), 'jshint', 'yarn', 'compile-js', function(done) { done(); }));
+gulp.task('watch-gutenberg', function(){
+	livereload({ start: true });
+	gulp.watch(['styles/gutenberg/**/*.scss'], {usePolling: true}, gulp.series(['sass-gutenberg']));
+	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php'], {usePolling: true}).on('change', livereload.changed);
+})
 
-
-/**
- * gulp:
- * - creates sprites from /images/sprites/
- * - grabs font icons from fontello.json
- * - creates sass from /styles/sass/
- * - jshints the /js/modules/
- * - collects dependencies from package.json into /js/libraries.js
- * - appends all js to the footer.php
- * - kicks off gulp watch
- */
-gulp.task('default', gulp.series(gulp.parallel(['sprites', 'fontello', 'sass']), 'gutensass', 'gutenmin', 'yarn', 'inject', 'jshint', 'watch', function() {}));
-
-
-/**
- * gulp:
- * - sasses all the gutenberg scss files into css
- * - combines all the css files into a minified css
- */
-gulp.task('gutenberg', gulp.series('gutensass', 'gutenmin', function(done) {done();}));
+gulp.task('default', gulp.series('jshint',gulp.parallel(['sass','js']), 'watch'));
+gulp.task('fontello', gulp.series('fontello','fontello-acf'));
+gulp.task('gutenberg', gulp.series(gulp.parallel(['sass-gutenberg']), 'watch-gutenberg'));
+gulp.task('build', gulp.series('jshint',gulp.parallel(['sass-build','jsmin','sprites','fontello'],'imagemin','svgmin','sass-gutenberg-build')));

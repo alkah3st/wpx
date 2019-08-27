@@ -1,0 +1,20 @@
+{
+    "name": "DQuinn.net",
+    "short_name": "DQuinn.net",
+    "icons": [
+        {
+            "src": "/wp-content/themes/wpx/assets/images/favicons/android-chrome-192x192.png?v=GvbJy5wpLq",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/wp-content/themes/wpx/assets/images/favicons/android-chrome-512x512.png?v=GvbJy5wpLq",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#567b87",
+    "background_color": "#567b87",
+    "start_url": "https://dquinn.net",
+    "display": "standalone"
+}

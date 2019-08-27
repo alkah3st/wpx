@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square70x70logo src="/wp-content/themes/wpx/assets/images/favicons/mstile-70x70.png?v=GvbJy5wpLq"/>
+            <square150x150logo src="/wp-content/themes/wpx/assets/images/favicons/mstile-150x150.png?v=GvbJy5wpLq"/>
+            <square310x310logo src="/wp-content/themes/wpx/assets/images/favicons/mstile-310x310.png?v=GvbJy5wpLq"/>
+            <wide310x150logo src="/wp-content/themes/wpx/assets/images/favicons/mstile-310x150.png?v=GvbJy5wpLq"/>
+            <TileColor>#567b87</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

@@ -7,9 +7,8 @@
  * @since 0.1.0
  * @version 1.0
  */
+the_post();
 get_header(); ?>
-
-<?php the_post(); ?>
 
 <h1>Home</h1>
 

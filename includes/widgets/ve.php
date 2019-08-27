@@ -54,7 +54,13 @@ class WPX_Visual_Editor extends WP_Widget {
 				<?php echo $ve; ?>
 			</div>
 
-			<?php if ($call_to_action) : ?><p class="widget-archive"><a <?php if ($call_to_action['target']) : ?>target="<?php echo $call_to_action['target']; ?>"<?php endif; ?> href="<?php echo $call_to_action['url']; ?>"><?php echo $call_to_action['title']; ?></a></p><?php endif; ?>
+			<?php if ($call_to_action) : ?>
+				<p class="widget-archive">
+					<a <?php if ($call_to_action['target']) : ?>target="<?php echo $call_to_action['target']; ?>"<?php endif; ?> href="<?php echo $call_to_action['url']; ?>">
+						<?php echo $call_to_action['title']; ?>
+					</a>
+				</p>
+			<?php endif; ?>
 
 		</div>
 		<?php

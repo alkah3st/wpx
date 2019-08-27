@@ -1,0 +1,17 @@
+/**
+ * allow blocks to fit to max width
+ */
+.wp-block {
+	max-width: 100%;
+}
+
+/*
+utilities
+*/
+@import "../sass/utility/mixins.scss";
+@import "../sass/utility/variables.scss";
+
+/*
+utilities
+*/
+@import "blocks/custom-block.scss";

@@ -14,18 +14,17 @@ namespace WPX\Enqueue;
 */
 function enqueue_assets() {
 
-	if (WP_DEBUG == true) {
+	// some plugins need jquery, enqueued in the header
+	// so we let that happen with 2.2.4
+	wp_deregister_script('jquery');
+	wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-2.2.4.min.js', false, '2.2.4', false);
 
-		// we enqueue jquery with WP because many plugins rely on it being in the header
-		wp_deregister_script('jquery' );
-		wp_enqueue_style( 'wpx.styles.src', assets_url().'/styles/screen.css', false, null, false);
-
+	if (WP_DEBUG === true) {
+		wp_enqueue_style( 'wpx-styles', assets_url().'/styles/screen.css', false, null, false);
+		wp_enqueue_script( 'wpx-js', assets_url().'/js/app.js', false, null, true);
 	} else {
-
-		wp_deregister_script('jquery');
-		wp_enqueue_style( 'wpx.styles.min', assets_url().'/styles/screen.min.css', false, null, false);
-		wp_enqueue_script( 'wpx.script.min', assets_url().'/js/app.min.js', false, null, true);
-
+		wp_enqueue_style( 'wpx-styles-min', assets_url().'/styles/screen.min.css', false, null, false);
+		wp_enqueue_script( 'wpx-js-min', assets_url().'/js/app.min.js', false, null, true);
 	}
 
 }
@@ -34,9 +33,9 @@ add_action( 'wp_enqueue_scripts', '\WPX\Enqueue\enqueue_assets' );
 /**
 * AddThis Script
 */
-function enqueue_addthis() { ?>
-	<?php if (WPX_ADDTHIS_ID) : ?><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo WPX_ADDTHIS_ID; ?>"></script><?php endif; ?>
-<?php }
+function enqueue_addthis() {
+	if (WPX_ADDTHIS_ID) : ?><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo WPX_ADDTHIS_ID; ?>"></script><?php endif;
+}
 add_action('wp_footer', '\WPX\Enqueue\enqueue_addthis');
 
 /**
@@ -44,15 +43,13 @@ add_action('wp_footer', '\WPX\Enqueue\enqueue_addthis');
 */
 function enqueue_ga() {
 	if (WPX_GA_ID) : ?>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-3696276-1"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo WPX_GA_ID; ?>"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
 		gtag('config', '<?php echo WPX_GA_ID; ?>');
 	</script>
-	<?php
-	endif;
+	<?php endif;
 }
 add_action('wp_head', '\WPX\Enqueue\enqueue_ga');

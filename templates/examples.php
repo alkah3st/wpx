@@ -8,9 +8,8 @@
  * @version 1.0
  *
 */
+the_post();
 get_header(); ?>
-
-<?php the_post(); ?>
 
 <h1>Your Markup Here</h1>
 
@@ -18,7 +17,7 @@ get_header(); ?>
 
 <h2>Example Icon Font</h2>
 
-<p><i class="icon-glass"></i> Cheers.</p>
+<p><i class="icon-emo-happy"></i> Cheers.</p>
 
 <h2>Example Inline Retina Image</h2>
 
