@@ -156,7 +156,7 @@ gulp.task('svgmin', function(){
 		}}))
 		.pipe(imagemin([imagemin.svgo({plugins: [{removeViewBox: true}]})]))
 		.pipe(rename({dirname: ''}))
-		.pipe(gulp.dest('assets/images/'))
+		.pipe(gulp.dest('images/'))
 });
 
 gulp.task('imagemin', function(){
@@ -173,7 +173,7 @@ gulp.task('imagemin', function(){
 		}}))
 		.pipe(imagemin())
 		.pipe(rename({dirname: ''}))
-		.pipe(gulp.dest('assets/images/'))
+		.pipe(gulp.dest('images/'))
 });
 
 gulp.task('jshint', function() {
