@@ -13,19 +13,23 @@ namespace WPX\Blocks;
  * Enqueue WordPress theme styles within Gutenberg.
  */
 function gutenberg_styles() {
-	 wp_enqueue_style( 'wpx-gutenberg-styles', get_theme_file_uri( '/assets/styles/gutenberg.min.css' ), false, null, 'all' );
+	if (WP_DEBUG === true) {
+		wp_enqueue_style( 'wpx-gutenberg', assets_url().'/styles/gutenberg.css', false, null, false);
+	} else {
+		wp_enqueue_style( 'wpx-gutenberg-min', assets_url().'/styles/gutenberg.min.css', false, null, false);
+	}
 }
 add_action( 'enqueue_block_editor_assets', '\WPX\Blocks\gutenberg_styles' );
 
 /**
- * Adds New ("wpx") Category to Blocks
+ * Adds a "Custom Blocks" Category
  */
 function custom_block_category( $categories, $post ) {
 	return array_merge(
 		$categories,
 		array(
 			array(
-				'slug' => 'test',
+				'slug' => 'wpx',
 				'title' => __( 'Custom Blocks', 'wpx' ),
 				'icon'  => 'layout',
 			),
@@ -35,10 +39,10 @@ function custom_block_category( $categories, $post ) {
 add_filter( 'block_categories', '\WPX\Blocks\custom_block_category', 10, 2 );
 
 /**
- * Allowed Blocks
+ * Core & Plugin Blocks
  *
  * This is the complete list of blocks available in core,
- * plus the custom ones defined here, and those added by Yoast & Ninja Forms.
+ * so that they can be disabled on a case-by-case basis.
  */
 function allowed_block_types( $allowed_blocks ) {
 	return array(
@@ -108,7 +112,6 @@ function allowed_block_types( $allowed_blocks ) {
 		'core-embed/tumblr',
 		'core-embed/videopress',
 		'core-embed/wordpress-tv',
-		'acf/custom-block', // custom block
 		'yoast/how-to-block', // yoast
 		'yoast/faq-block', // yoast
 		'ninja-forms/form', // ninja forms
@@ -117,31 +120,16 @@ function allowed_block_types( $allowed_blocks ) {
 add_filter( 'allowed_block_types', 'WPX\Blocks\allowed_block_types' );
 
 /**
- * CTA Blocks
+ * Register All Blocks
  */
-function block_custom_block() {
+function block_register_blocks() {
 	
 	// check function exists
 	if( function_exists('acf_register_block') ) {
-		
-		// register a testimonial block
-		acf_register_block(array(
-			'name'				=> 'custom-block',
-			'title'				=> __('Custom Block'),
-			'description'		=> __('A sample custom block.'),
-			'render_template'	=> WPX_THEME_PATH."partials/blocks/custom-block.php",
-			'category'			=> 'test',
-			'align' 			=> 'wide',
-			'mode'				=> 'edit',
-			'icon'				=> 'excerpt-view',
-			'keywords'			=> array( 'custom'),
-			'supports'			=> array(
-				'align'=>false,
-				'multiple'=>true,
-				'mode'=>true
-			)
-		));
+
+		include_once(WPX_THEME_PATH.'includes/blocks/blocks.php');
+
 	}
 	
 }
-add_action('acf/init', '\WPX\Blocks\block_custom_block');
+add_action('acf/init', '\WPX\Blocks\block_register_blocks');

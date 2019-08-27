@@ -38,23 +38,22 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
   * [Prep Fonts](#prep-fonts)
   * [Generate Sprites](#generate-sprites)
   * [Watch with Livereload](#watch-with-livereload)
-- [About Yarn](#about-yarn)
 - [Gutenberg](#gutenberg)
+- [Plugin List](#plugins)
 
 <!-- tocstop -->
 
 ## Features
 
 * Install with WPX Utility, a plugin that contains helper functions for use with the theme;
-* Ready for use with Advanced Custom Fields & Gutenberg (using ACF Beta 3)
+* Ready for use with Advanced Custom Fields & Gutenberg
 * Stripped-down, unopinionated WP templates
 * PHP namespacing for hooks and functions;
 * Includes Gulp-powered build script for the front end;
 	* Simple, CSS framework-free globbed Sass;
 	* Simple, JS framework-free jQuery objects;
-	* Includes dynamic icon fonts;
-	* Includes inline retina images and retina background images;
-* Yarn integration for managing JS dependencies
+	* Includes dynamic icon fonts via Fontello;
+	* Includes inline retina images and retina background images0
 
 ## Installation
 
@@ -64,10 +63,10 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 
 3. Download and activate the WPX Theme in your ```/wp-content/themes/``` folder. Then cd into ```/assets/``` and run:
 
-Then, install Yarn: [https://yarnpkg.com/lang/en/docs/install/](https://yarnpkg.com/lang/en/docs/install/). Run the following command in terminal:
+Run the following command in terminal:
 
 ```
-yarn install
+npm install
 ```
 
 This will create a ```/node_modules/``` folder in the ```/assets/``` folder of the theme. 
@@ -82,7 +81,7 @@ To generate your retina sprites and custom icon font, you can run:
 
  ```gulp sprites```.
 
-You can then run ```gulp``` (which will trigger ```gulp watch```) or ```gulp build``` if you are prepping the codebase for production.
+You can then run ```gulp``` (which will trigger ```gulp watch```) or ```gulp build``` if you are prepping the codebase for production. The command ```gulp gutenberg``` will compile styles for Gutenberg blocks, and then watch to compile those styles.  
 
 ## Theme Organization
 
@@ -108,10 +107,11 @@ Hook logic is organized in ```/includes/```, under the hook file that makes the 
 - **rewrites.php** is for any URL rewriting hooks
 - **sidebars.php** is for any sidebar/widget registration
 - **utility.php** is for custom functions that are not hooks
+- **loops.php** is for any custom loop logic used in the theme
 
 Each of these is namespaced, for example, to call a function defined in ```\WPX\Actions\```, you would write:
 
-```\WPX\Actions\myfunction();```
+```\WPX\Actions\my_function();```
 
 All of the hook files are loaded via the default ```functions.php``` file in the theme root, as well as any theme initialization logic.
 
@@ -354,9 +354,9 @@ All the SASS files for the project are in ```/styles/sass/``` folder, organized 
 
 **Forms.** Under ```forms.scss``` we include selectors pertaining to any forms or form elements used throughout the website.
 
-**TinyMCE.** The WordPress Visual Editor uses TinyMCE, which can output a limited subset of markup that the user may have entered into the Visual Editor. Wherever in the templates of the site I might output the contents of a Visual Edior, I need to ensure that all outputted markup is styled consistently. In this case I will wrap the output with a ```.tinymce``` class. This SASS file styles the outputted markup in isolation.
+**TinyMCE.** The WordPress Visual Editor uses TinyMCE, which can output a limited subset of markup that the user may have entered into the Visual Editor. Wherever in the templates of the site I might output the contents of a Visual Editor, I need to ensure that all outputted markup is styled consistently. In this case I will wrap the output with a ```.tinymce``` class. This SASS file styles the outputted markup in isolation. It also includes overrides to the default styles applied to the core Gutenberg blocks.
 
-**Modules.** You can break down other contextual groups of selectors into individual SASS files under ```/modules/```, in whatever way makes sense for the project. (More on the reasoning behind this later in this guide). Typically a discreet bundle of contextual selectors, such as a primary navigation, is a good candidate for a separate .scss file in ```/modules/```.
+**Modules.** You can break down other contextual groups of selectors into individual SASS files under ```/modules/```, in whatever way makes sense for the project. (More on the reasoning behind this later in this guide). Typically a discreet bundle of contextual selectors, such as a block or a primary navigation, is a good candidate for a separate .scss file in ```/modules/```.
 
 **Blocks.** Gutenberg's blocks should be treated as self-contained modules and placed in their own ```/blocks/``` folder under ```/modules/```. This allows us to then include the modules into the master Gutenberg sass file.
 
@@ -370,7 +370,7 @@ All the SASS files for the project are in ```/styles/sass/``` folder, organized 
 
 ### Writing Selectors
 
-Above all else, we want to adhere to DRY principles (Do Not Repeat Yourself), keep things simple, and make things easy to understand. It's OK to repeat selectors if it means you can better isolate a module to make it re-usable throughout the site. At the same time, don't pursue modularity at the cost of sanity: we are building brochureware, not Facebook. For these reasons, avoid BEM or Atomic CSS methodologies.
+Above all else, we want to adhere to DRY principles (Do Not Repeat Yourself), keep things simple, and make things easy to understand. It's OK to repeat selectors if it means you can better isolate a module to make it re-usable throughout the site. At the same time, don't pursue modularity at the cost of sanity: we are building brochureware, not Facebook. For these reasons, avoid BEM or (severely) Atomic CSS methodologies.
 
 Some quick ground rules for SASS:
 
@@ -415,7 +415,7 @@ As you can see, this selector is an object unto itself: you could place it anywh
 
 **Module Objects**. Probably the most common type of selector object you will write. They're generally self-contained, and may have a great deal of nested selectors. Like global objects, modules are also generally context-independent, but they are less likely to be nested inside of other selector objects. The difference between global objects and module objects is really a matter of complexity. 
 
-	[data-module="related"] {
+	.block-related {
 
 		// special context
 		&.in-sidebar {
@@ -424,7 +424,7 @@ As you can see, this selector is an object unto itself: you could place it anywh
 			... .module-related.in-sidebar .related-inner .related-description is still 3 deep
 		}
 
-		.related-inner {
+		.block-related-inner {
 
 			.related-description {
 				...
@@ -432,7 +432,7 @@ As you can see, this selector is an object unto itself: you could place it anywh
 
 		}
 
-		.related-title {
+		.block-related-title {
 			...
 		}
 
@@ -445,13 +445,13 @@ As you can see, this selector is an object unto itself: you could place it anywh
 
 The module object's naming pattern is best expressed as: 
 
-	data attribute module & name ([data-module="related"])
-		> name + context (.related-inner)
-			> name + context (.related-description)
+	data attribute module & name (.block-related)
+		> name + context (.block-related-inner)
+			> name + context (.block-related-description)
 
-The topmost selector is represented by a data attribute ```[data-module="module-name"]```, and nested selectors should be prefixed with the module's unique name.
+The topmost selector is represented by a unique namespace ```.block-related```, and nested selectors should be prefixed with the module's unique name.
 
-Whenever you make a new module, puts its styles into a corresponding file ```related.scss``` in the ```/assets/styles/sass/modules/``` folder.
+Whenever you make a new module, puts its styles into a corresponding file ```block-related.scss``` in the ```/assets/styles/sass/modules/blocks/``` folder.
 
 **Layout Objects.** Layout objects are used for just that: elements that serve a strictly structural purpose (as opposed to functional purpose) in layouts. Their types include headers, footers, wrappers, sections, asides, sidebars, and navs. Layout objects, unlike global or module objects, are very unlikely to be nested inside one another.
 
@@ -715,29 +715,29 @@ Enquire triggers as the viewport scales, as well as once on initial load.
 
 ## Forcing Matching Heights
 
-If you need to force a set of elements be the same height, there is some JS in place to help you.
+If you need to force a set of elements be the same height, and you can't use flexbox for whatever reason, there is some JS in place to help you.
 
 Assume each article has a background color, so the elements needs to be the same height inside the ```.articles-inner``` parent:
 
-	<section data-module="articles" class="module">
+	<section class="blocks block-articles">
 
 		<h1 class="screenreader">Latest News</h1>
 
-		<div class="articles-inner">
+		<div class="block-articles-inner">
 
-			<div class="articles-box">
+			<div class="block-articles-box">
 				<h1>A Really Long Title for this Article</h1>
 				<time datetime="01/01/2017">January 1, 2017</time>
 				<p>This is a description of the article.</p>
 			</div>
 		
-			<div class="articles-box">
+			<div class="block-articles-box">
 				<h1>A Short Title</h1>
 				<time datetime="01/01/2017">January 1, 2017</time>
 				<p>Now these articles have different heights.</p>
 			</div>
 	
-			<div class="articles-box">
+			<div class="block-articles-box">
 				<h1>A Really Long Title for this Article</h1>
 				<time datetime="01/01/2017">January 1, 2017</time>
 				<p>This is a description of the article.</p>
@@ -749,25 +749,25 @@ Assume each article has a background color, so the elements needs to be the same
 
 To enforce equal heights, simply add a ```.eq-parent``` class to the parent, and a ```.eq``` class to each child:
 
-	<section data-module="articles" class="module">
+	<section class="blocks block-articles">
 
 		<h1 class="screenreader">Latest News</h1>
 
-		<div class="articles-inner eq-parent">
+		<div class="block-articles-inner eq-parent">
 
-			<div class="article-box eq">
+			<div class="block-article-box eq">
 				<h1>A Really Long Title for this Article</h1>
 				<time datetime="01/01/2017">January 1, 2017</time>
 				<p>This is a description of the article.</p>
 			</div>
 		
-			<div class="article-box eq">
+			<div class="block-article-box eq">
 				<h1>A Short Title</h1>
 				<time datetime="01/01/2017">January 1, 2017</time>
 				<p>Now these articles have different heights.</p>
 			</div>
 	
-			<div class="article-box eq">
+			<div class="block-article-box eq">
 				<h1>A Really Long Title for this Article</h1>
 				<time datetime="01/01/2017">January 1, 2017</time>
 				<p>This is a description of the article.</p>
@@ -779,64 +779,42 @@ To enforce equal heights, simply add a ```.eq-parent``` class to the parent, and
  
 ## Javascript Methodology
 
-My JS setup does not use any frameworks and is not written in ECMA2016. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
+My JS setup does not use any frameworks and is very straightforward. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
 
-- We are running jQuery 3.3.1, meaning IE8 and lower is not supported. 
-- Each custom script is considered a "module" and all modules run simultaneously on all pages of the site. Target modules by dropping a data-target['my-module'] on the element, instead of a class or ID, unless you can anticipate that there will only ever be one rendered on a page. I know data attributes are technically slower to select than classes, but this will not be an issue in performance for the size sites we are dealing with. Also, I do not subscribe to the separation-of-concerns issue here--that data attributes are not intended to be used this way--because neither are classes, and this makes it easy to see, at a glance, that a module has JS functions attached to it, whereas using classes this not apparent. 
+- We are running jQuery 2.2.4, to support the widest variety of potential plugins in WP that may use jQuery. 
+- Each custom script is considered a "module" and all modules run simultaneously on all pages of the site. Target modules by dropping a data-module['my-module'] on the element, instead of a class or ID, unless you can anticipate that there will only ever be one rendered on a page. I know data attributes are technically slower to select than classes, but this will not be an issue in performance for the size sites we are dealing with. Also, I do not subscribe to the separation-of-concerns issue here--that data attributes are not intended to be used this way--because neither are classes, and this makes it easy to see, at a glance, that a module has JS functions attached to it, whereas using classes this not apparent. 
 - Modules are loaded after all libraries from Yarn and third-party vendor scripts are globbed.
 
 ### Build vs. Debug Mode
 
 When ```WP_DEBUG``` in the ```wp-config.php``` is set to true, we are in "non-build mode." When it is false, we are in "build mode."
 
-The significance of this is that in non-build mode, all JS scripts are enumerated in the ```footer.php```, following this order:
+The significance of this is that in non-build mode, all JS scripts are output in the ```footer.php``` uncompressed, following this compilation order:
 
-1. Dependency libraries from package.json (you can add libraries with ```yarn add mylibrary --save```)
-2. Vendor libraries (for manually dropping vendor files that cannot be loaded with Yarn)
-3. ```app.init.js``` (this declares the global WPX object for modules)
-4. Module scripts (your custom scripts)
+1. Libraries in the js/vendor folder. We are not using a package manager here because, again, the goal is simplicity in brochureware. My experience building many, many of these types of sites is that there is no point fiddling with the tooling for something so simple. We simply drop the source files in js/vendor once, and we don't have to worry about those source files inadvertently getting updated because the build script has evolved. Since we are expecting that all module objects execute simultaneously, the order of compilation should not matter.
+2. ```app.init.js``` (this declares the global WPX object for modules)
+3. Module scripts (your custom scripts)
 
-This looks like the following in the ```footer.php``` file:
+This looks like the following in the ```enqueue.php``` file of ```/includes/```:
 
-	<?php if (WP_DEBUG == true) : ?>
-		
-		<!-- yarn:js -->
-		<script src="<?php echo assets_url(); ?>/js/libraries.js"></script>
-		<!-- endinject-->
-		<!-- inject:vendor:js -->
-		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.imagesloaded.js"></script>
-		<script src="<?php echo assets_url(); ?>/js/vendor/jquery.matchheight.js"></script>
-		<!-- endinject -->
-		<!-- inject:init:js -->
-		<script src="<?php echo assets_url(); ?>/js/app.init.js"></script>
-		<!-- endinject -->
-		<!-- inject:modules:js -->
-		<script src="<?php echo assets_url(); ?>/js/modules/layout.js"></script>
-		<script src="<?php echo assets_url(); ?>/js/modules/utility.js"></script>
-		<!-- endinject -->
-	
-	<?php endif; ?>
+	wp_deregister_script('jquery');
+	wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-2.2.4.min.js', false, '2.2.4', false);
 
-The scripts that are globbed into libraries.js are the ones you add through Yarn in your package.json. By default, these are the dependencies WPX loads:
+	if (WP_DEBUG === true) {
+		wp_enqueue_style( 'wpx-styles', assets_url().'/styles/screen.css', false, null, false);
+		wp_enqueue_script( 'wpx-js', assets_url().'/js/app.js', false, null, true);
+	} else {
+		wp_enqueue_style( 'wpx-styles-min', assets_url().'/styles/screen.min.css', false, null, false);
+		wp_enqueue_script( 'wpx-js-min', assets_url().'/js/app.min.js', false, null, true);
+	}
 
-	"dependencies": {
-		"enquire.js": "https://github.com/WickyNilliams/enquire.js/",
-		"fitvids.1.1.0": "^1.1.0",
-		"dense": "https://github.com/gocom/dense",
-		"jquery": "^3.3.1",
-		"jquery-validation": "^1.17.0",
-		"slick-carousel": "^1.8.1"
-	},
-
-You can delete ones you don't want from the package.json, and add new ones with the above yarn command. Notice that you can also put in a git repo to resolve libraries that misbehave. Additionally, if you need to add a library that isn't on Yarn, just drop the .js file into the ```/vendor/``` folder.
-
-In build mode, only ```app.min.js```, generated by running ```gulp build```, is referenced in the footer via an enqueue hook in WordPress.
+In build mode, ```app.min.js``` is attached instead of app.js, by running ```gulp build```.
 
 ### Writing Custom JS Modules
 
-In ```/js/modules/``` you will find each custom JS module. You can create as many as you like, just remember that they all run simultaneously and in the order they are named. You can artificially control their load order by naming them appropriately but the assumption is that they are being written in such a way that they are not interdependent on each other. Therefore it is not wise to build synchronous relationships between modules; assume they are running asynchronously, all after jQuery is ready. 
+In ```/js/modules/``` you will find each custom JS module. You can create as many as you like, just remember that they all run simultaneously and in the order they are named. They are being written in such a way that they are not meant to be interdependent on one another. It is not wise to build synchronous relationships between modules; assume they are running asynchronously, after jQuery is ready. 
 
-Here is what an empty module would look like:
+Here is what the general utility module looks like:
 
 	jQuery(document).ready(function($) {
 
@@ -888,8 +866,11 @@ Tips:
 
 When you run ```gulp```, the build script will:
 
-1) Compile all your sprites in ```/images/sprites/``` into spritesheet.png and spritesheet@2x.png, and create the relevant scss files in ```/styles/sass/utility/sprites/```;  
-2) Load the fontello.config json to fetch the icon fonts, as well as update the scss related to those icon fonts;
+1) ```jshint``` your modules in ```/modules```
+2) Simultaneously compile the SASS into ```screen.css``` and JS into ```app.js```. (The JS compilation order is always ```/vendor/``` then ```app.init.js``` then ```/modules/```.
+3) Watch all sass files, js files, and php files for changes and refresh them with Livereload. (PHP files and JS files on save will refresh the page; only sass will hot reload.)
+
+2) 
 3) Compile the scss in the ```/styles/sass/``` folder into css  
 4) Retrieve all the dependencies in package.json and compile them into ```js/libraries.js```   
 5) Update the ```footer.php``` file with a script tag to these libraries, all vendor libraries in the ```/js/vendor/``` folder, the ```/js/app.init.js``` file, and then all your ```/js/modules/```.  
@@ -898,23 +879,25 @@ When you run ```gulp```, the build script will:
 
 When you run ```gulp build```, the build script will:
 
-1) Do steps 1 - 3 in ```gulp``` above  
-4) Uglify your css
-5) ```jshint``` your ```/js/modules/```
-6) Compile the ```/js/libraries.js``` file with ```/js/vendor/*.js```, ```/js/app.init.js``` and ```/js/modules/*.js``` in that order and uglify them, then generate an ```app.min.js``` containing the uglified JS  
-7) Minify all images in ```/images/``` 
+1) Do steps 1 - 3 in ```gulp``` above, though the sass and JS task will remove console logs, sourcemaps, and minify/uglify the compilation into ```screen.min.css``` and ```app.min.js``` respectively.
+2) Also simultaneously compile all your sprites in ```/images/sprites/``` into spritesheet.png and spritesheet@2x.png, and create the relevant scss files in ```/styles/sass/utility/sprites/```;  
+3) Also simultaneously load the fontello.config json to fetch the icon fonts, as well as update the scss related to those icon fonts;
+4) Then minify all images and svgs in ```/images```
+5) Minify all Gutenberg-related sass files.
 
-*Keep in mind that you should not allow WP to inject JS into the theme using the enqueue, and if you must, make sure it loads these scripts in the footer, and does not pull in dependencies like jQuery, etc.*
+You can also run the following tasks independently:
 
-(The ```<?php wp_footer(); ?>``` tag is loaded before all our scripts.)
+- ```gulp fontello``` to retrieve new files related to Fontello. Don't forget to run ```gulp``` afterwards.
+- ```gulp sprites``` to generate new spritemaps. Don't forget to run ```gulp``` afterwards.
+- ```gulp gutenberg``` to compile sass for Gutenberg blocks inside the editor, which will also start a watch task/
 
 ## Gulp Build Script
 
-The gulp build script is already written for you and ready to go. You will need at least node 10.15, npm version 6.5, Gulp 4, and Yarn 1.12.3.
+The gulp build script is already written for you and ready to go. You will need at least node 10.15, npm version 6.4.1, and Gulp 4.
 
 ### Prep Fonts
 
-After you haved updated the Fontello [Icon Fonts](#icon-fonts), you then need to run the following Gulp command:
+After you have updated the Fontello [Icon Fonts](#icon-fonts), you then need to run the following Gulp command:
 
 ```gulp fontello```
 
@@ -930,9 +913,9 @@ As a result, Gulp will merge your sprites together into a retina and non-retina 
 
 If you want to make gulp compile the Gutenberg sass blocks on demand, run:
 
-```gulp gutensass```
+```gulp gutenberg```
 
-As a result, Gulp will merge the sass files under ```styles\gutenberg``` into a single gutenberg.min.css that is in turn applied to the Dashboard. (Keep in mind this happens within the ```gulp``` or ```gulp build``` tasks.)
+As a result, Gulp will merge the sass files under ```styles\gutenberg``` into a single gutenberg.css that is in turn applied to the Dashboard. It will start a separate watch task specifically for Gutenberg.
 
 ### Watch with Livereload
 
@@ -940,55 +923,65 @@ When you're developing, you'll want Gulp to listen for when you save any SASS or
 
 ```gulp watch``` (or just ```gulp```)
 
-*The difference between ```gulp watch``` vs. ```gulp``` is that ```gulp watch``` will not check for new icon font files or sprites.*
+- If a scss file is changed, it will compile your scss into css.
+- If a JS file is changed, it will ```jshint``` your modules, then compile everything in ```js/vendor/``` with ```app.init.js``` with everything in ```js/modules``` into ```app.js```.
+- If a php file is changed, it will reload the page. Livereload listens for changed .php files in theme root, ```/templates/```, and ```/partials/```.  
 
-- If a scss file is changed, it will compile your scss into sass
-- If a JS file is changed, it will retrieves all the dependencies in package.json and compile them into ```js/libraries.js```, then update the ```footer.php``` and jshint your modules.
-- If a php file is changed, it will reload the page. Livereload listens for changed .php files in theme root, ```/templates/```, and ```/partials/```  
-
-Make sure you have the Chrome extension [Livereload](https://goo.gl/b1wkQu) installed. You need to run ```gulp watch``` first, then click the Livereload icon in your browser to enable live reloading.
-
-## About Yarn
-
-I am using Yarn only to pull JS dependencies listed in package.json into the ```/node_modules/``` folder. 
-
-Yarn lets you pull scripts from a central repository in the web and install specific versions from the command line. For example, instead of going to the jQuery website and downloading it manually, you can run:
-
-```yarn add jquery --save```
-
-And Yarn will add jquery to the list of package.json dependencies, pull down the latest version of jQuery and put it in the ```/node_modules/``` folder. The build script will pluck out the relevant files via the package.json listing.
-
-You can find libraries for just about everything here: [Yarn Search](https://yarnpkg.com/en/packages).
+Make sure you have the Chrome extension [Livereload](https://goo.gl/b1wkQu) installed. You need to run ```gulp``` first, then click the Livereload icon in your browser to enable live reloading.
 
 ## Gutenberg
 
-WPX is Gutenberg-ready. WPX relies on the ACF Pro Beta 3 release (until ACF releases the "Blocks" field type into the regular plugin). The functions in  ```/includes/blocks.php``` will only work if the beta of the plugin is enabled on your site.
+WPX is Gutenberg-ready. WPX relies on the ACF Pro. The functions in  ```/includes/blocks.php``` will only work if the version of the plugin that supports Gutenberg is enabled on your site.
 
 ### Registering Custom Blocks
 
-The functions within ```/includes/blocks.php``` can be used to register new blocks in Gutenberg.
+1) In ```includes/blocks/blocks.php``` copy the Custom Block code to make your own. Change the parameters in the acf_register_block function as you see fit. Read about them in the [ACF documentation](https://www.advancedcustomfields.com/resources/acf_register_block/ "ACF Documentation for acf_register_block"). The parameter for ```render_template``` is the file you will create in step 3.
 
-1) Copy the ```block_custom_block()``` function and make your own. Suppose it is an accordion: you would name it ```block_accordion```. Change the parameters in the acf_register_block function as you see fit. Read about them in the [ACF documentation](https://www.advancedcustomfields.com/resources/acf_register_block/ "ACF Documentation for acf_register_block").
+2) Make sure the ```name``` of the block you registered matches the name in the ```allowed_block_types``` code. Your name will always be 'acf/name-of-block,' where 'name-of-block' is the name parameter entered into step 1.
 
-2) Add the block to the ```allowed_block_types``` list. Your name will always be 'acf/name-of-block,' where 'name-of-block' is the name parameter entered into step 1.
+3) Under ```partials\blocks\``` create a new file for your block and render the output of the block.
 
-3) You'll also need to make a corresponding ACF field in the Dashboard using the new Block field type to register your meta for the block, and assign the field to your new block.
+4) You'll finally need to make a corresponding ACF field in the Dashboard using the new Block field type to register your meta for the block, and assign the field to your new block.
 
-4) Under ```partials\blocks\``` create a new file for your block, ```accordion.php``` and render the output of the block.
-
-Your custom blocks should now appear in Gutenberg. If you want it to appear in a custom category, you can alter the ```custom_block_category()``` function in  ```/includes/blocks.php``` and make your block use that category.
+Your custom blocks should now appear in Gutenberg. If you want it to appear in a custom category, you can alter the ```custom_block_category()``` function in  ```/includes/blocks.php``` and make your block use that category. By default, all custom blocks in WPX get added to a "Custom Blocks" category. 
 
 ### Block Styles in the Dashboard
 
-WPX applies a stylesheet called gutenberg.min.css to the Dashboard. This is a compilation of any sass files under ```/styles/gutenberg/```. You will notice that there is a sample ```custom-block.scss``` in that directory, which contains the following:
+WPX applies a stylesheet called gutenberg.css to the Gutenberg editor (or ```gutenberg.min.css``` if ```WP_DEBUG``` is false). This is a compilation of any sass files included in ```/styles/gutenberg/gutenberg.scss```. You will notice that there is a sample ```custom-block.scss``` in that directory, which contains the following:
 
-	/*
-  	utilities
-	*/
-	@import "../sass/utility/mixins.scss";
-	@import "../sass/utility/variables.scss";
-	@import "../sass/modules/blocks/custom-block.scss"; 
+	/**
+	 * custom block
+	 */
+	.block-custom-block {
+		h1 {
+			color: red;
+		}
+	}
 
-When you run the gulp script, gulp regenerates the gutenberg.min.css by taking all the block sass files and combining them per above. So whenever you style new blocks, if you want them to look the same in the Dashboard as well as the front end, you need to add a new sass for the block.
+The ```gutenberg.scss``` file determines which blocks to load. It precedes all blocks by including the site's mixins.scss and ```variables.scss```, but nothing else. You can selectively import styles related to specific blocks in ```/assets/styles/sass/modules/blocks/``` to avoid having to repeat styles. This is so that only the styles related to the block are introduced to the Gutenberg editor. Gutenberg styles blocks by default in the editor already, so we only need to add styles we'd like to appear in the editor to make the block look similar to its end result on the front end. Thus the goal with applying only the relevant block styles is to create a low-fidelity presentation of the block within the Gutenberg editor itself. So if your ```custom-block.scss``` has corresponding front end block styles, ```@import``` the sass file at ```/assets/styles/sass/modules/blocks/``` into the Gutenberg styles for the block at ```/styles/gutenberg/blocks/custom-block.scss```.
 
-Within any given block sass, we are importing the mixins.scss, variables.scss (from the whole site) and custom-block.scss (for the block itself) ONLY, from our regular styles under the ```styles\sass\``` folder. This is so that only the styles related to the block are introduced to the Gutenberg editor. Gutenberg styles blocks by default in the editor already, so we only need to add styles we'd like to appear in the editor to make the block look similar to its end result on the front end. Thus the goal with applying only the relevant block styles is to create a low-fidelity presentation of the block within the Gutenberg editor itself.
+## Plugin List
+
+In WPX I typically start with the following plugins in every install:
+
+- ACF Fold Flexible Content
+- Admin Columns
+- Admin Menu Editor
+- Advanced Custom Fields Pro
+- Advanced Custom Fields: Sidebar Selector
+- Akismet Anti-Spam
+- Custom Taxonomy Order
+- Duplicate Post
+- FakerPress
+- Jetpack by WordPress.com
+- Media Search Enhanced
+- Optimize Images Resizing
+- Postman SMTP
+- Redirection
+- Regenerate Thumbnails
+- Simple Page Ordering
+- User Switching
+- W3 Total Cache
+- WP Extend Utilities (required)
+- WP-PageNavi
+- Yoast SEO

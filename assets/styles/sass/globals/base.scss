@@ -82,3 +82,16 @@ input[type="button"].button,
  */
 
 .bounds {}
+
+/**
+ * examples
+ */
+.calendar-icon {
+	@include retina-sprite($calendar-group); // where the files involved were named "icon.png" and "icon@2x.png". Notice the suffix "-group"
+}
+
+.background-example {
+	@include bg-retina("banner", "jpg", 800px, 517px);
+	width: 800px;
+	height: 517px;
+}

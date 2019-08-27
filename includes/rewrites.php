@@ -19,9 +19,9 @@ function custom_template_redirects() {
 
 	$template = $wp->query_vars;
 
-	if ( array_key_exists( 'wpx_template', $template ) && 'email' == $template['wpx_template'] ) {
+	if ( array_key_exists( 'wpx_template', $template ) && 'sample' == $template['wpx_template'] ) {
 		$wp_query->set( 'is_404', false );
-		// include( WPX_THEME_PATH.'/templates/api/email.php' );
+		include( WPX_THEME_PATH.'/templates/api/sample.php' );
 		exit;
 	}
 
@@ -46,7 +46,7 @@ add_action( 'init', '\WPX\Rewrites\custom_endpoints' );
 function custom_rewrites() {
 
 	// api
-	// add_rewrite_rule( '^api/([^/]*)/?','index.php?wpx_template=$matches[1]','top');
+	add_rewrite_rule( '^api/([^/]*)/?','index.php?wpx_template=$matches[1]','top');
 
 }
 add_action('init', '\WPX\Rewrites\custom_rewrites', 10);
