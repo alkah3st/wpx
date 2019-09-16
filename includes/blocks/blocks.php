@@ -34,7 +34,9 @@ acf_register_block(array(
 
 // allow the block
 add_action( 'allowed_block_types', function($allowed_blocks) {
-	return $allowed_blocks[] = 'acf/custom-block';
+	$allowed_blocks[] = 'acf/custom-block';
+	return $allowed_blocks;
 } );
+
 
 /***********************************************/
