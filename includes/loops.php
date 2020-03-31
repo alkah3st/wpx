@@ -2,6 +2,7 @@
 /**
  * Loops
  */
+namespace WPX\Loops;
 
 /**
  * Example Custom WP_Query
@@ -31,7 +32,7 @@ function my_custom_query() {
 			),
 		));
 
-		wp_cache_set( 'wpx_queries_custom' );
+		wp_cache_set( 'wpx_queries_custom', $custom_query);
 
 	endif;
 

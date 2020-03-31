@@ -177,33 +177,7 @@ function wpx_setup() {
 	// Editor color palette.
 	add_theme_support(
 		'editor-color-palette',
-		array(
-			array(
-				'name'  => __( 'Primary', 'twentynineteen' ),
-				'slug'  => 'primary',
-				'color' => '#0073aa',
-			),
-			array(
-				'name'  => __( 'Secondary', 'twentynineteen' ),
-				'slug'  => 'secondary',
-				'color' => '#00A0D2',
-			),
-			array(
-				'name'  => __( 'Dark Gray', 'twentynineteen' ),
-				'slug'  => 'dark-gray',
-				'color' => '#111',
-			),
-			array(
-				'name'  => __( 'Light Gray', 'twentynineteen' ),
-				'slug'  => 'light-gray',
-				'color' => '#767676',
-			),
-			array(
-				'name'  => __( 'White', 'twentynineteen' ),
-				'slug'  => 'white',
-				'color' => '#FFF',
-			),
-		)
+		wpx_color_palette()
 	);
 
 	// Add support for responsive embedded content.
@@ -215,6 +189,40 @@ function wpx_setup() {
 
 }
 add_action( 'after_setup_theme', 'wpx_setup', 0 );
+
+/**
+ * Theme Color Palette
+ */
+function wpx_color_palette() {
+	$color_set = array(
+		array(
+			'name'  => __( 'Primary', 'twentynineteen' ),
+			'slug'  => 'primary',
+			'color' => '#0073aa',
+		),
+		array(
+			'name'  => __( 'Secondary', 'twentynineteen' ),
+			'slug'  => 'secondary',
+			'color' => '#00A0D2',
+		),
+		array(
+			'name'  => __( 'Dark Gray', 'twentynineteen' ),
+			'slug'  => 'dark-gray',
+			'color' => '#111',
+		),
+		array(
+			'name'  => __( 'Light Gray', 'twentynineteen' ),
+			'slug'  => 'light-gray',
+			'color' => '#767676',
+		),
+		array(
+			'name'  => __( 'White', 'twentynineteen' ),
+			'slug'  => 'white',
+			'color' => '#FFF',
+		),
+	);
+	return $color_set;
+}
 
 /**
 * Pre Get Posts

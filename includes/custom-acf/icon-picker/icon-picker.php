@@ -99,6 +99,7 @@ if (class_exists('acf')) {
 		
 		function render_field( $field ) {
 			
+
 			// parse the icons in fontello.json
 			$fontello_json = json_decode(file_get_contents(get_template_directory().'/assets/fontello.json'), true);
 
@@ -112,21 +113,21 @@ if (class_exists('acf')) {
 
 			endif;
 
-			if ($icon_names) :
-				sort($icon_names);
-			?>
-			<div class="wpx-acf-icon-picker">
-				<select name="<?php echo $field['name'] ?>">
-					<option value="">Choose an Icon</option>
-					<?php foreach($icon_names as $icon) : ?>
-						<option <?php if ( $icon == esc_attr($field['value'])) : ?>selected="selected"<?php endif; ?> value="<?php echo $icon; ?>"><i class="icon-<?php echo $icon; ?>"></i> <?php echo $icon; ?></option>
-					<?php endforeach ?>
-				</select>
-			</div>
-			<?php if (isset($field['value'])) : ?><p class="wpx-acf-icon-picker-selected"><em>Selected Icon:</em>&nbsp;&nbsp;<i class="icon-<?php echo esc_attr($field['value']); ?>"></i></p><?php endif; ?>
+		if ($icon_names) :
+			sort($icon_names);
+		?>
+		<div class="acf-fontello-picker">
 
-			<?php
-			endif;
+			<?php foreach($icon_names as $icon) : ?>
+				<div data-choice="<?php echo $icon; ?>" class="acf-fontello-picker-choice <?php if ( $icon == esc_attr($field['value'])) : ?>selected<?php endif; ?>"><i class="icon-<?php echo $icon; ?>"></i> <?php echo $icon; ?></div>
+			<?php endforeach; ?>
+
+		</div>
+
+		<input type="text" name="<?php echo esc_attr($field['name']) ?>" value="<?php echo esc_attr($field['value']) ?>">
+
+		<?php
+		endif;
 		}
 		
 			
@@ -146,14 +147,8 @@ if (class_exists('acf')) {
 
 		function input_admin_enqueue_scripts() {
 
-			wp_register_script('acf-icon-picker-chosen-js', get_template_directory_uri()."/includes/custom-acf/icon-picker/select2.min.js", array('acf-input','jquery'), null);
-			wp_enqueue_script('acf-icon-picker-chosen-js');
-
 			wp_register_script('acf-icon-picker-js', get_template_directory_uri()."/includes/custom-acf/icon-picker/icon-picker.js", array('acf-input','jquery'), null);
 			wp_enqueue_script('acf-icon-picker-js');
-
-			wp_register_style('acf-icon-picker-chosen-css', get_template_directory_uri()."/includes/custom-acf/icon-picker/select2.min.css", array('acf-input'), null);
-			wp_enqueue_style('acf-icon-picker-chosen-css');
 
 			wp_register_style('acf-icon-picker-css', get_template_directory_uri()."/includes/custom-acf/icon-picker/icon-picker.css", array('acf-input'), null);
 			wp_enqueue_style('acf-icon-picker-css');

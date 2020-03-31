@@ -103,7 +103,7 @@ if (class_exists('acf')) {
 		function render_field( $field ) {
 
 			// get the brand colors
-			$brand_colors = wpx_brand_colors();
+			$brand_colors = wpx_color_palette();
 			
 			/*
 			*  Create a simple text input using the 'font_size' setting.
@@ -115,7 +115,7 @@ if (class_exists('acf')) {
 
 				<select name="<?php echo esc_attr($field['name']) ?>">
 					<?php foreach($brand_colors as $color) : ?>
-							<option value="<?php echo $color['hex']; ?>" <?php if ($field['value'] == $color['hex']) : ?>selected="selected"<?php endif; ?> style="color: <?php echo $color['hex']; ?> !important"><?php echo $color['label']; ?> (<?php echo $color['hex']; ?>)</option>
+							<option value="<?php echo $color['slug']; ?>" <?php if ($field['value'] == $color['slug']) : ?>selected="selected"<?php endif; ?> style="color: <?php if ($color['color'] == "#FFFFFF") : echo '#000000'; else : echo $color['color']; endif; ?> !important"><?php echo $color['name']; ?> (<?php echo $color['color']; ?>)</option>
 					<?php endforeach; ?>
 				</select>
 
@@ -127,57 +127,6 @@ if (class_exists('acf')) {
 			endif;
 		}
 
-	}
-
-	/**
-	 * Establishes brand colors
-	 */
-	function wpx_brand_colors() {
-
-		// Red = name displayed in ACF to user
-		// #a83232 = hex applied as data attribute
-		// crimson = class name basis
-
-		$brand_colors = array(
-			array('label'=>'Red', 'hex'=>'#a83232', 'name'=>'crimson'),
-			array('label'=>'Blue', 'hex'=>'#3432a8', 'name'=>'midnight'),
-			array('label'=>'Green', 'hex'=>'#3aa832', 'name'=>'forest'),
-		);
-
-		return $brand_colors;
-
-	}
-
-	/**
-	 * Search brand colors by Key/Column
-	 * Used internally by get_button_class() to find a matching key
-	 * in the colors multidimensional array.
-	 */
-	function wpx_get_brand_colors($key, $column) {
-
-		$colors = acf_brand_colors();
-
-		if ($colors) {
-			$match = array_search( $key, array_column($colors, $column));
-			return $colors[$match];
-		} else {
-			return false;
-		}
-
-	}
-
-	/**
-	 * Render Button Color Class
-	 * This will render the proper class, as defined in the button block
-	 * based on the hex value saved in ACF.
-	 */
-	function wpx_button_class($hex) {
-		$color = wpx_get_brand_colors($hex, 'hex');
-		if ($color) {
-			return 'button button-'.$color['name'];
-		} else {
-			return false;
-		}
 	}
 
 	// initialize

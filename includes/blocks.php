@@ -117,7 +117,7 @@ function allowed_block_types( $allowed_blocks ) {
 		'ninja-forms/form', // ninja forms
 	);
 }
-add_filter( 'allowed_block_types', 'WPX\Blocks\allowed_block_types' );
+// add_filter( 'allowed_block_types', 'WPX\Blocks\allowed_block_types' );
 
 /**
  * Register All Blocks

@@ -20,14 +20,44 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
+        },
+        {
+            "key": "field_5e83ace999c37",
+            "label": "colors",
+            "name": "colors",
+            "type": "wpx-brand-colors",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "brand_colors": ""
+        },
+        {
+            "key": "field_5e83acf399c38",
+            "label": "icons",
+            "name": "icons",
+            "type": "wpx-icon-picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "icon": ""
         }
     ],
     "location": [
         [
             {
-                "param": "block",
+                "param": "post_type",
                 "operator": "==",
-                "value": "acf\/custom-block"
+                "value": "post"
             }
         ]
     ],
@@ -39,5 +69,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1566482252
+    "modified": 1585687808
 }
