@@ -41,8 +41,8 @@ if (class_exists('acf')) {
 			$this->category = 'content';
 
 			// do not delete!
-	    	parent::__construct();
-	    	
+			parent::__construct();
+			
 		}
 		
 		
@@ -113,24 +113,42 @@ if (class_exists('acf')) {
 
 			endif;
 
-		if ($icon_names) :
-			sort($icon_names);
-		?>
-		<div class="acf-fontello-picker">
+			$random_id = rand(1, 9999);
 
-			<?php foreach($icon_names as $icon) : ?>
-				<div data-choice="<?php echo $icon; ?>" class="acf-fontello-picker-choice <?php if ( $icon == esc_attr($field['value'])) : ?>selected<?php endif; ?>"><i class="icon-<?php echo $icon; ?>"></i> <?php echo $icon; ?></div>
-			<?php endforeach; ?>
+			if ($icon_names) :
+				sort($icon_names);
+			?>
+			<script>
+				jQuery( document ).ready(function() {
+					var selection = jQuery('#acf-fontello-picker<?php echo $random_id; ?>');
+					jQuery(selection).select2({
+						data: [
+						<?php 
+							foreach($icon_names as $i=>$icon) : 
+						?>
+						{
+							id: '<?php echo $icon; ?>',
+							text: '<i class="icon-<?php echo $icon; ?>"></i> <?php echo $icon; ?>'
+							<?php if ( $icon == esc_attr($field['value'])) : ?>, selected: true<?php endif; ?>
+						}, 
+						<?php endforeach; ?>
+						],
+						width: 'resolve',
+						allowClear: true,
+						placeholder: 'Select an Icon',
+						escapeMarkup: function (markup) { return markup; }
+					});
+				});
+			</script>
 
-		</div>
+			<div class="acf-fontello-picker-wrap">
+				<select style="width: 100%; font-size: 40px;" id="acf-fontello-picker<?php echo $random_id; ?>" name="<?php echo esc_attr($field['name']) ?>"></select>
+			</div>
 
-		<input type="text" name="<?php echo esc_attr($field['name']) ?>" value="<?php echo esc_attr($field['value']) ?>">
-
-		<?php
-		endif;
+			<?php
+			endif;
 		}
 		
-			
 		/*
 		*  input_admin_enqueue_scripts()
 		*
@@ -147,13 +165,13 @@ if (class_exists('acf')) {
 
 		function input_admin_enqueue_scripts() {
 
-			wp_register_script('acf-icon-picker-js', get_template_directory_uri()."/includes/custom-acf/icon-picker/icon-picker.js", array('acf-input','jquery'), null);
-			wp_enqueue_script('acf-icon-picker-js');
+			wp_register_script('acf-icon-picker-select2-js', get_template_directory_uri()."/includes/custom-acf/select2.js", array('jquery'), null);
+			wp_enqueue_script('acf-icon-picker-select2-js');
 
-			wp_register_style('acf-icon-picker-css', get_template_directory_uri()."/includes/custom-acf/icon-picker/icon-picker.css", array('acf-input'), null);
-			wp_enqueue_style('acf-icon-picker-css');
+			wp_register_style('acf-icon-picker-select2-css', get_template_directory_uri()."/includes/custom-acf/select2.min.css", false, null);
+			wp_enqueue_style('acf-icon-picker-select2-css');
 
-			wp_register_style('acf-icon-picker-fontello', get_template_directory_uri()."/assets/styles/fontello.css", array('acf-input'), null);
+			wp_register_style('acf-icon-picker-fontello', get_template_directory_uri()."/assets/styles/fontello.css", false, null);
 			wp_enqueue_style('acf-icon-picker-fontello');
 
 		}
