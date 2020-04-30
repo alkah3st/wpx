@@ -111,20 +111,75 @@ if (class_exists('acf')) {
 			if ($brand_colors) :
 				sort($brand_colors);
 			?>
-			<div class="acf-brand-colors">
 
-				<select name="<?php echo esc_attr($field['name']) ?>">
-					<?php foreach($brand_colors as $color) : ?>
-							<option value="<?php echo $color['slug']; ?>" <?php if ($field['value'] == $color['slug']) : ?>selected="selected"<?php endif; ?> style="color: <?php if ($color['color'] == "#FFFFFF") : echo '#000000'; else : echo $color['color']; endif; ?> !important"><?php echo $color['name']; ?> (<?php echo $color['color']; ?>)</option>
-					<?php endforeach; ?>
-				</select>
+			<style>
+				<?php foreach($brand_colors as $i=>$color) : ?>
+					.icon-color-<?php echo $color['slug']; ?> {
+						background-color: <?php echo $color['color']; ?>;
+						display: inline-block;
+						width: 10px;
+						height: 10px;
+						border: 1px solid black;
+					}
+				<?php endforeach; ?>
+			</style>
 
-				<div class="color-selected" style="margin-top: 10px; width: 100px; height: 10px; background-color: <?php echo $field['value']; ?>"></div>
+			<script>
+				jQuery( document ).ready(function() {
+					var selection = jQuery('#acf-color-picker<?php echo $random_id; ?>');
+					jQuery(selection).select2({
+						data: [
+						<?php 
+							foreach($brand_colors as $i=>$color) : 
+						?>
+						{
+							id: '<?php echo $color['slug']; ?>',
+							text: '<span class="icon-color-<?php echo $color['slug']; ?>"></span> <?php echo $color['name']; ?> (<?php echo $color['color']; ?>)'
+							<?php if ( $color['slug'] == esc_attr($field['value'])) : ?>, selected: true<?php endif; ?>
+						}, 
+						<?php endforeach; ?>
+						],
+						width: 'resolve',
+						allowClear: true,
+						placeholder: 'Select an Icon',
+						escapeMarkup: function (markup) { return markup; }
+					});
+				});
+			</script>
 
+			<div class="acf-color-picker-wrap">
+				<select style="width: 100%; font-size: 40px;" id="acf-color-picker<?php echo $random_id; ?>" name="<?php echo esc_attr($field['name']) ?>"></select>
 			</div>
 
 			<?php
 			endif;
+		}
+
+		/*
+		*  input_admin_enqueue_scripts()
+		*
+		*  This action is called in the admin_enqueue_scripts action on the edit screen where your field is created.
+		*  Use this action to add CSS + JavaScript to assist your render_field() action.
+		*
+		*  @type	action (admin_enqueue_scripts)
+		*  @since	3.6
+		*  @date	23/01/13
+		*
+		*  @param	n/a
+		*  @return	n/a
+		*/
+
+		function input_admin_enqueue_scripts() {
+
+			wp_register_script('acf-icon-picker-select2-js', get_template_directory_uri()."/includes/custom-acf/select2.js", array('jquery'), null);
+			wp_enqueue_script('acf-icon-picker-select2-js');
+
+			wp_register_style('acf-icon-picker-select2-css', get_template_directory_uri()."/includes/custom-acf/select2.min.css", false, null);
+			wp_enqueue_style('acf-icon-picker-select2-css');
+
+			wp_register_style('acf-icon-picker-fontello', get_template_directory_uri()."/assets/styles/fontello.css", false, null);
+			wp_enqueue_style('acf-icon-picker-fontello');
+
 		}
 
 	}

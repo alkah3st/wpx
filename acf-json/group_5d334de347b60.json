@@ -23,7 +23,7 @@
         },
         {
             "key": "field_5e83ace999c37",
-            "label": "colors",
+            "label": "My Colors",
             "name": "colors",
             "type": "wpx-brand-colors",
             "instructions": "",
@@ -38,8 +38,8 @@
         },
         {
             "key": "field_5e83acf399c38",
-            "label": "icons",
-            "name": "icons",
+            "label": "My Icons",
+            "name": "helloicons",
             "type": "wpx-icon-picker",
             "instructions": "",
             "required": 0,
@@ -50,6 +50,21 @@
                 "id": ""
             },
             "icon": ""
+        },
+        {
+            "key": "field_5eab25b46f5c3",
+            "label": "My Icons2",
+            "name": "icons2",
+            "type": "wpx-icon-picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "Icons": ""
         }
     ],
     "location": [
@@ -69,5 +84,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1585687808
+    "modified": 1588274620
 }
