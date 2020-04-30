@@ -37,6 +37,21 @@
             "brand_colors": ""
         },
         {
+            "key": "field_5eab2c579f956",
+            "label": "My Colors (copy)",
+            "name": "colors_copy2",
+            "type": "wpx-brand-colors",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "brand_colors": ""
+        },
+        {
             "key": "field_5e83acf399c38",
             "label": "My Icons",
             "name": "helloicons",
@@ -84,5 +99,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1588274620
+    "modified": 1588276315
 }

@@ -105,6 +105,8 @@ if (class_exists('acf')) {
 			// get the brand colors
 			$brand_colors = wpx_color_palette();
 			
+			$random_id = rand(1, 9999);
+			
 			/*
 			*  Create a simple text input using the 'font_size' setting.
 			*/
