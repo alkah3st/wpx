@@ -259,7 +259,7 @@ gulp.task('jsmin', function() {
 			this.emit('end');
 		}}))
 		.pipe(concat('app.min.js'))
-		.pipe(uglify({
+		.pipe(terser({
 			compress: {
 				drop_console: true
 			}
