@@ -17,11 +17,11 @@ get_header(); ?>
 
 <h2>Example Icon Font</h2>
 
-<p><i class="icon-emo-happy"></i> Cheers.</p>
+<p><i class="icon-menu"></i> Cheers.</p>
 
 <h2>Example Inline Retina Image</h2>
 
-<p><img src="<?php echo assets_url(); ?>/images/logo-gray.png" data-2x="<?php echo assets_url(); ?>/images/logo-gray@2x.png" class="retina" alt=""></p>
+<p><img src="<?php echo assets_url(); ?>/images/example@1x.png" data-2x="<?php echo assets_url(); ?>/images/example@2x.png" class="retina" alt=""></p>
 
 <h2>Example Retina Sprite</h2>
 
@@ -30,7 +30,5 @@ get_header(); ?>
 <h2>Example Retina Background</h2>
 
 <div class="background-example"></div>
-
-<div class="tinymce"><?php the_content(); ?></div>
 
 <?php get_footer(); ?>

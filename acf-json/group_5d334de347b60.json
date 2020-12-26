@@ -24,7 +24,7 @@
         {
             "key": "field_5e83ace999c37",
             "label": "My Colors",
-            "name": "colors",
+            "name": "my_colors",
             "type": "wpx-brand-colors",
             "instructions": "",
             "required": 0,
@@ -37,9 +37,9 @@
             "brand_colors": ""
         },
         {
-            "key": "field_5eab2c579f956",
-            "label": "My Colors (copy)",
-            "name": "colors_copy2",
+            "key": "field_5fe7b9b09076c",
+            "label": "My Colors",
+            "name": "my_colors2",
             "type": "wpx-brand-colors",
             "instructions": "",
             "required": 0,
@@ -54,7 +54,7 @@
         {
             "key": "field_5e83acf399c38",
             "label": "My Icons",
-            "name": "helloicons",
+            "name": "my_icons",
             "type": "wpx-icon-picker",
             "instructions": "",
             "required": 0,
@@ -69,7 +69,7 @@
         {
             "key": "field_5eab25b46f5c3",
             "label": "My Icons2",
-            "name": "icons2",
+            "name": "my_icons2",
             "type": "wpx-icon-picker",
             "instructions": "",
             "required": 0,
@@ -79,15 +79,15 @@
                 "class": "",
                 "id": ""
             },
-            "Icons": ""
+            "icon": ""
         }
     ],
     "location": [
         [
             {
-                "param": "post_type",
+                "param": "block",
                 "operator": "==",
-                "value": "post"
+                "value": "acf\/custom-block"
             }
         ]
     ],
@@ -97,7 +97,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1588276315
+    "modified": 1609021912
 }

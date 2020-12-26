@@ -29,7 +29,7 @@ function register_sidebars() {
 		// look for any Pages that have "Create Sidebar" checked
 		$all_pages = new \WP_Query(array(
 			'post_type'=>"page",
-			'posts_per_page'=>-1,
+			'posts_per_page'=>500,
 			'no_found_rows'=>true,
 			'update_post_term_cache'=>false
 		));
@@ -64,4 +64,4 @@ function register_sidebars() {
 
 }
 
-add_action( 'widgets_init', '\WPX\Sidebars\register_sidebars' );
+// add_action( 'widgets_init', '\WPX\Sidebars\register_sidebars' );

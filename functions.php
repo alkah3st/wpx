@@ -17,6 +17,8 @@ define( 'WPX_DOMAIN', get_site_url() );
 define( 'WPX_SITE_NAME', get_bloginfo('name'));
 define( 'WPX_GA_ID', false);
 define( 'WPX_ADDTHIS_ID', false);
+define( 'WPX_GMAPS_API', false);
+
 
 /**
  * Functions
@@ -29,6 +31,9 @@ require_once(WPX_THEME_PATH."includes/rewrites.php");
 require_once(WPX_THEME_PATH."includes/utility.php");
 require_once(WPX_THEME_PATH."includes/loops.php");
 require_once(WPX_THEME_PATH."includes/blocks.php");
+require_once(WPX_THEME_PATH."includes/comments.php");
+require_once(WPX_THEME_PATH."includes/feed.php");
+require_once(WPX_THEME_PATH."includes/schema.php");
 
 /**
  * Custom ACF Fields
@@ -80,6 +85,12 @@ function wpx_architecture() {
 		));
 
 	}
+
+	// alter Gutenberg UI with JS
+	wp_register_script('wpx-block-script', get_stylesheet_directory_uri() .'/assets/js/ui.js',  array( 'wp-blocks', 'wp-edit-post' ));
+
+	// register block editor script
+	register_block_type( 'cc/ma-block-files', array('editor_script' => 'wpx-block-script') );
 
 }
 // the 0, 1 forces init to happen before widgets_init
@@ -140,7 +151,7 @@ function wpx_setup() {
 	// Add support for editor styles.
 	add_theme_support( 'editor-styles' );
 
-	// Enqueue editor styles.
+	// Enqueue editor styles
 	// add_editor_style( 'style-editor.css' );
 
 	// Add custom editor font sizes.
@@ -150,25 +161,25 @@ function wpx_setup() {
 			array(
 				'name'      => __( 'Small', 'twentynineteen' ),
 				'shortName' => __( 'S', 'twentynineteen' ),
-				'size'      => 19.5,
+				'size'      => 16,
 				'slug'      => 'small',
 			),
 			array(
 				'name'      => __( 'Normal', 'twentynineteen' ),
 				'shortName' => __( 'M', 'twentynineteen' ),
-				'size'      => 22,
+				'size'      => 18,
 				'slug'      => 'normal',
 			),
 			array(
 				'name'      => __( 'Large', 'twentynineteen' ),
 				'shortName' => __( 'L', 'twentynineteen' ),
-				'size'      => 36.5,
+				'size'      => 24,
 				'slug'      => 'large',
 			),
 			array(
 				'name'      => __( 'Huge', 'twentynineteen' ),
 				'shortName' => __( 'XL', 'twentynineteen' ),
-				'size'      => 49.5,
+				'size'      => 30,
 				'slug'      => 'huge',
 			),
 		)
@@ -180,12 +191,19 @@ function wpx_setup() {
 		wpx_color_palette()
 	);
 
+	// prevent maximum upload limit
+	add_filter( 'big_image_size_threshold', '__return_false' );
+
+	// disable block patterns
+	// remove_theme_support( 'core-block-patterns' ); 
+
 	// Add support for responsive embedded content.
 	add_theme_support( 'responsive-embeds' );
 
 	// image crops
-	set_post_thumbnail_size( 640, 480, true );
-	add_image_size( 'custom-image-size', 850, 400, true );
+	set_post_thumbnail_size( 1200, 675, true ); // rec social sharing size
+	// add_image_size( 'custom-image-crop', 850, 400, true );
+	// add_image_size( 'custom-image-crop-aligned', 760, 400, array('left','center') );
 
 }
 add_action( 'after_setup_theme', 'wpx_setup', 0 );
@@ -196,36 +214,118 @@ add_action( 'after_setup_theme', 'wpx_setup', 0 );
 function wpx_color_palette() {
 	$color_set = array(
 		array(
-			'name'  => __( 'Primary', 'twentynineteen' ),
-			'slug'  => 'primary',
-			'color' => '#0073aa',
+			'name'  => 'Black',
+			'slug'  => 'black',
+			'color' => '#000000',
 		),
 		array(
-			'name'  => __( 'Secondary', 'twentynineteen' ),
-			'slug'  => 'secondary',
-			'color' => '#00A0D2',
-		),
-		array(
-			'name'  => __( 'Dark Gray', 'twentynineteen' ),
-			'slug'  => 'dark-gray',
-			'color' => '#111',
-		),
-		array(
-			'name'  => __( 'Light Gray', 'twentynineteen' ),
-			'slug'  => 'light-gray',
-			'color' => '#767676',
-		),
-		array(
-			'name'  => __( 'White', 'twentynineteen' ),
+			'name'  => 'White',
 			'slug'  => 'white',
-			'color' => '#FFF',
+			'color' => '#FFFFFF',
 		),
+		array(
+			'name'  => 'Dark',
+			'slug'  => 'dark',
+			'color' => '#242a30',
+		),
+		array(
+			'name'  => 'Very Light Pink',
+			'slug'  => 'very-light-pink',
+			'color' => '#f8f7f5',
+		),
+		array(
+			'name'  => 'Dark Two',
+			'slug'  => 'dark-two',
+			'color' => '#263745',
+		),
+		array(
+			'name' => 'UI Gray',
+			'slug' => 'ui-gray',
+			'color' => '#e6e3de'
+		),
+		array(
+			'name' => 'Smoke',
+			'slug' => 'smoke',
+			'color' => '#42484c'
+		),
+		array(
+			'name' => 'Gray',
+			'slug' => 'gray',
+			'color' => '#555555'
+		),
+		array(
+			'name'  => 'Blue Green',
+			'slug'  => 'blue-green',
+			'color' => '#008774',
+		),
+		array(
+			'name'  => 'Green Blue',
+			'slug'  => 'green-blue',
+			'color' => '#09a48e',
+		),
+		array(
+			'name'  => 'Greyish Teal',
+			'slug'  => 'greyish-teal',
+			'color' => '#59c2b1',
+		),
+		array(
+			'name'  => 'Ice',
+			'slug'  => 'ice',
+			'color' => '#e7f6f4',
+		),
+		array(
+			'name'  => 'Reddish Orange',
+			'slug'  => 'reddish-orange',
+			'color' => '#f16721',
+		),
+		array(
+			'name'  => 'Yellowish Orange',
+			'slug'  => 'yellowish-orange',
+			'color' => '#f8a01e',
+		),
+		array(
+			'name'  => 'Purplish',
+			'slug'  => 'purplish',
+			'color' => '#8855a2',
+		),
+		array(
+			'name'  => 'Pale Purple',
+			'slug'  => 'pale-purple',
+			'color' => '#b891c2',
+		),
+		array(
+			'name'  => 'Yellowish Green',
+			'slug'  => 'yellowish-green',
+			'color' => '#aae417',
+		),
+		array(
+			'name'  => 'Very Pale Green',
+			'slug'  => 'very-pale-green',
+			'color' => '#dcf6be',
+		),
+		array(
+			'name'  => 'Ice Blue',
+			'slug'  => 'ice-blue',
+			'color' => '#e4f3ff',
+		),
+		array(
+			'name'  => 'Light Teal',
+			'slug'  => 'light-teal',
+			'color' => '#e6f6f3',
+		)
 	);
+
+	// write the set to a file for SASS
+	\WPX\Custom\get_color_sass($color_set);
+
+	// return the set to WP
 	return $color_set;
 }
 
+
 /**
 * Pre Get Posts
+* (Specify Feed CPTs)
 */
 function wpx_pre_get_posts( $wp_query ) {
 
@@ -242,95 +342,4 @@ add_action( 'pre_get_posts', 'wpx_pre_get_posts' );
  */
 function assets_url() {
 	return WPX_THEME_URL.'/assets';
-}
-
-/**
- * Custom Comment Form
- */
-function wpx_comment_form( $order ) {
-	if ( true === $order || strtolower( $order ) === strtolower( get_option( 'comment_order', 'asc' ) ) ) {
-
-		comment_form(
-			array(
-				'logged_in_as' => null,
-				'title_reply'  => null,
-			)
-		);
-	}
-}
-
-/**
- * Returns information about the current post's discussion, with cache support.
- */
-function get_discussion_data() {
-	static $discussion, $post_id;
-
-	$current_post_id = get_the_ID();
-	if ( $current_post_id === $post_id ) {
-		return $discussion; /* If we have discussion information for post ID, return cached object */
-	} else {
-		$post_id = $current_post_id;
-	}
-
-	$comments = get_comments(
-		array(
-			'post_id' => $current_post_id,
-			'orderby' => 'comment_date_gmt',
-			'order'   => get_option( 'comment_order', 'asc' ), /* Respect comment order from Settings » Discussion. */
-			'status'  => 'approve',
-			'number'  => 20, /* Only retrieve the last 20 comments, as the end goal is just 6 unique authors */
-		)
-	);
-
-	$authors = array();
-	foreach ( $comments as $comment ) {
-		$authors[] = ( (int) $comment->user_id > 0 ) ? (int) $comment->user_id : $comment->comment_author_email;
-	}
-
-	$authors    = array_unique( $authors );
-	$discussion = (object) array(
-		'authors'   => array_slice( $authors, 0, 6 ),           /* Six unique authors commenting on the post. */
-		'responses' => get_comments_number( $current_post_id ), /* Number of responses. */
-	);
-
-	return $discussion;
-}
-
-function discussion_avatars_list( $comment_authors ) {
-	if ( empty( $comment_authors ) ) {
-		return;
-	}
-	echo '<ol class="discussion-avatar-list">', "\n";
-	foreach ( $comment_authors as $id_or_email ) {
-		printf(
-			"<li>%s</li>\n",
-			get_user_avatar_markup( $id_or_email )
-		);
-	}
-	echo '</ol><!-- .discussion-avatar-list -->', "\n";
-}
-
-function get_user_avatar_markup( $id_or_email = null ) {
-
-	if ( ! isset( $id_or_email ) ) {
-		$id_or_email = get_current_user_id();
-	}
-
-	return sprintf( '<div class="comment-user-avatar comment-author vcard">%s</div>', get_avatar( $id_or_email, 60 ) );
-}
-
-/**
- * Returns true if comment is by author of the post.
- *
- * @see get_comment_class()
- */
-function is_comment_by_post_author( $comment = null ) {
-	if ( is_object( $comment ) && $comment->user_id > 0 ) {
-		$user = get_userdata( $comment->user_id );
-		$post = get_post( $comment->comment_post_ID );
-		if ( ! empty( $user ) && ! empty( $post ) ) {
-			return $comment->user_id === $post->post_author;
-		}
-	}
-	return false;
 }

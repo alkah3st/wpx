@@ -2,6 +2,7 @@
  * global context
  */
 $context: 1200px;
+$context-wide: 1400px;
 
 /**
  * animations
@@ -9,22 +10,15 @@ $context: 1200px;
 $transition: all .2s ease-in-out;
 
 /**
- * colors
- */
-$black: #000000;
-$white: #ffffff;
-$gray: #cccccc;
-
-/**
  * rhythm margin
  */
-$rhythm: 20px;
+$rhythm: 30px;
 
 /**
  * font families
  */
-$sans-serif: Helvetica, Arial, sans-serif;
-$serif: Georgia, Times, Times New Roman, serif;
+$heading: 'Oswald', Helvetica, Arial, sans-serif;
+$body: 'Montserrat', Helvetica, Arial, sans-serif;
 
 /**
  * viewports
@@ -34,3 +28,34 @@ $viewport_desktop: 1200px;
 $viewport_tablet: 800px;
 $viewport_phablet: 600px;
 $viewport_mobile: 500px;
+
+/**
+ * global color classes
+ */
+@each $class, $hex in $colors {
+
+	.has-#{$class}-border-color {
+		border-color: $hex;
+	}
+
+	.has-#{$class}-background-color {
+		background-color: $hex;
+	}
+
+	.has-#{$class}-color {
+		color: $hex;
+	}
+
+}
+
+@mixin border-color() {
+
+	@each $class, $hex in $colors {
+
+		&.has-#{$class}-border-color {
+			border-color: $hex;
+		}
+
+	}
+
+}

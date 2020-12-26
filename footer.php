@@ -13,7 +13,17 @@
 	<script>var SITE_ASSETS = '<?php echo assets_url(); ?>';</script>
 	<script>var SITE_THEME = '<?php echo WPX_THEME_URL; ?>';</script>
 
-	<?php if ( (!is_admin()) && is_singular() && comments_open() && get_option('thread_comments') ) wp_enqueue_script( 'comment-reply' ); ?>
+	<script>
+		var addthis_config = {
+			ui_cobrand: "<?php echo WPX_SITE_NAME; ?>",
+			ui_use_addressbook: true,
+			ui_click: true,
+			pubid: '<?php echo WPX_ADDTHIS_ID; ?>',
+			data_track_addressbar: false,
+			data_track_clickback: true,
+			data_ga_property: "<?php echo WPX_GA_ID; ?>"
+		}
+	</script>
 
 	<?php wp_footer(); ?>
 

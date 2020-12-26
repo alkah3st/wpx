@@ -11,14 +11,14 @@ the_post();
 
 get_header(); ?>
 
-<h1><?php the_title(); ?></h1>
+<div class="context">
 
-<?php the_content(); ?>
+	<div class="tinymce">
+		<h1><?php the_title(); ?></h1>
+		<?php the_content(); ?>
+	</div>
+</div>
 
-<?php 
-	if ( comments_open() || get_comments_number() ) {
-		comments_template();
-	}
-?>
+<?php comments_template(); ?>
 
 <?php get_footer(); ?>

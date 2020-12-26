@@ -1,20 +1,28 @@
 /**
  * overrides
 */
-
 * {
 	box-sizing: border-box;
+	outline: none;
 }
 
 body {
-	@include font-size(16px, 16px, 18px);
-	font-family: $serif;
 	width: 100%;
 	margin: 0;
+	display: flex;
+	min-height: 100vh;
+	overflow-x: hidden;
+	flex-direction: column;
+
+	&:not(.wp-admin) {
+		color: color('dark-two');
+		font-family: $body;
+	}
+
 }
 
-textarea { overflow: auto; }
-
+::-moz-selection { background: color('yellowish-orange'); }
+::selection { background: color('yellowish-orange'); }
 ::-ms-clear {
 	display: none;
 }
@@ -26,9 +34,8 @@ a {
 	&:hover {}
 }
 
-ul {
-	margin: 0;
-	padding: 0;
+button {
+	transition: $transition;
 }
 
 /**
@@ -55,41 +62,72 @@ ul {
 	clear: both;
 }
 
-.clear {
-	clear: both;
-}
-
 .wrap {
 	@include context();
+
+	&.wide {
+		max-width: $context-wide;
+	}
+
 }
 
 .inline {
 	display: inline-block;
 }
 
-// buttons
-.wp-block-button a,
-.wp-block-file .wp-block-file__button,
-input[type="button"].ninja-forms-field,
-input[type="button"].button,
-.button {
+.context {
+	@include context();
+}
 
-	&:hover {}
+.blocker {
+	z-index: 9999;
+}
+
+.tinymce {
+	@include tinymce();
+}
+
+.text-align-center {
+	text-align: center;
+}
+
+.text-align-left {
+	text-align: left;
+}
+
+.text-align-right {
+	text-align: right;
+}
+
+/**
+ * colors
+ */
+@each $class, $hex in $colors {
+
+	.has-#{$class}-color {
+		color: $hex;
+	}
+
 }
 
 /**
  * structure
  */
-
-.bounds {}
+.bounds {
+	flex: 1 0 auto;
+	display: flex;
+}
 
 /**
- * examples
+ * WPX Examples
  */
+
+// retina sprite
 .calendar-icon {
 	@include retina-sprite($calendar-group); // where the files involved were named "icon.png" and "icon@2x.png". Notice the suffix "-group"
 }
 
+// retina background image
 .background-example {
 	@include bg-retina("banner", "jpg", 800px, 517px);
 	width: 800px;

@@ -1,17 +1,77 @@
 /**
- * allow blocks to fit to max width
+ * google fonts
+ * (if applied to Gutenberg)
  */
-.wp-block {
-	max-width: 100%;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Oswald:wght@200;300;400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/**
+ * import all essential styles
+ * for display in Gutenberg
+ */
+@import "../sass/utility/**/*";
+@import "../sass/globals/base.scss";
+@import "../sass/globals/buttons.scss";
+@import "../sass/globals/blocks.scss";
+@import "../sass/modules/blocks/*";
+
+/**
+ * import any utilities from JS-driven modules
+ * that may be displayed in preview mode
+ * in Gutenberg
+ */
+@import "../sass/vendor/slick.scss";
+
+/**
+ * bring in tinymce styles
+ */
+.block-editor-writing-flow {
+	@include tinymce();
 }
 
-/*
-utilities
-*/
-@import "../sass/utility/mixins.scss";
-@import "../sass/utility/variables.scss";
+/**
+ * allow blocks to fit to contexts
+ */
+.wp-block {
+	max-width: $context;
 
-/*
-utilities
-*/
-@import "blocks/custom-block.scss";
+	&[data-align=wide] {
+		max-width: $context-wide;
+	}
+}
+
+.block-preview {
+	display: block;
+	width: 100%;
+}
+
+/**
+ * correct for font override
+ */
+#collapse-button .collapse-button-icon:after, #collapse-button .collapse-button-label {
+	font-size: 14px;
+}
+
+/**
+ * gutenberg fixes
+ */
+.block-editor {
+
+	.wp-block.editor-post-title.editor-post-title__block {
+		font-family: $heading;
+	}
+
+	.postbox .inside h2, .wrap [class$=icon32]+h2, .wrap h1, .wrap>h2:first-child {
+		font-size: 40px;
+		font-weight: 700;
+	}
+
+	.block-preview {
+		display: block;
+		width: 100%;
+	}
+
+	.editor-styles-wrapper ul ul, .editor-styles-wrapper ul ol, .editor-styles-wrapper ol ul, .editor-styles-wrapper ol ol {
+		margin-bottom: $rhythm;
+	}
+
+}
