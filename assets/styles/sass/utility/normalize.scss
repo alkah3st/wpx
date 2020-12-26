@@ -20,6 +20,10 @@ html {
  * Remove the margin in all browsers.
  */
 
+figure {
+  margin: 0;
+}
+
 body {
   margin: 0;
 }
@@ -167,6 +171,8 @@ textarea {
   line-height: 1.15; /* 1 */
   margin: 0; /* 2 */
 }
+
+textarea { overflow: auto; }
 
 /**
  * Show the overflow in IE.

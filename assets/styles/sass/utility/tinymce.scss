@@ -1,0 +1,179 @@
+@mixin tinymce() {
+	@include font-size(18px, 16px);
+	position: relative;
+	line-height: 1.76;
+	font-family: $body;
+	font-weight: 400;
+
+	@each $class, $hex in $colors {
+
+		&.has-#{$class}-color {
+			color: $hex;
+		}
+
+	}
+
+	/**
+	 * elements
+	*/
+	p {
+		@include font-size(18px, 16px);
+		margin-bottom: $rhythm;
+		margin-top: 0;
+
+		@include breakpoint($viewport_mobile) {
+			margin-bottom: $rhythm*0.75;
+		}
+
+		@each $class, $hex in $colors {
+
+			&.has-#{$class}-color {
+				color: $hex;
+			}
+
+		}
+
+		&.has-small-font-size {
+			@include font-size(16px, 14px);
+		}
+
+		&.has-normal-font-size {
+			@include font-size(18px, 16px);
+		}
+
+		&.has-large-font-size {
+			@include font-size(24px, 18px);
+		}
+
+		&.has-huge-font-size {
+			@include font-size(30px, 24px);
+		}
+
+		&.has-drop-cap:not(:focus)::first-letter {
+			padding-bottom: 20px;
+		}
+
+		&.has-drop-cap {
+
+			&::first-letter {
+				font-family: $heading;
+			}
+		}
+
+		&:first-child {
+			margin-top: 0;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	a {
+
+		@each $class, $hex in $colors {
+
+			&.has-#{$class}-color {
+				color: $hex;
+			}
+
+		}
+
+		&:hover {}
+	}
+
+	strong { 
+		font-weight: 800;
+	}
+
+	sup,
+	sub {
+		@include font-size(10px);
+	}
+
+	sub {
+		top: 0.5ex;
+	}
+
+	sup {
+		bottom: 1ex;
+	}
+
+	sup,
+	sub {
+		height: 0;
+		line-height: 1;
+		position: relative;
+		vertical-align: baseline;
+	}
+
+	/**
+	 * lists
+	 */
+	ol,
+	ul {
+		margin: $rhythm 0 $rhythm $rhythm*2;
+		padding: 0;
+
+		@include breakpoint($viewport_mobile) {
+			margin-bottom: $rhythm*0.75;
+			margin-left: $rhythm;
+		}
+
+		li {
+			margin-bottom: $rhythm/2;
+		}
+	}
+
+	ol {
+
+		ol {
+			li {
+				list-style-type: upper-roman;
+			}
+		}
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		margin-top: $rhythm*1.5;
+		margin-bottom: $rhythm;
+		font-family: $heading;
+
+		@include breakpoint($viewport_mobile) {
+			margin-top: $rhythm;
+			margin-bottom: $rhythm*0.75;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		a {
+			font-weight: normal;
+			text-decoration: none;
+		}
+	}
+
+	h1 {}
+
+	h2 {}
+
+	h3 {}
+
+	h4 {}
+
+	h5 {}
+
+	h6 {}
+
+
+}

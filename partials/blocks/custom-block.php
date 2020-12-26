@@ -10,12 +10,15 @@
 
 $id = (isset($block['id']) ? $block['id'] : false);
 $class = (isset($block['className']) ? $block['className'] : false);
-$title = get_field('title');
+$color = get_field('my_colors');
+$icon = get_field('my_icons');
 
 ?>
 
-<div class="block-custom-block <?php echo $class; ?>" <?php if ($id) : ?>id="<?php echo $id; ?>"<?php endif; ?>>
+<div class="wpx-custom-block my-custom-block <?php echo $class; ?>" <?php if ($id) : ?>id="<?php echo $id; ?>"<?php endif; ?>>
 
-	<?php if ($title) : ?><h1><?php echo $title; ?></h1><?php endif; ?>
+	<p class="has-<?php echo $color; ?>-color">My Custom Color</p>
+
+	<p><i class="icon-<?php echo $icon; ?>"></i></p>
 
 </div>

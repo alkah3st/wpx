@@ -6,9 +6,6 @@ jQuery(document).ready(function($) {
 
 		init: function() {
 
-			// match all heights
-			this.matchHeights();
-
 			// events
 			this.bindEvents();
 
@@ -37,26 +34,6 @@ jQuery(document).ready(function($) {
 			$(window).resize( $.throttle( 10, function() { 
 				
 			} ) );
-
-		},
-
-		/**
-		 * forces elements to match heights on scale
-		 */
-		matchHeights: function() {
-
-			// match heights
-			$('body').imagesLoaded( function() {
-
-				// resize columns
-				$('.eq-parent').each( function(i, equalizer) {
-					$(this).find(".eq").matchHeight({
-						byRow: true,
-						property: 'height'
-					});
-				});
-
-			});
 
 		},
 

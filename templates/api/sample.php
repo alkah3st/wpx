@@ -35,14 +35,6 @@ if ($order) { $parameters['order'] = $order; }
 
 if ($filters) {
 
-	foreach($filters as $taxonomy=>$terms) {
-		if ($taxonomy == 'year') {
-			$parameters['year'] = $terms;
-		} else {
-			$taxonomy_domain[] = array($taxonomy, $terms);
-		}
-	}
-
 	if ($taxonomy_domain) {
 
 		if (count($taxonomy_domain) > 1) {
@@ -74,14 +66,16 @@ if ( $stream->have_posts() ) {
 
 		global $post;
 
-		$total = $stream->max_num_pages;
+		// output post
 
-		if ($loop == 'post') {
-			// include(WPX_THEME_PATH.'/partials/loop/loop-'.$loop.'.php');
-		} else {
-			// include(WPX_THEME_PATH.'/partials/loop/loop-stories.php');
-		}
+	}
 
+	wp_pagenavi(array('query'=>$stream));
+
+	if ($paging) : echo '<div data-archive="paging" data-page="'.$paging.'"></div>'; endif;
+
+	if ($cpt_counts) {
+		echo '<div data-archive-counts post="'.$cpt_counts['post'].'" ></div>';
 	}
 
 }

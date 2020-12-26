@@ -1,3 +1,8 @@
 /**
  * custom block
  */
+.my-custom-block {
+	@include minmax(margin, 5%, 5%);
+	background-color: color('ui-gray');
+	padding: 20px;
+}

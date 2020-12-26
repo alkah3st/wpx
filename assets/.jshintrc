@@ -15,6 +15,7 @@
 	"notypeof": true,
 	"jquery": true,
 	"unused": false,
+	"esversion": 6,
 	"strict": true,
 	"predef": [
 		"jQuery",

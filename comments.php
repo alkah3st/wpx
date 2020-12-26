@@ -1,15 +1,11 @@
 <?php
 /**
- * The template for displaying comments
- *
- * This is the template that displays the area of the page that contains both the current comments
- * and the comment form.
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ * The template file for displaying the comments and comment form for the
+ * Twenty Twenty theme.
  *
  * @package WordPress
- * @subpackage Twenty_Nineteen
- * @since 1.0.0
+ * @subpackage Twenty_Twenty
+ * @since Twenty Twenty 1.0
  */
 
 /*
@@ -17,108 +13,85 @@
  * the visitor has not yet entered the password we will
  * return early without loading the comments.
 */
-if ( post_password_required() ) {
-	return;
-}
+if ( post_password_required() ) { return; }
 
-$discussion = get_discussion_data();
 ?>
 
-<div id="comments" class="<?php echo comments_open() ? 'comments-area' : 'comments-area comments-closed'; ?>">
-	<div class="<?php echo $discussion->responses > 0 ? 'comments-title-wrap' : 'comments-title-wrap no-responses'; ?>">
-		<h2 class="comments-title">
-		<?php
-		if ( comments_open() ) {
-			if ( have_comments() ) {
-				echo 'Join the Conversation';
-			} else {
-				echo 'Leave a comment';
-			}
-		} else {
-			if ( '1' == $discussion->responses ) {
-				/* translators: %s: post title */
-				echo 'One reply on '.get_the_title();
-			} else {
-				printf(
-					/* translators: 1: number of comments, 2: post title */
-					_nx(
-						'%1$s reply on &ldquo;%2$s&rdquo;',
-						'%1$s replies on &ldquo;%2$s&rdquo;',
-						$discussion->responses,
-						'comments title',
-						'wpx'
-					),
-					number_format_i18n( $discussion->responses ),
-					get_the_title()
+<div class="post-comments" id="comments">
+
+	<div class="wrap">
+
+		<?php 
+			if ( comments_open() || pings_open() ) {
+				comment_form(
+					array(
+						'class_form'         => '',
+						'cancel_reply_link'=>'<i class="icon-cancel"></i>',
+						'title_reply_before' => '<p id="reply-title" class="comment-form-title">',
+						'title_reply_after'  => '</p>',
+						'cancel_reply_before'=>' ',
+						'cancel_reply_after'=>' ',
+						'title_reply'=>'Leave Comment',
+						'title_reply_to'=>'Leave a Comment <span>%s</span>',
+						'comment_notes_before'=>'<p class="comment-count">Your Two Cents</p>',
+						'comment_notes_after'=>'',
+						'fields'=>array(
+							'author' => '<input placeholder="Name *" id="author" name="author" type="text" value="'.esc_attr( $commenter['comment_author'] ).'" size="30" required="required" maxlength="245" />',
+							'email' => '<input placeholder="Email Address*" id="email" type="text" name="email" required="required" value="'.esc_attr( $commenter['comment_author_email'] ).'" size="30" maxlength="100" aria-describedby="email-notes" />',
+							'url' => '<input id="url" name="url" placeholder="Website" type="text" value="'.esc_attr( $commenter['comment_author_url'] ).'" size="30" maxlength="200" />',
+						),
+						'comment_field'=>'<textarea placeholder="Comment*" id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea>'
+					)
 				);
 			}
-		}
 		?>
-		</h2><!-- .comments-title -->
-		<?php
-			// Only show discussion meta information when comments are open and available.
-		if ( have_comments() && comments_open() ) {
-			include(WPX_THEME_PATH.'partials/comments/discussion-meta.php' );
-		}
-		?>
-	</div><!-- .comments-title-flex -->
-	<?php
-	if ( have_comments() ) :
 
-		// Show comment form at top if showing newest comments at the top.
-		if ( comments_open() ) {
-			wpx_comment_form( 'desc' );
-		}
+		<?php if ( $comments ) { ?>
 
-		?>
-		<ol class="comment-list">
-			<?php
-			wp_list_comments(
-				array(
-					'walker'      => new \WPX\Utility\HTML5_Walker_Comment(),
-					'avatar_size' => 60,
-					'short_ping'  => true,
-					'style'       => 'ol',
-				)
-			);
-			?>
-		</ol><!-- .comment-list -->
-		<?php
+			<section class="comment-thread">
 
-		// Show comment navigation
-		if ( have_comments() ) :
-			$comments_text = 'Comments';
-			the_comments_navigation(
-				array(
-					'prev_text' => sprintf( '%s <span class="nav-prev-text"><span class="primary-text">%s</span> <span class="secondary-text">%s</span></span>', '<', __( 'Previous', 'twentynineteen' ), __( 'Comments', 'twentynineteen' ) ),
-					'next_text' => sprintf( '<span class="nav-next-text"><span class="primary-text">%s</span> <span class="secondary-text">%s</span></span> %s', __( 'Next', 'twentynineteen' ), __( 'Comments', 'twentynineteen' ), '>' ),
-				)
-			);
-		endif;
+				<h1 class="screenreader">Comments on <?php the_title(); ?></h1>
 
-		// Show comment form at bottom if showing newest comments at the bottom.
-		if ( comments_open() && 'asc' === strtolower( get_option( 'comment_order', 'asc' ) ) ) :
-			?>
-			<div class="comment-form-flex">
-				<span class="screen-reader-text">Leave a comment</span>
-				<?php wpx_comment_form( 'asc' ); ?>
-				<h2 class="comments-title" aria-hidden="true">Leave a comment</h2>
-			</div>
-			<?php
-		endif;
+				<?php
+				wp_list_comments(
+					array(
+						'walker'      => new WPX\Comments\WPX_Comment_Walker(),
+						'avatar_size' => 120,
+						'style'       => 'div',
+					)
+				);
 
-		// If comments are closed and there are comments, let's leave a little note, shall we?
-		if ( ! comments_open() ) :
-			?>
-			<p class="no-comments">Comments are closed.</p>
-			<?php
-		endif;
+				$comment_pagination = paginate_comments_links(
+					array(
+						'echo'      => false,
+						'end_size'  => 0,
+						'mid_size'  => 0,
+						'next_text' => __( 'Newer Comments', 'twentytwenty' ) . ' <span aria-hidden="true">&rarr;</span>',
+						'prev_text' => '<span aria-hidden="true">&larr;</span> ' . __( 'Older Comments', 'twentytwenty' ),
+					)
+				);
 
-	else :
+				if ( $comment_pagination ) {
+					$pagination_classes = '';
 
-		// Show comment form.
-		wpx_comment_form( true );
+					// If we're only showing the "Next" link, add a class indicating so.
+					if ( false === strpos( $comment_pagination, 'prev page-numbers' ) ) {
+						$pagination_classes = ' only-next';
+					}
+					?>
 
-	endif; // if have_comments();
-	?>
-</div><!-- #comments -->
+					<nav class="comments-pagination pagination<?php echo $pagination_classes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static output ?>" aria-label="<?php esc_attr_e( 'Comments', 'twentytwenty' ); ?>">
+						<?php echo wp_kses_post( $comment_pagination ); ?>
+					</nav>
+
+					<?php
+				}
+				?>
+
+			</section>
+
+		<?php } ?>
+
+	</div>
+
+</div>

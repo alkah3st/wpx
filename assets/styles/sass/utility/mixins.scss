@@ -1,4 +1,46 @@
 /**
+ * block defaults
+ */
+@mixin block-defaults() {
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
+}
+
+/**
+ * wider width
+ */
+@mixin width-wide() {
+	width: 150%;
+	max-width: 150%;
+	margin-left: -25%;
+
+	@include breakpoint(1000px) {
+		width: 100%;
+		max-width: 100%;
+		margin-left: 0;
+	}
+}
+
+/**
+ * explode width
+ */
+@mixin explode-width() {
+	width: 100vw;
+	margin-left: calc(-50vw + 50%);
+	position: relative;
+}
+
+/**
+ * color
+ */
+@function color($color) {
+	@return map-get($colors, $color);
+}
+
+/**
  * Vertical Align
  */
 @mixin vertical-align() {
@@ -75,11 +117,12 @@
  * https://engageinteractive.co.uk/blog/top-10-scss-mixins
  */
 @mixin input-placeholder {
-	&.placeholder { @content; }
+	&::-webkit-input-placeholder { @content; }
 	&:-moz-placeholder { @content; }
 	&::-moz-placeholder { @content; }
 	&:-ms-input-placeholder { @content; }
-	&::-webkit-input-placeholder { @content; }
+	&::-ms-input-placeholder { @content; }
+	&::placeholder { @content; }
 }
 
 /**
@@ -174,6 +217,12 @@
 			background-size: $width $height;
 		}
 	}
+}
+
+@mixin pseudo($display: block, $pos: absolute, $content: ''){
+	content: $content;
+	display: $display;
+	position: $pos;
 }
 
 /**

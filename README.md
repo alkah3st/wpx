@@ -47,13 +47,13 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 
 * Install with WPX Utility, a plugin that contains helper functions for use with the theme;
 * Ready for use with Advanced Custom Fields & Gutenberg
-* Stripped-down, unopinionated WP templates
+* Stripped-down, un-opinionated WP templates
 * PHP namespacing for hooks and functions;
 * Includes Gulp-powered build script for the front end;
 	* Simple, CSS framework-free globbed Sass;
 	* Simple, JS framework-free jQuery objects;
 	* Includes dynamic icon fonts via Fontello;
-	* Includes inline retina images and retina background images0
+	* Includes inline retina images and retina background images
 
 ## Installation
 
@@ -62,6 +62,8 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 2. Download and activate the [WPX Utility plugin](https://github.com/alkah3st/wpx-utility).
 
 3. Download and activate the WPX Theme in your ```/wp-content/themes/``` folder. Then cd into ```/assets/``` and run:
+
+4. In ```/wp-content/themes/wpx/assets/gulpfile.js``` put in your local environment path in the external-css task.
 
 Run the following command in terminal:
 
@@ -81,7 +83,7 @@ To generate your retina sprites and custom icon font, you can run:
 
  ```gulp sprites```.
 
-You can then run ```gulp``` (which will trigger ```gulp watch```) or ```gulp build``` if you are prepping the codebase for production. The command ```gulp gutenberg``` will compile styles for Gutenberg blocks, and then watch to compile those styles.  
+You can then run ```gulp``` (which will trigger ```gulp watch```) or ```gulp build``` if you are prepping the codebase for production.
 
 ## Theme Organization
 
@@ -100,14 +102,16 @@ Keep default WordPress templates, such as ```page.php``` and ```index.php``` in 
 Hook logic is organized in ```/includes/```, under the hook file that makes the most sense:
 
 - **actions.php** is for any action hooks
-- **blocks.php** is for custom Gutenberg blocks
-- **enqueue.php** is for any header/footer injection
+- **blocks.php** is for including ACF Gutenberg blocks
+- **comments.php** contains the HTML walker for comments
+- **enqueue.php** is for any FE injection of assets
+- **feed.php** is for modifications to the RSS feed output
 - **filters.php** is for any filter hooks
 - **loops.php** is for reusable custom wp queries
 - **rewrites.php** is for any URL rewriting hooks
+- **schema.php** is for augmenting the theme's schema markup
 - **sidebars.php** is for any sidebar/widget registration
 - **utility.php** is for custom functions that are not hooks
-- **loops.php** is for any custom loop logic used in the theme
 
 Each of these is namespaced, for example, to call a function defined in ```\WPX\Actions\```, you would write:
 
@@ -144,6 +148,14 @@ For convenience. you can get several root URIs/paths rendered in any template li
 	C:/your/file/path/website/
 
 ## Image Assets
+
+### Temp Images
+
+The folder ```/assets/images/temp/``` is for image assets used during development (typically sampled from [source.unsplash.com](source.unsplash.com). The folder should not reach production.
+
+### Favicons
+
+I use [Real Favicon Generator](https://realfavicongenerator.net/) to generate a set of crossbrowser compatible favicons for the theme. See the ```header.php``` for example output, or visit the website. These graphics are stored in 	```/assets/images/favicons```.
 
 ### Inline Images
 
@@ -255,7 +267,7 @@ For example:
 
 	<section class="my-articles"> <--! has semantic meaning, is a "section" of the document for Recent Articles -->
 
-		<h1 class="screenreader">Recent Articles</h1>
+		<h1>Recent Articles</h1>
 
 		<div class="wrapper"> <--! has no meaning, is just a wrapper -->
 
@@ -319,9 +331,9 @@ WPX does not include a CSS Framework. **Do not introduce a CSS framework (such a
 Some quick ground rules for CSS:
 
 - Write everything in lowercase and use hyphens to separate words;
-- Use tabs for spaces;
+- Use 4 tabs for spaces;
 - Do not write vendor prefixes for CSS3 properties in your CSS. The build script will handle this automatically. So write ```border-radius: 10px``` and not ```-webkit-border-radius: 10px```;
-- Do not use IDs, except to target elements with Javascript.
+- Do not use IDs. We target elements in JS with data attributes.
 - Don't use em font sizes (see below for the desired methodology)
 - When defining line-height, use fixed values like 1, 1.5 and not 32px unless you are vertically-centering an element
 
@@ -331,42 +343,47 @@ All the SASS files for the project are in ```/styles/sass/``` folder, organized 
 
 	globals
 		- base.scss // for global styles
-		- forms.scss // styles related to form elements
-		- tinymce.scss // all styles output by Visual Editor
+		- blocks.scss // all styles related to core Gutenberg blocks
+		- button.scss // styles global buttons from Gutenberg 
 		- footer.scss // styles related to the footer
+		- forms.scss // styles related to form elements
 		- header.scss // styles related to the header
+		- widgets.scss // for sidebar widgets
 	modules // module-based styles
 		- blocks
 			- custom-block.scss // an example "Custom Block" for Gutenberg
 			- other-custom-block.scss ...
+		- components
+			- my-component.scss // for non-block modules used in the theme
 		- navs
 			- nav-footer.scss // for the footer nav
 			- nav-mobile.scss // for the mobile nav
 			- nav-primary.scss // for the primary nav
 		- widgets
-			- widgets.scss // where to place global widget styles
 			- my-widget.scss ...
 	utility // variables, fonts, mixins
+		- colors.scss // generated by a function in WP (DO NOT EDIT)
+		- mixins.scss // global mixins
+		- normalize.scss // this is the latest normalize 
+		- sprites.scss // generated via the spritemap in gulp (DO NOT EDIT)
+		- tinymce.scss // styles non-block markup from Gutenberg
+		- variables.scss // global variavles
 	vendor // sass from third parties
-
+		- modal.scss ... 
 
 **Globals.** In ```base.scss``` we includes selectors that can be used anywhere in the website, such as element overrides, global classes, and structural selectors that are not context dependent.
 
-**Forms.** Under ```forms.scss``` we include selectors pertaining to any forms or form elements used throughout the website.
+**Gutenberg/VE Styles.** The mixin ```tinymce.scss``` contains styles to handle the non-block output of the Gutenberg editor, whereas the sheet ```blocks.scss``` contains styles to handle the core Gutenberg block output. Wherever in the templates of the site I might output the contents of a visual editor, I need to ensure that all outputted markup is styled consistently. In this case I will wrap the output with a ```.tinymce``` class. This ensures the limited set of markup that the Visual Editor can output styles the outputted markup in isolation.
 
-**TinyMCE.** The WordPress Visual Editor uses TinyMCE, which can output a limited subset of markup that the user may have entered into the Visual Editor. Wherever in the templates of the site I might output the contents of a Visual Editor, I need to ensure that all outputted markup is styled consistently. In this case I will wrap the output with a ```.tinymce``` class. This SASS file styles the outputted markup in isolation. It also includes overrides to the default styles applied to the core Gutenberg blocks.
-
-**Modules.** You can break down other contextual groups of selectors into individual SASS files under ```/modules/```, in whatever way makes sense for the project. (More on the reasoning behind this later in this guide). Typically a discreet bundle of contextual selectors, such as a block or a primary navigation, is a good candidate for a separate .scss file in ```/modules/```.
-
-**Blocks.** Gutenberg's blocks should be treated as self-contained modules and placed in their own ```/blocks/``` folder under ```/modules/```. This allows us to then include the modules into the master Gutenberg sass file.
-
-**Navs.** Navs tend to be reusable modules that we often come back to throughout the course of development, so I like to put them in their own folder under ```/modules/``` so I can find them easily.
+**Modules (Components vs. Blocks).** You can break down other contextual groups of selectors into individual SASS files under ```/modules/```, in whatever way makes sense for the project. Typically a discreet bundle of contextual selectors, such as a block or a primary navigation, is a good candidate for a separate .scss file in ```/modules/```. Note that we make a distinction between a module that is a block (meaning, a Gutenberg block registered in the system) and a component, which is not a block, and organize the CSS separately.
 
 **Widgets.** Widgets, to be dropped into sidebars, tend to be reusable modules that we often come back to throughout the course of development, so I like to put them in their own folder under ```/modules/``` so I can find them easily.
 
-**Utility.** There are four SASS partials included in the ```/utility/``` folder: mixins, for SASS mixins; ```normalize.scss``` (which contains the CSS reset); ```sprites.scss``` (described later in this document: this file is generated by the build script); and ```variables.scss```, which is where you should define all SASS variables. 
+**Buttons.** We make use of the button block in WP across the theme, so ```buttons.scss``` is treated separately from other blocks so that any modifications to the blocks in Gutenberg also impacts buttons elsewhere in the theme.
 
-**Vendor**. The ```/vendor/``` folder is meant for including any SASS partials or CSS provided by third party plugins, and will get compiled with everything else. The styles in ```/vendor/icons/``` are generated by the built script.
+**Color Map Variables.** In the ```functions.php``` you will find a function called ```wpx_color_palette```. Define the system-wide colors to be used in the theme in this array. In turn, the theme will generate a ```color.scss``` with your variables, for use both in the gulp build script AND in Gutenberg interface for the end user. Do not the edit the rendered file as it gets overwritten when the build script is run. 
+
+**Vendor**. The ```/vendor/``` folder is meant for including any SASS partials or CSS provided by third party plugins, and will get compiled with everything else. The styles in ```/vendor/icons/``` as well as the ```sprites.scss``` and ```colors.scss``` sheet are generated by the built script. Just rename any vendor CSS to SASS and drop in this folder.  
 
 ### Writing Selectors
 
@@ -385,12 +402,12 @@ Let's establish some specific guidelines about writing nested selectors, in the 
 **Global Objects.** These are selector objects that are meant to be used anywhere in the site, independent of context. Global objects may not have a lot of nested selectors, if any at all. You shouldn't have a lot of these, and you shouldn't treat them like state modifiers (see below), otherwise you'll end up with Atomic CSS (which we do not like). A ```.button``` is a good example of a global object:
 
 	.button {
-		@include font-size(14px);
-		background-color: $yellow;
+		@include font-size(14px, 12px);
+		background-color: color('yellow');
 		display: inline-block;
 		padding: 12px 0;
 		border-radius: 30px;
-		color: $black;
+		color: color('black');
 		text-align: center;
 		min-width: 270px;
 		text-transform: uppercase;
@@ -411,28 +428,28 @@ Let's establish some specific guidelines about writing nested selectors, in the 
 
 	}
 
-As you can see, this selector is an object unto itself: you could place it anywhere in the site and it doesn't rely on any properties outside of itself to be presentable. Makes sense to drop something like this into ```base.scss```.
+As you can see, this selector is an object unto itself: you could place it anywhere in the site and it doesn't rely on any properties outside of itself to be presentable.
 
 **Module Objects**. Probably the most common type of selector object you will write. They're generally self-contained, and may have a great deal of nested selectors. Like global objects, modules are also generally context-independent, but they are less likely to be nested inside of other selector objects. The difference between global objects and module objects is really a matter of complexity. 
 
-	.block-related {
+	.module {
 
 		// special context
 		&.in-sidebar {
 			... styles that alter this module specifically by context
 			... here we can break the rule of 3, because:
-			... .module-related.in-sidebar .related-inner .related-description is still 3 deep
+			... .module.in-sidebar .module-inner .module-description is still 3 deep
 		}
 
-		.block-related-inner {
+		.module-inner {
 
-			.related-description {
+			.module-description {
 				...
 			}
 
 		}
 
-		.block-related-title {
+		.module-title {
 			...
 		}
 
@@ -445,13 +462,13 @@ As you can see, this selector is an object unto itself: you could place it anywh
 
 The module object's naming pattern is best expressed as: 
 
-	data attribute module & name (.block-related)
-		> name + context (.block-related-inner)
-			> name + context (.block-related-description)
+	name (.module)
+		> name + context (.module-inner)
+			> name + context (.module-description)
 
-The topmost selector is represented by a unique namespace ```.block-related```, and nested selectors should be prefixed with the module's unique name.
+The topmost selector is represented by a unique namespace ```.module```, and nested selectors should be prefixed with the module's unique name.
 
-Whenever you make a new module, puts its styles into a corresponding file ```block-related.scss``` in the ```/assets/styles/sass/modules/blocks/``` folder.
+Whenever you make a new module, puts its styles into a corresponding file ```module.scss``` in the ```/assets/styles/sass/modules/components/``` folder (or ```/assets/styles/sass/modules/blocks/```	if the module is a Gutenberg block).
 
 **Layout Objects.** Layout objects are used for just that: elements that serve a strictly structural purpose (as opposed to functional purpose) in layouts. Their types include headers, footers, wrappers, sections, asides, sidebars, and navs. Layout objects, unlike global or module objects, are very unlikely to be nested inside one another.
 
@@ -482,7 +499,7 @@ Whenever you make a new module, puts its styles into a corresponding file ```blo
 
 		// this module is affected by special styles when it appears
 		// inside a sidebar layout object
-		.module-widget {
+		.module {
 			...
 		}
 
@@ -494,7 +511,7 @@ The naming pattern for layout objects should borrow from a fixed list of predefi
 		> layout type + context + secondary context (.header-main-outer) 
 			> layout type + context + tertiary context (.header-main-inner)
 
-The right place for most layout objects is in ```base.scss```, though if you have a lot of them, it might make sense to organize them into the ```/modules/``` folder in partials like ```footer.scss``` and ```header.scss``` for example.
+The right place for most layout objects is in ```base.scss```, though if you have a lot of them, it might make sense to organize them into a ```/structures/``` folder in partials like ```footer.scss``` and ```header.scss``` nested within ```/base/``` for example.
 
 **State Modifier Objects.** These are selectors that are meant to be used inside of other objects, and usually represent states triggered by Javascript or context-specific modifiers to the presentation of a module/layout. If you intend to define a state modifier object globally (meaning it can be used anywhere, independent of context), it's wise to suffix all properties in the object !important. It is preferable to constraint state modifier objects to modules or layouts. Avoid defining lots of global state modifiers, as that will lead down the path to Atomic CSS (which we do not like).
 
@@ -511,9 +528,24 @@ The right place for most layout objects is in ```base.scss```, though if you hav
 
 You will find all the variables in ```/assets/styles/sass/partials/utility/variables.scss```. 
 
-Mainly these are colors, fonts, and a variable for the global context (the max-width of the site, see below). 
+Mainly these are fonts, variables for the global context (the max-width of the site, see below), the site's margin rhythm (see below), global color declarations from Gutenberg, and viewport sizes. 
 
-Try to standardize your colors and fonts using variables. Do not litter your partials with hex values or font declarations.
+Do not litter your partials with hex values or font declarations.
+
+### Declaring Colors
+
+To declare a color in an element, simply use the ```color();``` function:
+
+```
+
+my-element {
+	color: color('yellow');
+}
+
+```
+
+The colors are declared in the functions.php and used across the theme and in Gutenberg.
+
 
 ### Viewport Font Sizes
 
@@ -578,11 +610,51 @@ This will render the following:
 
 For the most part, all layout elements should be styled with fluid widths, and you should utilize break points to adjust the rhythm of that scaling when the design looks awkward at any given viewport. This implies defining breakpoints per selector object, rather than globally across the site. More on this below.
 
+### Breaking Out of Context
+
+Note that there is also a ```$context-wide``` variable. While ```$context``` defines the standard page width for the flow of content, ```$context-wide``` optionally defines the size Gutenberg uses when a block is set to "wide" width, meaning it breaks out of the flow about 150%. Typically this is 1400px vs. the standard 1200px.
+
+You can force a block or component to break out of the page context by using the ```width-wide()``` or ```explode-width()``` mixins:
+
+    .my-block {
+    	@include width-wide();
+    }
+    
+Results in:
+
+    .my-block {
+    	width: 150%;
+    	max-width: 150%;
+    	margin-left: -25%;
+    
+    	@include breakpoint(1000px) {
+    		width: 100%;
+    		max-width: 100%;
+    		margin-left: 0;
+    	}
+    }
+
+You will want to redefine the breakpoint at which the block goes back to 100% width to suit the needs of the design.
+
+For the ```explode-width()``` function:
+
+    .my-block {
+    	@include explode-width();
+    }
+    
+Results in:
+
+    .my-block {
+    	width: 100vw;
+    	margin-left: calc(-50vw + 50%);
+    	position: relative;
+    }
+
 ### Setting Breakpoints
 
-If it makes sense to introduce a breakpoint for the primary navigation module (```/assets/styles/sass/modules/primary-nav.scss```) at 800 pixels, 570 pixels, and 400 pixels, we should do that specifically for that module, even if the main content area only needs to break at 1000 pixels and 500 pixels.
+If it makes sense to introduce a breakpoint for the primary navigation module (```/assets/styles/sass/modules/navs/nav-primary.scss```) at 800 pixels, 570 pixels, and 400 pixels, we should do that specifically for that module, even if the main content area only needs to break at 1000 pixels and 500 pixels.
 
-You can define breakpoints by using the @include breakpoint(); mixin. There are several predefined viewports (you will find the viewports in ```/assets/styles/sass/utility/variables.scss```), and they are: $viewport_ultrawide, $viewport_desktop, $viewport_tablet, $viewport_phablet, and $viewport_mobile. These variables should be adjusted to better suit your design, and you are encouraged to define viewports as needed, directly into the function, if the prefdefined viewports are unsuitable in a particular context: @include breakpoint(548px).
+You can define breakpoints by using the ```breakpoint();``` mixin. There are several predefined viewports (you will find the viewports in ```/assets/styles/sass/utility/variables.scss```), and they are: ```$viewport_ultrawide```, ```$viewport_desktop```, ```$viewport_tablet```, ```$viewport_phablet```, and ```$viewport_mobile```. These variables should be adjusted to better suit your design, and you are encouraged to define viewports as needed, directly into the function, if the prefdefined viewports are unsuitable in a particular context: @include breakpoint(548px).
 
 		.sidebar {
 			width: percentage(500px / $context);
@@ -674,7 +746,7 @@ You can also tweak the min and max breakpoint from the initial parameters:
 
 ## Enquire (Breakpoints in JS)
 
-There may be situations where you need to trigger Javascript at specific breakpoints. For this, I use Enquire, which is already installed. You should define a set of Enquire breakpoints for each module in which it applies. For example, the layout.js module has a set defined for you (at arbitrary breakpoints);
+There may be situations where you need to trigger JS at specific breakpoints. For this, I use [Enquire](https://wicky.nillia.ms/enquire.js/), which is already installed. You should define a set of Enquire breakpoints for each module in which it applies. For example, the layout.js module has a set defined for you (at arbitrary breakpoints);
 
 		/*
 		bind layouts
@@ -713,80 +785,17 @@ There may be situations where you need to trigger Javascript at specific breakpo
 
 Enquire triggers as the viewport scales, as well as once on initial load.
 
-## Forcing Matching Heights
 
-If you need to force a set of elements be the same height, and you can't use flexbox for whatever reason, there is some JS in place to help you.
-
-Assume each article has a background color, so the elements needs to be the same height inside the ```.articles-inner``` parent:
-
-	<section class="blocks block-articles">
-
-		<h1 class="screenreader">Latest News</h1>
-
-		<div class="block-articles-inner">
-
-			<div class="block-articles-box">
-				<h1>A Really Long Title for this Article</h1>
-				<time datetime="01/01/2017">January 1, 2017</time>
-				<p>This is a description of the article.</p>
-			</div>
-		
-			<div class="block-articles-box">
-				<h1>A Short Title</h1>
-				<time datetime="01/01/2017">January 1, 2017</time>
-				<p>Now these articles have different heights.</p>
-			</div>
-	
-			<div class="block-articles-box">
-				<h1>A Really Long Title for this Article</h1>
-				<time datetime="01/01/2017">January 1, 2017</time>
-				<p>This is a description of the article.</p>
-			</div>
-
-		</div>
-
-	</section> 
-
-To enforce equal heights, simply add a ```.eq-parent``` class to the parent, and a ```.eq``` class to each child:
-
-	<section class="blocks block-articles">
-
-		<h1 class="screenreader">Latest News</h1>
-
-		<div class="block-articles-inner eq-parent">
-
-			<div class="block-article-box eq">
-				<h1>A Really Long Title for this Article</h1>
-				<time datetime="01/01/2017">January 1, 2017</time>
-				<p>This is a description of the article.</p>
-			</div>
-		
-			<div class="block-article-box eq">
-				<h1>A Short Title</h1>
-				<time datetime="01/01/2017">January 1, 2017</time>
-				<p>Now these articles have different heights.</p>
-			</div>
-	
-			<div class="block-article-box eq">
-				<h1>A Really Long Title for this Article</h1>
-				<time datetime="01/01/2017">January 1, 2017</time>
-				<p>This is a description of the article.</p>
-			</div>
-
-		</div>
-
-	</section> 
- 
 ## Javascript Methodology
 
 My JS setup does not use any frameworks and is very straightforward. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
 
-- We are running jQuery 2.2.4, to support the widest variety of potential plugins in WP that may use jQuery. 
+- We are running jQuery 2.2.4, to support the widest variety of potential plugins in WP that may use jQuery. jQuery is the only script enqueued separately from the compiled JS in the theme, and it is loaded in the header to support maximum compatibility with plugins.
 - Each custom script is considered a "module" and all modules run simultaneously on all pages of the site. Target modules by dropping a data-module['my-module'] on the element, instead of a class or ID, unless you can anticipate that there will only ever be one rendered on a page. I know data attributes are technically slower to select than classes, but this will not be an issue in performance for the size sites we are dealing with. Also, I do not subscribe to the separation-of-concerns issue here--that data attributes are not intended to be used this way--because neither are classes, and this makes it easy to see, at a glance, that a module has JS functions attached to it, whereas using classes this not apparent.
 
 ### Build vs. Debug Mode
 
-When ```WP_DEBUG``` in the ```wp-config.php``` is set to true, we are in "non-build mode." When it is false, we are in "build mode."
+When ```define( 'WP_ENVIRONMENT_TYPE', 'development' );``` in the ```wp-config.php``` is set to development, we are in "non-build mode." When it is set to production, we are in "build mode." You can also use staging as a value with WP, but you'll need to modify the enqueue below to account for that.
 
 The significance of this is that in non-build mode, all JS scripts are output in the ```footer.php``` uncompressed, following this compilation order:
 
@@ -797,17 +806,24 @@ The significance of this is that in non-build mode, all JS scripts are output in
 This looks like the following in the ```enqueue.php``` file of ```/includes/```:
 
 	wp_deregister_script('jquery');
-	wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-2.2.4.min.js', false, '2.2.4', false);
+	wp_enqueue_script('jquery', assets_url().'/js/jquery.js', false, '2.2.4', false);
 
-	if (WP_DEBUG === true) {
-		wp_enqueue_style( 'wpx-styles', assets_url().'/styles/screen.css', false, null, false);
-		wp_enqueue_script( 'wpx-js', assets_url().'/js/app.js', false, null, true);
+	wp_deregister_style( 'dashicons' ); 
+	wp_deregister_style( 'wp-block-library' );
+	wp_deregister_style( 'wp-block-library-theme' );
+	wp_deregister_style( 'contact-form-7' );
+
+	if (wp_get_environment_type() === 'development' || wp_get_environment_type() === 'local') {
+		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.js', false, filemtime( get_template_directory().'/assets/js/app.js' ), true);
+		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.css', false, filemtime( get_template_directory().'/assets/styles/screen.css' ), 'screen');
 	} else {
-		wp_enqueue_style( 'wpx-styles-min', assets_url().'/styles/screen.min.css', false, null, false);
-		wp_enqueue_script( 'wpx-js-min', assets_url().'/js/app.min.js', false, null, true);
+		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.min.js', false, filemtime( get_template_directory().'/assets/js/app.min.js' ), true);
+		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.min.css', false, filemtime( get_template_directory().'/assets/styles/screen.min.css' ), 'screen');
 	}
 
 In build mode, ```app.min.js``` is attached instead of app.js, by running ```gulp build```.
+
+Note that we deregister a number of core styles that WP normally outputs. These styles are incorporated at build time and compiled into our global CSS to save on those queries for performance reasons. You will find in the ```gulp external``` function, we re-incorporate these styles by querying WP for them at build time. 
 
 ### Writing Custom JS Modules
 
@@ -865,34 +881,28 @@ Tips:
 
 When you run ```gulp```, the build script will:
 
-1) ```jshint``` your modules in ```/modules```
-2) Simultaneously compile the SASS into ```screen.css``` and JS into ```app.js```. (The JS compilation order is always ```/vendor/``` then ```app.init.js``` then ```/modules/```.
-3) Watch all sass files, js files, and php files for changes and refresh them with Livereload. (PHP files and JS files on save will refresh the page; only sass will hot reload.)
-
-2) 
-3) Compile the scss in the ```/styles/sass/``` folder into css  
-4) Retrieve all the dependencies in package.json and compile them into ```js/libraries.js```   
-5) Update the ```footer.php``` file with a script tag to these libraries, all vendor libraries in the ```/js/vendor/``` folder, the ```/js/app.init.js``` file, and then all your ```/js/modules/```.  
-6) ```jshint``` your ```/js/modules/```  
-7) Run ```gulp watch```.  
+1) ```jshint``` your modules in ```/modules```  
+2) Simultaneously compile the SASS into ```screen.css``` and JS into ```app.js```. (The JS compilation order is always ```/vendor/``` then ```app.init.js``` then ```/modules/```.  
+3) Watch all sass files, js files, and php files for changes and refresh them with Livereload. (PHP files and JS files on save will refresh the page; only sass will hot reload.)  
 
 When you run ```gulp build```, the build script will:
 
-1) Do steps 1 - 3 in ```gulp``` above, though the sass and JS task will remove console logs, sourcemaps, and minify/uglify the compilation into ```screen.min.css``` and ```app.min.js``` respectively.
+1) Do steps 1 - 3 in ```gulp``` above, though the sass and JS task will remove console logs, sourcemaps, and minify/uglify the compilation into ```screen.min.css``` and ```app.min.js``` respectively.  
 2) Also simultaneously compile all your sprites in ```/images/sprites/``` into spritesheet.png and spritesheet@2x.png, and create the relevant scss files in ```/styles/sass/utility/sprites/```;  
-3) Also simultaneously load the fontello.config json to fetch the icon fonts, as well as update the scss related to those icon fonts;
-4) Then minify all images and svgs in ```/images```
-5) Minify all Gutenberg-related sass files.
+3) Also simultaneously load the fontello.config json to fetch the icon fonts, as well as update the scss related to those icon fonts;  
+4) Then minify all images and svgs in ```/images```  
+5) Minify all Gutenberg-related sass files.  
+
+**On first run, it's important to run ```gulp external``` to bring in any third party JS as well as several core WP styles so they can be incorporated into your build. You can add the external task to the build task if you want to ensure the latest is always pulled in a push to production, just keep in mind it may take a few seconds to run.**
 
 You can also run the following tasks independently:
 
 - ```gulp fontello``` to retrieve new files related to Fontello. Don't forget to run ```gulp``` afterwards.
 - ```gulp sprites``` to generate new spritemaps. Don't forget to run ```gulp``` afterwards.
-- ```gulp gutenberg``` to compile sass for Gutenberg blocks inside the editor, which will also start a watch task/
 
 ## Gulp Build Script
 
-The gulp build script is already written for you and ready to go. You will need at least node 10.15, npm version 6.4.1, and Gulp 4.
+The gulp build script is already written for you and ready to go. See the ```package.json``` for version requirements.
 
 ### Prep Fonts
 
@@ -908,13 +918,13 @@ If you are using [Retina Sprites](#retina-sprites), whenever you add more sprite
 
 As a result, Gulp will merge your sprites together into a retina and non-retina sprite sheet in ```/images/spritesheet.png``` and ```/images/spritesheet@2x.png``` and then update the ```/styles/sass/utility/sprites.scss``` with the newly available mixins.
 
+This task is run on build.
+
 ### Compile Gutenberg Sass
 
-If you want to make gulp compile the Gutenberg sass blocks on demand, run:
+When you ```watch``` with the gulp task, styles are also compiled for Gutenberg. Gulp will merge the sass files under ```styles\gutenberg``` into a single gutenberg.css that is in turn applied to the Dashboard.
 
-```gulp gutenberg```
-
-As a result, Gulp will merge the sass files under ```styles\gutenberg``` into a single gutenberg.css that is in turn applied to the Dashboard. It will start a separate watch task specifically for Gutenberg.
+You can control what styles get served to Gutenberg by editing the ```gutenberg.scss``` in the ```/assets/``` folder. All blocks by default are included, as well as the ```base.scss```, all utilities, buttons, and the core ```block.scss``` overrides. We also apply the theme's fonts (if you're using Gutenberg) and we apply the ```tinymce()``` mixin to the block editor here.
 
 ### Watch with Livereload
 
@@ -930,11 +940,11 @@ Make sure you have the Chrome extension [Livereload](https://goo.gl/b1wkQu) inst
 
 ## Gutenberg
 
-WPX is Gutenberg-ready. WPX relies on the ACF Pro. The functions in  ```/includes/blocks.php``` will only work if the version of the plugin that supports Gutenberg is enabled on your site.
+WPX is Gutenberg-ready. WPX relies on the ACF Pro.
 
 ### Registering Custom Blocks
 
-1) In ```includes/blocks/blocks.php``` copy the Custom Block code to make your own. Change the parameters in the acf_register_block function as you see fit. Read about them in the [ACF documentation](https://www.advancedcustomfields.com/resources/acf_register_block/ "ACF Documentation for acf_register_block"). The parameter for ```render_template``` is the file you will create in step 3.
+1) In ```includes/blocks.php``` copy the Custom Block code to make your own. Change the parameters in the acf_register_block function as you see fit. Read about them in the [ACF documentation](https://www.advancedcustomfields.com/resources/acf_register_block/ "ACF Documentation for acf_register_block"). The parameter for ```render_template``` is the file you will create in step 3.
 
 2) Make sure the ```name``` of the block you registered matches the name in the ```allowed_block_types``` code. Your name will always be 'acf/name-of-block,' where 'name-of-block' is the name parameter entered into step 1.
 
@@ -942,22 +952,19 @@ WPX is Gutenberg-ready. WPX relies on the ACF Pro. The functions in  ```/include
 
 4) You'll finally need to make a corresponding ACF field in the Dashboard using the new Block field type to register your meta for the block, and assign the field to your new block.
 
-Your custom blocks should now appear in Gutenberg. If you want it to appear in a custom category, you can alter the ```custom_block_category()``` function in  ```/includes/blocks.php``` and make your block use that category. By default, all custom blocks in WPX get added to a "Custom Blocks" category. 
+Your custom blocks should now appear in Gutenberg. If you want it to appear in a custom category, you can alter the ```custom_block_category()``` function in  ```/includes/actions.php``` and make your block use that category. By default, all custom blocks in WPX get added to a "Custom Blocks" category. 
 
 ### Block Styles in the Dashboard
 
-WPX applies a stylesheet called gutenberg.css to the Gutenberg editor (or ```gutenberg.min.css``` if ```WP_DEBUG``` is false). This is a compilation of any sass files included in ```/styles/gutenberg/gutenberg.scss```. You will notice that there is a sample ```custom-block.scss``` in that directory, which contains the following:
+WPX applies a stylesheet called gutenberg.css to the Gutenberg editor (or ```gutenberg.min.css``` if ```WP_ENVIRONMENT_TYPE``` is set to development). This is a compilation of any sass files included in ```/styles/gutenberg/gutenberg.scss```. You will notice that there is a sample ```custom-block.scss``` in that directory, which contains the following:
 
 	/**
 	 * custom block
 	 */
-	.block-custom-block {
-		h1 {
-			color: red;
-		}
+	.my-custom-block {
 	}
 
-The ```gutenberg.scss``` file determines which blocks to load. It precedes all blocks by including the site's mixins.scss and ```variables.scss```, but nothing else. You can selectively import styles related to specific blocks in ```/assets/styles/sass/modules/blocks/``` to avoid having to repeat styles. This is so that only the styles related to the block are introduced to the Gutenberg editor. Gutenberg styles blocks by default in the editor already, so we only need to add styles we'd like to appear in the editor to make the block look similar to its end result on the front end. Thus the goal with applying only the relevant block styles is to create a low-fidelity presentation of the block within the Gutenberg editor itself. So if your ```custom-block.scss``` has corresponding front end block styles, ```@import``` the sass file at ```/assets/styles/sass/modules/blocks/``` into the Gutenberg styles for the block at ```/styles/gutenberg/blocks/custom-block.scss```.
+We load a limit subset of the styles defined in the theme into Gutenberg to avoid having to repeat styles. This is so that only the styles related to the block are introduced to the Gutenberg editor. Gutenberg styles blocks by default in the editor already, so we only need to add styles we'd like to appear in the editor to make the block look similar to its end result on the front end. Thus the goal with applying only the relevant block styles is to create a low-fidelity presentation of the block within the Gutenberg editor itself.
 
 ## Plugin List
 
@@ -970,17 +977,20 @@ In WPX I typically start with the following plugins in every install:
 - Advanced Custom Fields: Sidebar Selector
 - Akismet Anti-Spam
 - Custom Taxonomy Order
-- Duplicate Post
-- FakerPress
-- Jetpack by WordPress.com
-- Media Search Enhanced
-- Optimize Images Resizing
-- Postman SMTP
+- Yoast Duplicate Post
+- FakerPress (for loading dummy content)
 - Redirection
+- Flamingo
+- Contact Form 7
 - Regenerate Thumbnails
 - Simple Page Ordering
 - User Switching
 - W3 Total Cache
-- WP Extend Utilities (required)
+- WP Extend Utilities (*required*)
 - WP-PageNavi
+- Image Regenerate & Select Crop
+- Safe SVG
+- Relevanssi
+- WP Nested Pages
+- Syntax Highlighting Code Block (w/Server-Side Rendering)
 - Yoast SEO

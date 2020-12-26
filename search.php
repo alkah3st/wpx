@@ -11,6 +11,6 @@ get_header(); ?>
 
 <h1>Search Results</h1>
 
-<p class="default alert">Found <strong><?php echo $wp_query->found_posts; ?></strong> posts for "<strong><?php the_search_query(); ?></strong>."</p>
+<p>Found <strong><?php echo $wp_query->found_posts; ?></strong> posts for "<strong><?php the_search_query(); ?></strong>."</p>
 
 <?php get_footer(); ?>
