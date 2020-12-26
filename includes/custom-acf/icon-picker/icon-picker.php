@@ -2,6 +2,17 @@
 
 if (class_exists('acf')) {
 
+	function acf_icon_picker_footer() { ?>
+		<script>
+			jQuery( document ).ready(function() {
+				acf.addAction('append', function( $el ){
+					$el.find('.acf-fontello-picker').select2({width: 'resolve',allowClear: true,placeholder: 'Select an Icon',escapeMarkup: function (markup) { return markup; }});
+				});
+			});
+		</script>
+	<?php }
+	add_action('admin_head', 'acf_icon_picker_footer');
+
 	class wpx_icon_picker extends acf_field {
 		
 		
@@ -120,29 +131,32 @@ if (class_exists('acf')) {
 			?>
 			<script>
 				jQuery( document ).ready(function() {
-					var selection = jQuery('#acf-fontello-picker<?php echo $random_id; ?>');
-					jQuery(selection).select2({
-						data: [
-						<?php 
-							foreach($icon_names as $i=>$icon) : 
-						?>
-						{
-							id: '<?php echo $icon; ?>',
-							text: '<i class="icon-<?php echo $icon; ?>"></i> <?php echo $icon; ?>'
-							<?php if ( $icon == esc_attr($field['value'])) : ?>, selected: true<?php endif; ?>
-						}, 
-						<?php endforeach; ?>
-						],
-						width: 'resolve',
-						allowClear: true,
-						placeholder: 'Select an Icon',
-						escapeMarkup: function (markup) { return markup; }
-					});
+					function initializeSelect2<?php echo $random_id; ?>() {
+						var selection = jQuery('#acf-fontello-picker<?php echo $random_id; ?>');
+						jQuery(selection).select2({
+							data: [
+							<?php 
+								foreach($icon_names as $i=>$icon) : 
+							?>
+							{
+								id: '<?php echo $icon; ?>',
+								text: '<i class="icon-<?php echo $icon; ?>"></i> <?php echo $icon; ?>'
+								<?php if ( $icon == esc_attr($field['value'])) : ?>, selected: true<?php endif; ?>
+							}, 
+							<?php endforeach; ?>
+							],
+							width: 'resolve',
+							allowClear: true,
+							placeholder: 'Select an Icon',
+							escapeMarkup: function (markup) { return markup; }
+						});
+					}
+					initializeSelect2<?php echo $random_id; ?>();
 				});
 			</script>
 
 			<div class="acf-fontello-picker-wrap">
-				<select style="width: 100%; font-size: 40px;" id="acf-fontello-picker<?php echo $random_id; ?>" name="<?php echo esc_attr($field['name']) ?>"></select>
+				<select style="width: 100%; font-size: 40px;" class="acf-fontello-picker" id="acf-fontello-picker<?php echo $random_id; ?>" name="<?php echo esc_attr($field['name']) ?>"></select>
 			</div>
 
 			<?php

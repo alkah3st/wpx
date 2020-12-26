@@ -5,6 +5,43 @@
  */
 if (class_exists('acf')) {
 
+	function acf_brand_colors_head() { 
+
+		$brand_colors = wpx_color_palette();
+
+		if ($brand_colors) :
+			sort($brand_colors); ?>
+			<style>
+				<?php foreach($brand_colors as $i=>$color) : ?>
+					.icon-color-<?php echo $color['slug']; ?> {
+						background-color: <?php echo $color['color']; ?>;
+						display: inline-block;
+						width: 10px;
+						height: 10px;
+						border: 1px solid black;
+					}
+				<?php endforeach; ?>
+			</style>
+		<?php endif; 
+
+	}
+	add_action('admin_head', 'acf_brand_colors_head');
+
+	function acf_brand_colors_footer() { 
+		$brand_colors = wpx_color_palette();
+		if ($brand_colors) : ?>
+			<script>
+				jQuery( document ).ready(function() {
+					acf.addAction('append', function( $el ){
+						console.log('hey appending');
+						$el.find('.acf-color-picker').select2({width: 'resolve',allowClear: true,placeholder: 'Select a Color',escapeMarkup: function (markup) { return markup; }});
+					});
+				});
+			</script>
+		<?php endif; 
+	}
+	add_action('admin_head', 'acf_brand_colors_footer');
+
 	class wpx_brand_colors extends acf_field {
 		
 		
@@ -114,43 +151,34 @@ if (class_exists('acf')) {
 				sort($brand_colors);
 			?>
 
-			<style>
-				<?php foreach($brand_colors as $i=>$color) : ?>
-					.icon-color-<?php echo $color['slug']; ?> {
-						background-color: <?php echo $color['color']; ?>;
-						display: inline-block;
-						width: 10px;
-						height: 10px;
-						border: 1px solid black;
-					}
-				<?php endforeach; ?>
-			</style>
-
 			<script>
 				jQuery( document ).ready(function() {
-					var selection = jQuery('#acf-color-picker<?php echo $random_id; ?>');
-					jQuery(selection).select2({
-						data: [
-						<?php 
-							foreach($brand_colors as $i=>$color) : 
-						?>
-						{
-							id: '<?php echo $color['slug']; ?>',
-							text: '<span class="icon-color-<?php echo $color['slug']; ?>"></span> <?php echo $color['name']; ?> (<?php echo $color['color']; ?>)'
-							<?php if ( $color['slug'] == esc_attr($field['value'])) : ?>, selected: true<?php endif; ?>
-						}, 
-						<?php endforeach; ?>
-						],
-						width: 'resolve',
-						allowClear: true,
-						placeholder: 'Select an Icon',
-						escapeMarkup: function (markup) { return markup; }
-					});
+					function initializeColorPicker<?php echo $random_id; ?>() {
+						var selection = jQuery('#acf-color-picker<?php echo $random_id; ?>');
+						jQuery(selection).select2({
+							data: [
+							<?php 
+								foreach($brand_colors as $i=>$color) : 
+							?>
+							{
+								id: '<?php echo $color['slug']; ?>',
+								text: '<span class="icon-color-<?php echo $color['slug']; ?>"></span> <?php echo $color['name']; ?> (<?php echo $color['color']; ?>)'
+								<?php if ( $color['slug'] == esc_attr($field['value'])) : ?>, selected: true<?php endif; ?>
+							}, 
+							<?php endforeach; ?>
+							],
+							width: 'resolve',
+							allowClear: true,
+							placeholder: 'Select a Color',
+							escapeMarkup: function (markup) { return markup; }
+						});
+					}
+					initializeColorPicker<?php echo $random_id; ?>();
 				});
 			</script>
 
 			<div class="acf-color-picker-wrap">
-				<select style="width: 100%; font-size: 40px;" id="acf-color-picker<?php echo $random_id; ?>" name="<?php echo esc_attr($field['name']) ?>"></select>
+				<select style="width: 100%; font-size: 40px;" class="acf-color-picker" id="acf-color-picker<?php echo $random_id; ?>" name="<?php echo esc_attr($field['name']) ?>"></select>
 			</div>
 
 			<?php
