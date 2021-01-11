@@ -51,7 +51,7 @@ WordPress Extend (WPX) is a stripped down boilerplate for building brochureware 
 * PHP namespacing for hooks and functions;
 * Includes Gulp-powered build script for the front end;
 	* Simple, CSS framework-free globbed Sass;
-	* Simple, JS framework-free jQuery objects;
+	* Simple, StimulusJS-driven framework, with jQuery standby;
 	* Includes dynamic icon fonts via Fontello;
 	* Includes inline retina images and retina background images
 
@@ -788,10 +788,40 @@ Enquire triggers as the viewport scales, as well as once on initial load.
 
 ## Javascript Methodology
 
-My JS setup does not use any frameworks and is very straightforward. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
+My JS setup uses StimulusJS to connect elements to controllers. This is because the vast majority of projects we are building are brochureware, and not dynamic web apps. (If the project is a dynamic web app, you will need to reconsider the build script to accommodate a framework of your choice.)
 
-- We are running jQuery 2.2.4, to support the widest variety of potential plugins in WP that may use jQuery. jQuery is the only script enqueued separately from the compiled JS in the theme, and it is loaded in the header to support maximum compatibility with plugins.
-- Each custom script is considered a "module" and all modules run simultaneously on all pages of the site. Target modules by dropping a data-module['my-module'] on the element, instead of a class or ID, unless you can anticipate that there will only ever be one rendered on a page. I know data attributes are technically slower to select than classes, but this will not be an issue in performance for the size sites we are dealing with. Also, I do not subscribe to the separation-of-concerns issue here--that data attributes are not intended to be used this way--because neither are classes, and this makes it easy to see, at a glance, that a module has JS functions attached to it, whereas using classes this not apparent.
+- We are running jQuery 2.2.4 alongside StimulusJS, to support the widest variety of potential plugins in WP that may use jQuery. jQuery is the only script enqueued separately from the compiled JS in the theme, and it is loaded in the header to support maximum compatibility with plugins.
+- Each custom script is considered a "module" and all modules run simultaneously on all pages of the site. See `modules/layout.js` as an example of a module that doesn't use Stimulus.
+- All other script modules should be written as a Stimulus controller. See Stimulus documentation for further reading: [`https://stimulus.hotwire.dev/handbook/introduction`](https://stimulus.hotwire.dev/handbook/introduction "Stimulus Documentation")
+
+> Stimulus is a JavaScript framework with modest ambitions. Unlike other front-end frameworks, Stimulus is designed to enhance static or server-rendered HTML—the “HTML you already have”—by connecting JavaScript objects to elements on the page using simple annotations.
+> 
+> These JavaScript objects are called controllers, and Stimulus continuously monitors the page waiting for HTML data-controller attributes to appear. For each attribute, Stimulus looks at the attribute’s value to find a corresponding controller class, creates a new instance of that class, and connects it to the element.
+> 
+> You can think of it this way: just like the class attribute is a bridge connecting HTML to CSS, Stimulus’s data-controller attribute is a bridge connecting HTML to JavaScript.
+
+An example StimulusJS controller looks like this:
+
+	(() => {
+		const application = Stimulus.Application.start();
+
+		application.register("example-controller", class extends Stimulus.Controller {
+			static get targets() {
+				return [ "exampleElement" ];
+			}
+
+			// gets called when target is clicked
+			// place data-action="click->example-controller#exampleFunction" in markup
+			// and data-example-controller-target="exampleElement" on same element
+			exampleFunction() {
+				event.preventDefault();
+				const thisTarget = this.exampleElementTarget;
+				// do stuff
+				console.log('hello');
+			}
+
+		});
+	})();
 
 ### Build vs. Debug Mode
 
@@ -827,7 +857,9 @@ Note that we deregister a number of core styles that WP normally outputs. These 
 
 ### Writing Custom JS Modules
 
-In ```/js/modules/``` you will find each custom JS module. You can create as many as you like, just remember that they all run simultaneously and in the order they are named. They are being written in such a way that they are not meant to be interdependent on one another. It is not wise to build synchronous relationships between modules; assume they are running asynchronously, after jQuery is ready. 
+In ```/js/modules/``` you will find each custom JS module. You can create as many as you like, just remember that they all run simultaneously and in the order they are named. They are being written in such a way that they are not meant to be interdependent on one another. It is not wise to build synchronous relationships between modules; assume they are running asynchronously, after jQuery is ready.
+
+**Keep in mind that you should be writing Stimulus controllers (see above) instead of custom modules like the one below, but this is a way to break out of Stimulus if necessary and write modules consistently across the project.**
 
 Here is what the general utility module looks like:
 
