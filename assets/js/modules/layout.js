@@ -19,9 +19,6 @@ jQuery(document).ready(function($) {
 		*/
 		bindEvents: function() {
 
-			// responsive video
-			$(".flex-video").fitVids();
-
 			// inline retina images
 			$('img.retina[data-2x]').dense();
 

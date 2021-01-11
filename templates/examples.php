@@ -31,4 +31,14 @@ get_header(); ?>
 
 <div class="background-example"></div>
 
+<h2>Example Stimulus Element</h2>
+
+<div data-controller="example-controller">
+
+	<h1>Click Below to Trigger Controller Function</h1>
+
+	<a href="#" data-example-controller-target="exampleElement" data-action="click->example-controller#exampleFunction">Check Console Log</a>
+
+</div>
+
 <?php get_footer(); ?>

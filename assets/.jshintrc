@@ -19,6 +19,7 @@
 	"strict": true,
 	"predef": [
 		"jQuery",
+		"Stimulus",
 		"$",
 		"SITE_ROOT",
 		"SITE_ASSETS",
