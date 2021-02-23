@@ -9,11 +9,13 @@ var plumber      	= require('gulp-plumber');
 var autoprefixer 	= require('gulp-autoprefixer');
 var imagemin    	= require('gulp-imagemin');
 var spritesmith 	= require('gulp.spritesmith');
+var babel	        = require('gulp-babel');
 var sassglob    	= require('gulp-sass-glob');
-var terser      	= require('gulp-terser');
+var uglify      	= require('gulp-uglify-es').default;
 var concat      	= require('gulp-concat');
 var sourcemaps  	= require('gulp-sourcemaps');
 var jshint      	= require('gulp-jshint');
+var terser 			= require('gulp-terser');
 var download 		= require("gulp-download");
 
 // encode the external url with the querystring
@@ -145,12 +147,11 @@ gulp.task('sass-gutenberg', function () {
 		}))
 		.pipe(cleancss({
 			compatibility: '*',
-			format: 'beautify',
-			sourceMap: true
 		}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('styles'))
 		.pipe(livereload());
+		done();
 });
 
 // preps gutenberg CSS for prod
@@ -272,6 +273,7 @@ gulp.task('js', function() {
 		.pipe(concat('app.js'))
 		.pipe(gulp.dest('js'))
 		.pipe(livereload());
+		done();
 });
 
 // preps JS for prod
@@ -288,13 +290,18 @@ gulp.task('jsmin', function() {
 			this.emit('end');
 		}}))
 		.pipe(concat('app.min.js'))
-		.pipe(terser({
+		.pipe(terser())
+		.pipe(uglify({
 			compress: {
 				drop_console: true
 			}
 		}))
+		.on('error', function(err){
+			console.log('\x07',err); return this.end();
+		})
 		.pipe(gulp.dest('js'))
 		.pipe(livereload());
+		done();
 });
 
 // fetches latest icons from fontello based on json
@@ -344,9 +351,9 @@ gulp.task('fontello-acf', function () {
 });
 
 gulp.task('watch', function(){
-	livereload({ start: true });
-	gulp.watch(['styles/gutenberg/**/*.scss','styles/**/**/**/*.scss'], {usePolling: true}, gulp.series(['sass','sass-gutenberg']));
-	gulp.watch(['js/modules/*.js','js/vendor/*.js'], {usePolling: true}, gulp.series(['jshint','js']));
+	livereload.listen();
+	gulp.watch(['styles/sass/**/**/**/*.scss','styles/gutenberg/**/**/**/*.scss'], gulp.series(['sass','sass-gutenberg']));
+	gulp.watch(['js/modules/*.js','js/vendor/*.js'], gulp.series(['jshint','js']));
 	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', livereload.changed);
 })
 

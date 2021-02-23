@@ -3111,7 +3111,7 @@ html:lang(he-il) .rtl #wpadminbar * {
   font-size: 0;
   min-height: inherit
 }
-@supports ((position:-webkit-sticky) or (position:sticky)) {
+@supports (position:sticky) {
   .wp-block-cover-image:after,
   .wp-block-cover:after {
     content: none
@@ -3383,7 +3383,7 @@ section.wp-block-cover-image > h2 {
   margin: 0;
   height: 100%
 }
-@supports ((position:-webkit-sticky) or (position:sticky)) {
+@supports (position:sticky) {
   .blocks-gallery-grid .blocks-gallery-image figure,
   .blocks-gallery-grid .blocks-gallery-item figure,
   .wp-block-gallery .blocks-gallery-image figure,
@@ -3402,7 +3402,7 @@ section.wp-block-cover-image > h2 {
   height: auto;
   width: 100%
 }
-@supports ((position:-webkit-sticky) or (position:sticky)) {
+@supports (position:sticky) {
   .blocks-gallery-grid .blocks-gallery-image img,
   .blocks-gallery-grid .blocks-gallery-item img,
   .wp-block-gallery .blocks-gallery-image img,
@@ -3447,7 +3447,7 @@ section.wp-block-cover-image > h2 {
 .wp-block-gallery.is-cropped .blocks-gallery-item img {
   width: 100%
 }
-@supports ((position:-webkit-sticky) or (position:sticky)) {
+@supports (position:sticky) {
   .blocks-gallery-grid.is-cropped .blocks-gallery-image a,
   .blocks-gallery-grid.is-cropped .blocks-gallery-image img,
   .blocks-gallery-grid.is-cropped .blocks-gallery-item a,
@@ -4641,7 +4641,7 @@ p.wp-block-subhead {
 .wp-block-video video {
   max-width: 100%
 }
-@supports ((position:-webkit-sticky) or (position:sticky)) {
+@supports (position:sticky) {
   .wp-block-video [poster] {
     -o-object-fit: cover;
     object-fit: cover

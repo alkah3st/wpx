@@ -27,8 +27,8 @@ function enqueue_assets() {
 
 	// we enqueue assets based on the build status, with cache busting
 	if (wp_get_environment_type() === 'development' || wp_get_environment_type() === 'local') {
-		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.js', false, filemtime( get_template_directory().'/assets/js/app.js' ), true);
-		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.css', false, filemtime( get_template_directory().'/assets/styles/screen.css' ), 'screen');
+		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.js', false, null, true);
+		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.css', false, null, 'screen');
 	} else {
 		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.min.js', false, filemtime( get_template_directory().'/assets/js/app.min.js' ), true);
 		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.min.css', false, filemtime( get_template_directory().'/assets/styles/screen.min.css' ), 'screen');

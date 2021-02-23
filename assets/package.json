@@ -15,8 +15,11 @@
     "url": "https://github.com/alkah3st/wpx"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
     "gulp": "4.0.2",
     "gulp-autoprefixer": "7.0.1",
+    "gulp-babel": "^8.0.0",
     "gulp-clean-css": "4.3.0",
     "gulp-concat": "2.6.1",
     "gulp-download": "0.0.1",
@@ -31,10 +34,13 @@
     "gulp-sass-glob": "1.1.0",
     "gulp-sourcemaps": "2.6.5",
     "gulp-terser": "1.4.1",
+    "gulp-uglify": "3.0.2",
+    "gulp-uglify-es": "2.0.0",
     "gulp-watch": "5.0.1",
     "gulp.spritesmith": "6.11.0",
     "jshint": "2.12.0",
-    "jshint-stylish": "2.2.1"
+    "jshint-stylish": "2.2.1",
+    "stimulus-select2": "0.0.4"
   },
   "browserslist": [
     "last 2 version",
