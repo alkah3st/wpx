@@ -19,7 +19,10 @@
 	"strict": true,
 	"predef": [
 		"jQuery",
+		"alert",
 		"Stimulus",
+		"Cookies",
+		"google",
 		"$",
 		"SITE_ROOT",
 		"SITE_ASSETS",

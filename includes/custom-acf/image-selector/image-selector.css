@@ -1,0 +1,34 @@
+.acf-image-selector-wrap {
+	overflow: hidden;
+	background-color: #ececec;
+	height: 200px;
+	margin-top: 10px;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+.acf-image-selector-wrap img {
+	width: 50px;
+	display: block;
+	margin: 10px 5px;
+}
+
+.acf-image-selector-wrap .acf-image-selector-wrap-options {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: left;
+}
+
+.acf-image-selector-wrap .acf-image-selector-option {
+	width: 20%;
+	cursor: pointer;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.acf-image-selector-wrap .acf-image-selector-option.selected {
+	opacity: 0.2;
+}
+
+.acf-image-selector-wrap .acf-image-selector-option:hover {
+	opacity: 0.2;
+}

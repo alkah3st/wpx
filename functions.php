@@ -40,6 +40,12 @@ require_once(WPX_THEME_PATH."includes/schema.php");
  */
 require_once(WPX_THEME_PATH."includes/custom-acf/brand-colors/brand-colors.php");
 require_once(WPX_THEME_PATH."includes/custom-acf/icon-picker/icon-picker.php");
+require_once(WPX_THEME_PATH."includes/custom-acf/image-selector/image-selector.php");
+
+/**
+ * APIs
+ */
+require_once(WPX_THEME_PATH."templates/api/sample.php");
 
 /**
  * Widgets
@@ -202,17 +208,19 @@ function wpx_setup() {
 
 	// image crops
 	set_post_thumbnail_size( 1200, 675, true ); // rec social sharing size
-	// add_image_size( 'custom-image-crop', 850, 400, true );
-	// add_image_size( 'custom-image-crop-aligned', 760, 400, array('left','center') );
+	add_image_size( 'carousel-bg', 1024, 768, true );
+	add_image_size( 'carousel-mobile', 300, 450, true);
+	add_image_size( 'carousel-tablet', 600, 900, true);
 
 }
 add_action( 'after_setup_theme', 'wpx_setup', 0 );
 
 /**
- * Theme Color Palette
+ * Color Map Array
  */
-function wpx_color_palette() {
-	$color_set = array(
+function wpx_color_array() {
+
+	$color_map = array(
 		array(
 			'name'  => 'Black',
 			'slug'  => 'black',
@@ -315,13 +323,33 @@ function wpx_color_palette() {
 		)
 	);
 
-	// write the set to a file for SASS
-	\WPX\Custom\get_color_sass($color_set);
+	return $color_map;
 
-	// return the set to WP
-	return $color_set;
 }
 
+/**
+ * Theme Color Palette
+ */
+function wpx_color_palette() {
+
+	$color_map = wpx_color_array();
+
+	// return the set to WP
+	return $color_map;
+
+}
+
+/**
+ * Triggered by Visiting /wpx-color-map/
+ */
+function wpx_update_color_map() {
+
+	$color_map = wpx_color_array();
+
+	// write the set to a file for SASS
+	\WPX\Custom\get_color_sass($color_map);
+
+}
 
 /**
 * Pre Get Posts
