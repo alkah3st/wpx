@@ -1,106 +1,151 @@
 <?php
 /**
-* API: Archive
+* API: Map Markers
 * 
 * @package WordPress
 * @subpackage WPX_Theme
 * @since WPX Theme 0.1.0
 */
-namespace WPX\API\Archive;
+namespace WPX\API\Example;
 
-function get_api_response() {
+function api_response() {
 
 	global $wp_query;
 
 	$api_id = $wp_query->get( 'api_id' );
 
-	if ($api_id == 'archive') {
+	if ($api_id == 'example') {
 
-		// filter settings
-		$loop = !empty($_POST['wpx_loop']) ? $_POST['wpx_loop'] : false;
-		$tax_terms = !empty($_POST['wpx_terms']) ? $_POST['wpx_terms'] : false;
-		$search = !empty($_POST['wpx_search']) ? $_POST['wpx_search'] : false;
-		$paged = !empty($_POST['wpx_paged']) ? $_POST['wpx_paged'] : false;
-		$count = !empty($_POST['wpx_count']) ? $_POST['wpx_count'] : false;
-		$cpts = !empty($_POST['wpx_cpts']) ? $_POST['wpx_cpts'] : false;
-		$order = !empty($_POST['wpx_order']) ? $_POST['wpx_order'] : false;
-		$loop = !empty($_POST['wpx_loop']) ? $_POST['wpx_loop'] : false;
-		$az = !empty($_POST['wpx_az']) ? $_POST['wpx_az'] : false;
+		// gather data
+		$data  = array(
+			'format' => !empty($_POST['wpx_format']) ? $_POST['wpx_format'] : false,
+			'orderby' => !empty($_POST['wpx_orderby']) ? $_POST['wpx_orderby'] : false,
+			'author' => !empty($_POST['wpx_author']) ? (int)$_POST['wpx_author'] : false,
+			'search' => !empty($_POST['wpx_search']) ? (int)$_POST['wpx_search'] : false,
+			'tax_terms' => !empty($_POST['wpx_terms']) ? $_POST['wpx_terms'] : false,
+			'search' => !empty($_POST['wpx_search']) ? $_POST['wpx_search'] : false,
+			'paged' => !empty($_POST['wpx_paged']) ? (int)$_POST['wpx_paged'] : false,
+			'count' => !empty($_POST['wpx_count']) ? (int)$_POST['wpx_count'] : false,
+			'cpts' => !empty($_POST['wpx_cpts']) ? $_POST['wpx_cpts'] : false,
+			'order' => !empty($_POST['wpx_order']) ? $_POST['wpx_order'] : false,
+			'sort' => !empty($_POST['wpx_sort']) ? $_POST['wpx_sort'] : false,
+			'persistent_terms' => !empty($_POST['wpx_persistent_terms']) ? $_POST['wpx_persistent_terms'] : false,
+			'exclusions' => !empty($_POST['wpx_exclusions']) ? $_POST['wpx_exclusions'] : false,
+			'meta_sort' => !empty($_POST['wpx_meta_sort']) ? $_POST['wpx_meta_sort'] : false,
+			'parents_only' => !empty($_POST['wpx_parents_only']) ? $_POST['wpx_parents_only'] : false
+		);
+
+		// handle booleans
+		foreach($data as $i=>$datum) {
+			if ($datum === "false" || $datum == '') {
+				$data[$i] = filter_var($datum, FILTER_VALIDATE_BOOLEAN);
+			}
+		}
+
+		// merge like-term arrays
+		// (we are not counting uniques until now)
+		$term_set = false;
+		if ($data['tax_terms']) {
+			foreach($data['tax_terms'] as $term_array) {
+				$taxonomy = $term_array[0];
+				$term = $term_array[1];
+				// select2 dropdowns that are multi-term selectors
+				// will return an array; all others return a string
+				if (is_string($term)) {
+					$term_set[$taxonomy][] = $term;
+				} else {
+					$term_set[$taxonomy] = $term;
+				}
+			}
+		}
 
 		// base parameters
 		$parameters = array(
-			'posts_per_page'=> intval($count),
-			'post_type'=>$cpts,
-			'post_parent'=>0 // excludes wpx-locations that are children
+			'posts_per_page'=>intval($data['count']),
+			'post_type'=>$data['cpts'],
 		);
 
+		// if exclusions
+		if ($data['exclusions']) {
+			$parameters['posts__not_in'] = explode(',',$data['exclusions']);
+		}
+
 		// if paged
-		if ($paged) {
-			$parameters['paged'] = $paged;
+		if ($data['paged']) {
+			$parameters['paged'] = intval($data['paged']);
 		}
 
 		// if implicit order
-		if ($order) {
-			$parameters['orderby'] = $order;
+		if ($data['order']) {
+			$parameters['order'] = $data['order'];
+		}
+
+		// if parents only
+		if ($data['parents_only']) {
+			$parameters['post_parent'] = 0;
+		}
+
+		// if implicit sort
+		if ($data['orderby']) {
+			$parameters['orderby'] = $data['orderby'];
+		}
+
+		// if author
+		if ($data['author']) {
+			$parameters['author'] = $data['author'];
 		}
 
 		// if search
-		if ($search) {
-			$parameters['s'] = $search;
+		if ($data['search']) {
+			$parameters['s'] = $data['search'];
 		}
 
-		// if az; override order to be alpha based
-		if ($az) {
+		// if a meta sort order
+		if ($data['meta_sort']) {
 
-			// get the next letter for between comparison
-			$current_letter = $az;
-			$next_letter = ++$current_letter; 
-			if (strlen($next_letter) > 1) { // if you go beyond z or Z reset to a or A
-				$next_letter = $next_letter[0];
-			}
-
-			$comparison = 'BETWEEN';
-			$range = ''.$az.','.$next_letter.'';
-
-			// handle Z (between does not work)
-			if ($az == "Z") {
-				$range = 'Z';
-				$comparison = '>=';
-			}
-
-			// handle A
-			if ($az == "A") {
-				$range = 'A,B';
-			}
-
+			// sort by meta key
+			$parameters['meta_key'] = $data['meta_sort'];
 			$parameters['orderby'] = 'meta_value';
-			$parameters['meta_key'] = 'sort_title';
-			$parameters['order'] = 'ASC';
-			$parameters['meta_query'][] = array(
-				'key'=>'sort_title',
-				'value'=>$range,
-				'compare'=>$comparison
-			);
+
+			// if numeric sort
+			if ($data['sort'] == 'numeric' ) {
+				// it's more intuitive for DESC and ASC to reverse
+				if ($data['order'] == 'DESC') {
+					$parameters['order'] = 'ASC';
+				} else {
+					$parameters['order'] = 'DESC';
+				}
+				// also instruct this is numeric
+				$parameters['orderby'] = 'meta_value_num';
+			}
+
 		}
 
 		// if tax terms
-		if ($tax_terms) {
-			if (count($tax_terms) > 1) {
+		if ($term_set) {
+			if (count($term_set) > 1) {
 				$parameters['tax_query']['relation'] = 'AND';
 			}
-			foreach($tax_terms as $taxonomy=>$terms) {
+			foreach($term_set as $taxonomy=>$terms) {
 				$parameters['tax_query'][] = array(
 					'taxonomy'=>$taxonomy,
-					'field'=>'slug',
+					'field'=>'term_id',
 					'terms'=>$terms,
-					'operator'=>'IN'
+					'operator'=>'AND'
 				);
 			}
 		}
 
-		$stream = new \WP_Query($parameters);
+		// instantiate the query
+		$stream = new \WP_Query();
+		$stream->parse_query($parameters);
 
-		if ( $stream->have_posts() && $loop) {
+		// apply relevanssi
+		if (function_exists('relevanssi_do_query')) {
+			relevanssi_do_query($stream);
+		}
+
+		if ( $stream->have_posts()) {
 
 			while ( $stream->have_posts() ) {
 				
@@ -108,17 +153,15 @@ function get_api_response() {
 
 				global $post;
 
-				// do loop output
+				// output
 
 			}
 
 			wp_pagenavi(array('query'=>$stream));
 
-			echo '<div data-archive-number-value="'.$stream->found_posts.'"></div>';
-
 		} else {
 
-			echo '<p class="archive-empty">We didn\'t find any posts for that query.</p>';
+			echo 'No posts found.';
 		}
 
 		if (WP_ENVIRONMENT_TYPE == 'development' || WP_ENVIRONMENT_TYPE == 'staging') :
@@ -132,4 +175,4 @@ function get_api_response() {
 	}
 
 }
-add_action( 'template_redirect', '\WPX\API\Archive\get_api_response' );
+add_action( 'template_redirect', '\WPX\API\Example\api_response' );

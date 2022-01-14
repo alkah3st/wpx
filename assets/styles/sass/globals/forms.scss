@@ -1,3 +1,198 @@
 /**
  * form elements
  */
+
+// loading button
+.wpx-button {
+
+	&.is-loading {
+
+		i {
+			display: none;
+
+			&.icon-spin {
+				display: inline-block;
+			}
+		}
+
+	}
+
+}
+
+// loading icon
+i.animate-spin {
+	display: none;
+	margin-right: 5px;
+
+	&.is-loading {
+		display: inline-block;
+
+		& + i {
+			display: none;
+		}
+
+	}
+
+	&:before {
+		margin: 0;
+	}
+
+}
+
+/**
+ * form
+ */
+.form {
+
+	.error {
+		color: color('red');
+	}
+
+	// label
+	.form-label {
+		display: block;
+	}
+
+	.form-required {
+		color: color('red');
+	}
+
+	// help
+	.form-help {
+		font-style: italic;
+		margin-bottom: 0;
+		margin-top: 5px;
+
+		label.error {
+			color: color('red');
+		}
+	}
+
+	// full width
+	.width-100 {
+		display: block;
+		width: 100%;
+	}
+
+	// form rows
+	.form-row {
+		margin-bottom: $rhythm;
+		overflow: hidden;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		// 2-col
+		&.flex-2 {
+			display: flex;
+
+			@include breakpoint(600px) {
+				display: block;
+			}
+
+			.form-element {
+				width: 48%;
+
+				@include breakpoint(600px) {
+					width: 100%;
+				}
+
+				&:last-child {
+					margin-left: auto;
+
+					@include breakpoint(600px) {
+						margin-top: $rhythm;
+					}
+				}
+			}
+		}
+	}
+
+	// inputs
+	input[type="email"],
+	input[type="password"],
+	textarea,
+	input[type="text"] {
+		width: 100%;
+
+		&[disabled] {
+			opacity: 0.3;
+		}
+
+		&.error {
+			border-color: color('red');
+			color: color('red');
+
+			@include input-placeholder() {
+				color: color('red');
+			}
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		@include input-placeholder() {}
+	}
+
+	// element wrapper
+	.form-element {
+		position: relative;
+
+		&.error {
+			
+			.form-help {
+				color: color('red');
+			}
+		}
+
+	}
+
+	textarea {
+		display: block;
+		line-height: 1.4;
+	}
+
+}
+
+/**
+ * contact form 7
+ */
+.wpcf7 {
+	
+	form {
+
+		&.submitting {
+
+			.form-element {
+
+				&.is-attached-submit {
+
+					&:after,
+					.wpcf7-submit {
+						display: none;
+					}
+
+				}
+			}
+
+		}
+
+		.wpcf7-not-valid-tip {
+			display: none !important;
+		}
+
+		.wpcf7-spinner {}
+
+		&.sent {
+			.wpcf7-response-output {}
+		}
+
+		&.invalid {
+			.wpcf7-response-output {}
+		}
+
+	}
+
+}

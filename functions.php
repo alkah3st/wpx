@@ -19,21 +19,58 @@ define( 'WPX_GA_ID', false);
 define( 'WPX_ADDTHIS_ID', false);
 define( 'WPX_GMAPS_API', false);
 
+/**
+ * Classes
+*/
+function wpx_autoloader($class) {
+	$namespace = 'WPX\Classes';
+ 
+	if (strpos($class, $namespace) !== 0) {
+		return;
+	}
+ 
+	$class = str_replace($namespace, '', $class);
+	$class = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
+ 
+	$directory = get_template_directory();
+	$path = $directory . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $class;
+ 
+	if (file_exists($path)) {
+		require_once($path);
+	}
+}
+
+spl_autoload_register('wpx_autoloader');
+
+// kick off any filters on init
+// $theme = new \WPX\Classes\Theme\Globals();
+// $theme->filters();
 
 /**
- * Functions
+ * Utility Functions
+ */
+require_once(WPX_THEME_PATH."/includes/functions/helper.php");
+require_once(WPX_THEME_PATH."/includes/functions/ui.php");
+
+/**
+ * Filters/Actions
 */
-require_once(WPX_THEME_PATH."includes/actions.php");
-require_once(WPX_THEME_PATH."includes/filters.php");
-require_once(WPX_THEME_PATH."includes/sidebars.php");
-require_once(WPX_THEME_PATH."includes/enqueue.php");
-require_once(WPX_THEME_PATH."includes/rewrites.php");
-require_once(WPX_THEME_PATH."includes/utility.php");
-require_once(WPX_THEME_PATH."includes/loops.php");
-require_once(WPX_THEME_PATH."includes/blocks.php");
-require_once(WPX_THEME_PATH."includes/comments.php");
-require_once(WPX_THEME_PATH."includes/feed.php");
-require_once(WPX_THEME_PATH."includes/schema.php");
+require_once(WPX_THEME_PATH."/includes/blocks.php");
+require_once(WPX_THEME_PATH."/includes/comments.php");
+require_once(WPX_THEME_PATH."/includes/dashboard.php");
+require_once(WPX_THEME_PATH."/includes/enqueue.php");
+require_once(WPX_THEME_PATH."/includes/feed.php");
+require_once(WPX_THEME_PATH."/includes/plugins.php");
+require_once(WPX_THEME_PATH."/includes/rewrites.php");
+require_once(WPX_THEME_PATH."/includes/schema.php");
+require_once(WPX_THEME_PATH."/includes/templates.php");
+
+/**
+ * Custom ACF Fields
+ */
+require_once(WPX_THEME_PATH."/includes/custom-acf/brand-colors/brand-colors.php");
+require_once(WPX_THEME_PATH."/includes/custom-acf/icon-picker/icon-picker.php");
+require_once(WPX_THEME_PATH."/includes/custom-acf/image-selector/image-selector.php");
 
 /**
  * Custom ACF Fields
@@ -69,7 +106,7 @@ function wpx_architecture() {
 		
 		// add parent
 		$parent = acf_add_options_page(array(
-			'page_title' 	=> 'Theme Settings',
+			'page_title' 	=> 'Options',
 			'menu_title' 	=> 'Options',
 			'redirect' 		=> false,
 			'icon_url' => 'dashicons-analytics',
@@ -78,15 +115,8 @@ function wpx_architecture() {
 
 		// add sub page
 		acf_add_options_sub_page(array(
-			'page_title' 	=> 'Sitewide Settings',
-			'menu_title' 	=> 'Sitewide',
-			'parent_slug' 	=> $parent['menu_slug'],
-		));
-
-		// add sub page
-		acf_add_options_sub_page(array(
-			'page_title' 	=> 'Home Page Settings',
-			'menu_title' 	=> 'Home',
+			'page_title' 	=> 'Header',
+			'menu_title' 	=> 'Header',
 			'parent_slug' 	=> $parent['menu_slug'],
 		));
 
@@ -125,6 +155,9 @@ function wpx_setup() {
 	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
 
+	// remove block patterns
+	remove_theme_support( 'core-block-patterns' );
+
 	/*
 	 * Switch default core markup for search form, comment form, and comments
 	 * to output valid HTML5.
@@ -145,20 +178,11 @@ function wpx_setup() {
 		'primary' => 'Primary Navigation'
 	) );
 
-	// Add theme support for selective refresh for widgets.
-	add_theme_support( 'customize-selective-refresh-widgets' );
-
 	// Add support for Block Styles.
 	add_theme_support( 'wp-block-styles' );
 
 	// Add support for full and wide align images.
 	add_theme_support( 'align-wide' );
-
-	// Add support for editor styles.
-	add_theme_support( 'editor-styles' );
-
-	// Enqueue editor styles
-	// add_editor_style( 'style-editor.css' );
 
 	// Add custom editor font sizes.
 	add_theme_support(
@@ -200,9 +224,6 @@ function wpx_setup() {
 	// prevent maximum upload limit
 	add_filter( 'big_image_size_threshold', '__return_false' );
 
-	// disable block patterns
-	// remove_theme_support( 'core-block-patterns' ); 
-
 	// Add support for responsive embedded content.
 	add_theme_support( 'responsive-embeds' );
 
@@ -230,96 +251,6 @@ function wpx_color_array() {
 			'name'  => 'White',
 			'slug'  => 'white',
 			'color' => '#FFFFFF',
-		),
-		array(
-			'name'  => 'Dark',
-			'slug'  => 'dark',
-			'color' => '#242a30',
-		),
-		array(
-			'name'  => 'Very Light Pink',
-			'slug'  => 'very-light-pink',
-			'color' => '#f8f7f5',
-		),
-		array(
-			'name'  => 'Dark Two',
-			'slug'  => 'dark-two',
-			'color' => '#263745',
-		),
-		array(
-			'name' => 'UI Gray',
-			'slug' => 'ui-gray',
-			'color' => '#e6e3de'
-		),
-		array(
-			'name' => 'Smoke',
-			'slug' => 'smoke',
-			'color' => '#42484c'
-		),
-		array(
-			'name' => 'Gray',
-			'slug' => 'gray',
-			'color' => '#555555'
-		),
-		array(
-			'name'  => 'Blue Green',
-			'slug'  => 'blue-green',
-			'color' => '#008774',
-		),
-		array(
-			'name'  => 'Green Blue',
-			'slug'  => 'green-blue',
-			'color' => '#09a48e',
-		),
-		array(
-			'name'  => 'Greyish Teal',
-			'slug'  => 'greyish-teal',
-			'color' => '#59c2b1',
-		),
-		array(
-			'name'  => 'Ice',
-			'slug'  => 'ice',
-			'color' => '#e7f6f4',
-		),
-		array(
-			'name'  => 'Reddish Orange',
-			'slug'  => 'reddish-orange',
-			'color' => '#f16721',
-		),
-		array(
-			'name'  => 'Yellowish Orange',
-			'slug'  => 'yellowish-orange',
-			'color' => '#f8a01e',
-		),
-		array(
-			'name'  => 'Purplish',
-			'slug'  => 'purplish',
-			'color' => '#8855a2',
-		),
-		array(
-			'name'  => 'Pale Purple',
-			'slug'  => 'pale-purple',
-			'color' => '#b891c2',
-		),
-		array(
-			'name'  => 'Yellowish Green',
-			'slug'  => 'yellowish-green',
-			'color' => '#aae417',
-		),
-		array(
-			'name'  => 'Very Pale Green',
-			'slug'  => 'very-pale-green',
-			'color' => '#dcf6be',
-		),
-		array(
-			'name'  => 'Ice Blue',
-			'slug'  => 'ice-blue',
-			'color' => '#e4f3ff',
-		),
-		array(
-			'name'  => 'Light Teal',
-			'slug'  => 'light-teal',
-			'color' => '#e6f6f3',
 		)
 	);
 
@@ -347,7 +278,7 @@ function wpx_update_color_map() {
 	$color_map = wpx_color_array();
 
 	// write the set to a file for SASS
-	\WPX\Custom\get_color_sass($color_map);
+	\WPX\Enqueue\get_color_sass($color_map);
 
 }
 
@@ -370,4 +301,19 @@ add_action( 'pre_get_posts', 'wpx_pre_get_posts' );
  */
 function assets_url() {
 	return WPX_THEME_URL.'/assets';
+}
+
+/**
+ * Writes Errors to DEBUG Log
+ */
+if ( ! function_exists('write_log')) {
+	function write_log ( $log )  {
+		if (wp_get_environment_type() === 'development' || wp_get_environment_type() === 'local') {
+			if ( is_array( $log ) || is_object( $log ) ) {
+				error_log( print_r( $log, true ) );
+			} else {
+				error_log( $log );
+			}
+		}
+	}
 }

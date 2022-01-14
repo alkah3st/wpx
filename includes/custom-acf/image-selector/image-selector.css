@@ -32,3 +32,36 @@
 .acf-image-selector-wrap .acf-image-selector-option:hover {
 	opacity: 0.2;
 }
+
+.acf-image-selector-wrap.mode-radio {
+	background-color: transparent;
+	overflow: auto;
+	overflow-y: auto;
+	height: auto;
+}
+
+.acf-image-selector-wrap.mode-radio .acf-image-selector-wrap-options {
+	display: flex;
+}
+
+.acf-image-selector-wrap .acf-image-selector-option {
+	width: 200px;
+	margin-right: 10px;
+
+}
+
+.acf-image-selector-wrap.mode-radio img {
+	width: 100%;
+}
+
+.acf-image-selector-wrap.mode-radio .acf-image-selector-option {
+	opacity: 0.4;
+}
+
+.acf-image-selector-wrap.mode-radio .acf-image-selector-option.selected {
+	opacity: 1;
+}
+
+.acf-image-selector-wrap.mode-radio .acf-image-selector-option:hover {
+	opacity: 1;
+}

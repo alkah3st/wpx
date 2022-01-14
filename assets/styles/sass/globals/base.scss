@@ -3,26 +3,30 @@
 */
 * {
 	box-sizing: border-box;
-	outline: none;
+}
+
+html, body {
+	height: 100%;
 }
 
 body {
 	width: 100%;
 	margin: 0;
 	display: flex;
-	min-height: 100vh;
-	overflow-x: hidden;
 	flex-direction: column;
+	min-height: 100vh;
+	font-family: $body;
+	overflow-x: hidden;
+	background-color: color('brown');
 
 	&:not(.wp-admin) {
-		color: color('dark-two');
 		font-family: $body;
 	}
 
 }
 
-::-moz-selection { background: color('yellowish-orange'); }
-::selection { background: color('yellowish-orange'); }
+::-moz-selection { }
+::selection { }
 ::-ms-clear {
 	display: none;
 }
@@ -35,6 +39,9 @@ a {
 }
 
 button {
+	padding: 0;
+	background-color: transparent;
+	border: none;
 	transition: $transition;
 }
 
@@ -42,14 +49,27 @@ button {
  * globals
  */
 .screenreader {
-	outline: none;
-	font-size: 0;
-	padding: 0;
-	position: absolute;
-	clip: rect(1px, 1px, 1px, 1px);
+	font-size: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	position: absolute !important;
+	clip: rect(1px, 1px, 1px, 1px) !important;
+	transition: none !important;
 
 	&:focus {
-		outline: none;
+		font-size: 14px !important;
+		bottom: 10px !important;
+		left: 10px !important;
+		clip: auto !important;
+		width: auto !important;
+		text-decoration: none !important;
+		height: auto !important	;
+		position: fixed !important;
+		line-height: 1.4 !important;
+		z-index: 9999999 !important;
+		background-color: white !important;
+		padding: 10px 15px !important;
+		color: hsl(206deg, 1, 0.52) !important;
 	}
 
 }
@@ -79,10 +99,6 @@ button {
 	@include context();
 }
 
-.blocker {
-	z-index: 9999;
-}
-
 .tinymce {
 	@include tinymce();
 }
@@ -99,13 +115,23 @@ button {
 	text-align: right;
 }
 
+.explode-width {
+	width: 100vw;
+	margin-left: calc(-50vw + 50%);
+	position: relative;
+}
+
 /**
  * colors
  */
 @each $class, $hex in $colors {
 
 	.has-#{$class}-color {
-		color: $hex;
+		color: $hex !important;
+	}
+
+	.has-#{$class}-background-color {
+		background-color: $hex !important;
 	}
 
 }
@@ -114,8 +140,15 @@ button {
  * structure
  */
 .bounds {
-	flex: 1 0 auto;
-	display: flex;
+	@include minmax(margin, 0, 0);
+	position: relative;
+	flex: 1;
+	z-index: 10;
+
+	.bounds-inner {
+		position: relative;
+		z-index: 5;
+	}
 }
 
 /**

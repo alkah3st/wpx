@@ -12,6 +12,19 @@ namespace WPX\Comments;
 use \Walker_Comment;
 
 /**
+ * Changes comment form default fields.
+ */
+function comment_form_defaults( $defaults ) {
+	$comment_field = $defaults['comment_field'];
+
+	// Adjust height of comment form.
+	$defaults['comment_field'] = preg_replace( '/rows="\d+"/', 'rows="5"', $comment_field );
+
+	return $defaults;
+}
+add_filter( 'comment_form_defaults', '\WPX\Comments\comment_form_defaults' );
+
+/**
  * Custom comment walker for this theme.
  *
  * @package WordPress
@@ -178,3 +191,59 @@ function is_comment_by_post_author( $comment = null ) {
 	return false;
 
 }
+
+/**
+ * Change Comment Field Order
+ */
+function comment_field_order( $fields ) {
+	$cookies = $fields['cookies'];
+	$comment_field = $fields['comment'];
+	$author_field = $fields['author'];
+	$email_field = $fields['email'];
+	$url_field = $fields['url'];
+	unset( $fields['cookies'] );
+	unset( $fields['comment'] );
+	unset( $fields['author'] );
+	unset( $fields['email'] );
+	unset( $fields['url'] );
+	// the order of fields is the order below, change it as needed:
+	$fields['author'] = $author_field;
+	$fields['email'] = $email_field;
+	$fields['url'] = $url_field;
+	$fields['comment'] = $comment_field;
+	$fields['cookies'] = $cookies;
+	// done ordering, now return the fields:
+	return $fields;
+}
+add_filter( 'comment_form_fields', '\WPX\Comments\comment_field_order' );
+
+/**
+ * Don't Count Trackbacks
+ */
+function exclude_trackbacks( $count ) {
+	global $id;
+	$comments = get_approved_comments($id);
+	$comment_count = 0;
+	foreach($comments as $comment){
+		if($comment->comment_type == ""){
+			$comment_count++;
+		}
+	}
+	return $comment_count;
+}
+
+add_filter('get_comments_number', '\WPX\Comments\exclude_trackbacks', 0);
+
+/**
+ * Comment Reply Script
+ * @return [type] [description]
+ */
+function enqueue_comment_reply() {
+	// on single blog post pages with comments open and threaded comments
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) { 
+		// enqueue the javascript that performs in-link comment reply fanciness
+		wp_enqueue_script( 'comment-reply' ); 
+	}
+}
+// Hook into wp_enqueue_scripts
+add_action( 'wp_enqueue_scripts', '\WPX\Comments\enqueue_comment_reply' );

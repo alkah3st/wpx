@@ -32,10 +32,11 @@ if (class_exists('acf')) {
 		if ($brand_colors) : ?>
 			<script>
 				jQuery( document ).ready(function() {
-					acf.addAction('append', function( $el ){
-						console.log('hey appending');
-						$el.find('.acf-color-picker').select2({width: 'resolve',allowClear: true,placeholder: 'Select a Color',escapeMarkup: function (markup) { return markup; }});
-					});
+					if (typeof acf !== 'undefined') {
+						acf.addAction('append', function( $el ){
+							$el.find('.acf-color-picker').select2({width: 'resolve',allowClear: true,placeholder: 'Select a Color',escapeMarkup: function (markup) { return markup; }});
+						});
+					}
 				});
 			</script>
 		<?php endif; 
@@ -45,71 +46,19 @@ if (class_exists('acf')) {
 	class wpx_brand_colors extends acf_field {
 		
 		
-		/*
-		*  __construct
-		*
-		*  This function will setup the field type data
-		*
-		*  @type	function
-		*  @date	5/03/2014
-		*  @since	5.0.0
-		*
-		*  @param	n/a
-		*  @return	n/a
-		*/
-		
 		function __construct() {
-			
-			/*
-			*  name (string) Single word, no spaces. Underscores allowed
-			*/
 			
 			$this->name = 'wpx-brand-colors';
 			
-			
-			/*
-			*  label (string) Multiple words, can include spaces, visible when selecting a field type
-			*/
-			
 			$this->label = 'Brand Colors';
-			
-			
-			/*
-			*  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
-			*/
-			
+
 			$this->category = 'jquery';
 
-			// do not delete!
-	    	parent::__construct();
-	    	
+			parent::__construct();
 		}
 		
 		
-		/*
-		*  render_field_settings()
-		*
-		*  Create extra settings for your field. These are visible when editing a field
-		*
-		*  @type	action
-		*  @since	3.6
-		*  @date	23/01/13
-		*
-		*  @param	$field (array) the $field being edited
-		*  @return	n/a
-		*/
-		
 		function render_field_settings( $field ) {
-			
-			/*
-			*  acf_render_field_setting
-			*
-			*  This function will create a setting for your field. Simply pass the $field parameter and an array of field settings.
-			*  The array of settings does not require a `value` or `prefix`; These settings are found from the $field array.
-			*
-			*  More than one setting can be added by copy/paste the above code.
-			*  Please note that you must also have a matching $defaults value for the field name (font_size)
-			*/
 			
 			acf_render_field_setting( $field, array(
 				'label'			=> 'Color',
@@ -120,33 +69,12 @@ if (class_exists('acf')) {
 
 		}
 		
-		
-		
-		/*
-		*  render_field()
-		*
-		*  Create the HTML interface for your field
-		*
-		*  @param	$field (array) the $field being rendered
-		*
-		*  @type	action
-		*  @since	3.6
-		*  @date	23/01/13
-		*
-		*  @param	$field (array) the $field being edited
-		*  @return	n/a
-		*/
-		
 		function render_field( $field ) {
 
-			// get the brand colors
 			$brand_colors = wpx_color_palette();
 			
 			$random_id = rand(1, 9999);
 			
-			/*
-			*  Create a simple text input using the 'font_size' setting.
-			*/
 			if ($brand_colors) :
 				sort($brand_colors);
 			?>
@@ -185,20 +113,6 @@ if (class_exists('acf')) {
 			endif;
 		}
 
-		/*
-		*  input_admin_enqueue_scripts()
-		*
-		*  This action is called in the admin_enqueue_scripts action on the edit screen where your field is created.
-		*  Use this action to add CSS + JavaScript to assist your render_field() action.
-		*
-		*  @type	action (admin_enqueue_scripts)
-		*  @since	3.6
-		*  @date	23/01/13
-		*
-		*  @param	n/a
-		*  @return	n/a
-		*/
-
 		function input_admin_enqueue_scripts() {
 
 			wp_register_script('acf-icon-picker-select2-js', get_template_directory_uri()."/includes/custom-acf/select2.js", array('jquery'), null);
@@ -214,7 +128,6 @@ if (class_exists('acf')) {
 
 	}
 
-	// initialize
 	new wpx_brand_colors();
 
 }

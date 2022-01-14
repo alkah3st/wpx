@@ -1,9 +1,7 @@
 @mixin tinymce() {
-	@include font-size(18px, 16px);
 	position: relative;
-	line-height: 1.76;
+	line-height: 1.5;
 	font-family: $body;
-	font-weight: 400;
 
 	@each $class, $hex in $colors {
 
@@ -13,11 +11,16 @@
 
 	}
 
+	::-moz-selection { }
+	::selection { }
+	::-ms-clear {
+		display: none;
+	}
+
 	/**
 	 * elements
 	*/
 	p {
-		@include font-size(18px, 16px);
 		margin-bottom: $rhythm;
 		margin-top: 0;
 
@@ -34,19 +37,15 @@
 		}
 
 		&.has-small-font-size {
-			@include font-size(16px, 14px);
 		}
 
 		&.has-normal-font-size {
-			@include font-size(18px, 16px);
 		}
 
 		&.has-large-font-size {
-			@include font-size(24px, 18px);
 		}
 
 		&.has-huge-font-size {
-			@include font-size(30px, 24px);
 		}
 
 		&.has-drop-cap:not(:focus)::first-letter {
@@ -56,7 +55,7 @@
 		&.has-drop-cap {
 
 			&::first-letter {
-				font-family: $heading;
+
 			}
 		}
 
@@ -74,6 +73,8 @@
 	}
 
 	a {
+		font-weight: 800;
+		text-decoration: underline;
 
 		@each $class, $hex in $colors {
 
@@ -83,16 +84,83 @@
 
 		}
 
-		&:hover {}
+		&:hover {
+		}
 	}
 
 	strong { 
 		font-weight: 800;
 	}
 
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		margin-top: $rhythm*2;
+		margin-bottom: $rhythm/1.5;
+		font-family: $heading;
+
+		@include breakpoint($viewport_mobile) {
+			margin-top: $rhythm;
+			margin-bottom: $rhythm*0.75;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		a {
+			font-weight: normal;
+			text-decoration: none;
+		}
+	}
+
+	h1 {
+
+		a {
+		}
+	}
+
+	h2 {
+
+		a {
+		}
+
+	}
+
+	h3 {
+
+		a {
+		}
+
+	}
+
+	h4 {
+
+		a {
+		}
+
+
+	}
+
+	h5 {
+
+		a {
+		}
+
+	}
+
+	h6 {
+
+		a {
+		}
+
+	}
+
 	sup,
 	sub {
-		@include font-size(10px);
 	}
 
 	sub {
@@ -116,64 +184,22 @@
 	 */
 	ol,
 	ul {
-		margin: $rhythm 0 $rhythm $rhythm*2;
+		margin: $rhythm 0 $rhythm $rhythm;
 		padding: 0;
 
 		@include breakpoint($viewport_mobile) {
-			margin-bottom: $rhythm*0.75;
+			margin-bottom: $rhythm;
 			margin-left: $rhythm;
 		}
 
 		li {
-			margin-bottom: $rhythm/2;
-		}
-	}
+			margin-bottom: $rhythm;
 
-	ol {
-
-		ol {
-			li {
-				list-style-type: upper-roman;
+			&:last-child {
+				margin-bottom: 0;
 			}
+
 		}
 	}
-
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		margin-top: $rhythm*1.5;
-		margin-bottom: $rhythm;
-		font-family: $heading;
-
-		@include breakpoint($viewport_mobile) {
-			margin-top: $rhythm;
-			margin-bottom: $rhythm*0.75;
-		}
-
-		&:last-child {
-			margin-bottom: 0;
-		}
-
-		a {
-			font-weight: normal;
-			text-decoration: none;
-		}
-	}
-
-	h1 {}
-
-	h2 {}
-
-	h3 {}
-
-	h4 {}
-
-	h5 {}
-
-	h6 {}
-
 
 }
