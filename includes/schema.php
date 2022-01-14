@@ -9,11 +9,6 @@
  */
 namespace WPX\Schema;
 
-if (WP_ENVIRONMENT_TYPE == 'development') {
-	add_filter( 'yoast_seo_development_mode', '__return_true' );
-}
-
-
 /**
  * Add Social Properties to Schema
  *

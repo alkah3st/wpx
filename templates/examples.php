@@ -8,6 +8,7 @@
  * @version 1.0
  *
 */
+$example_module = new \WPX\Classes\UI\Example();
 the_post();
 get_header(); ?>
 
@@ -33,11 +34,19 @@ get_header(); ?>
 
 <h2>Example Stimulus Element</h2>
 
-<div data-controller="example-controller">
+<div data-controller="exampleController">
 
 	<h1>Click Below to Trigger Controller Function</h1>
 
-	<a href="#" data-example-controller-target="exampleElement" data-action="click->example-controller#exampleFunction">Check Console Log</a>
+	<a href="#" data-target="exampleTarget">Check Console Log</a>
+
+</div>
+
+<div class="example-wrap">
+
+<p>Most UI should be constructed as classes:</p>
+
+<?php $example_module->exampleHeader(); ?>
 
 </div>
 

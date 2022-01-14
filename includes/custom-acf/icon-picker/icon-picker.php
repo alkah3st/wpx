@@ -5,9 +5,11 @@ if (class_exists('acf')) {
 	function acf_icon_picker_footer() { ?>
 		<script>
 			jQuery( document ).ready(function() {
-				acf.addAction('append', function( $el ){
-					$el.find('.acf-fontello-picker').select2({width: 'resolve',allowClear: true,placeholder: 'Select an Icon',escapeMarkup: function (markup) { return markup; }});
-				});
+				if (typeof acf !== 'undefined') {
+					acf.addAction('append', function( $el ){
+						$el.find('.acf-fontello-picker').select2({width: 'resolve',allowClear: true,placeholder: 'Select an Icon',escapeMarkup: function (markup) { return markup; }});
+					});
+				}
 			});
 		</script>
 	<?php }
@@ -135,6 +137,10 @@ if (class_exists('acf')) {
 						var selection = jQuery('#acf-fontello-picker<?php echo $random_id; ?>');
 						jQuery(selection).select2({
 							data: [
+							{
+								id: '',
+								text: ''
+							}, 
 							<?php 
 								foreach($icon_names as $i=>$icon) : 
 							?>

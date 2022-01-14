@@ -25,6 +25,13 @@ if (class_exists('acf')) {
 			));
 
 			acf_render_field_setting($field, array(
+				'label'	=> __('Layout Mode'),
+				'instructions' => "Enter 'radio' for radio selects, or 'image' for a grid of images at 50x50.",
+				'type'	=>	'text',
+				'name'	=>	'layout_mode',
+			));
+
+			acf_render_field_setting($field, array(
 				'label'	=> __('Image Path'),
 				'instructions' => "Enter a relative file path (the root being the theme) for image folder.",
 				'type'	=>	'text',
@@ -43,13 +50,13 @@ if (class_exists('acf')) {
 		
 		function render_field( $field ) {
 
-			$images = array_diff(scandir(esc_attr(WPX_THEME_PATH.$field['image_path'])), array('.', '..'));
+			$images = array_diff(scandir(esc_attr(WPX_THEME_PATH.'/'.$field['image_path'])), array('.', '..'));
 
 			if ($images) :
 
 			?>
 
-				<div class="acf-image-selector-wrap">
+				<div class="acf-image-selector-wrap mode-<?php echo (isset($field['layout_mode']) ? $field['layout_mode'] : 'image'); ?>">
 					
 					<input type="hidden" class="acf-image-selector-field" value="<?php echo $field['value']; ?>" name="<?php echo esc_attr($field['name']) ?>">
 

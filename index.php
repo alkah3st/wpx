@@ -7,8 +7,5 @@
  * @since 0.1.0
  * @version 1.0
  */
-get_header(); ?>
-
-<h1>Home</h1>
-
-<?php get_footer(); ?>
+include_once(WPX_THEME_PATH.'/front-page.php');
+exit;

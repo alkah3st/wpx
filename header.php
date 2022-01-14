@@ -34,6 +34,7 @@
 	<meta name="theme-color" content="#ffffff">
 	<?php // see https://realfavicongenerator.net/; don't forget to put favicon.png/ico in the root of the site ?>
 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Oswald:wght@200;300;400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
@@ -42,3 +43,14 @@
 </head>
 
 <body <?php body_class(); ?>>
+
+	<div class="screenreader-actions" data-controller="screenreaderJumpLinks">
+		<a class="screenreader" data-target="skipPrimaryMenu" tabindex="1" href="#screenreader-primary-nav">Skip to Primary Menu</a>
+		<a class="screenreader" data-target="skipMainContent" tabindex="4" href="#screenreader-main">Skip to Main Content</a>
+	</div>
+
+	<div id="global-fader" aria-hidden="true"></div>
+
+	<div class="bounds" id="screenreader-main">
+
+		<div class="bounds-inner wrap tinymce">

@@ -1,0 +1,28 @@
+/**
+ * modal
+ */
+.modal {
+	display: none;
+	z-index: 999999;
+	position: fixed;
+
+	.modal__overlay {
+		z-index: 999999;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		justify-content: center;
+	}
+
+	.modal__container {
+		box-sizing: border-box;
+		width: 90%;
+
+		@include breakpoint(400px) {
+			width: 100%;
+		}
+	}
+}

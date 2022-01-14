@@ -10,12 +10,25 @@
 }
 
 /**
+ * wide width
+ */
+@mixin wide-width($width, $margin) {
+	width: $width;
+	margin-left: $margin;
+
+	@include breakpoint(980px) {
+		max-width: 100%;
+	}
+
+}
+
+/**
  * wider width
  */
 @mixin width-wide() {
-	width: 150%;
-	max-width: 150%;
-	margin-left: -25%;
+	width: 120%;
+	max-width: 120%;
+	margin-left: -10%;
 
 	@include breakpoint(1000px) {
 		width: 100%;
@@ -147,10 +160,10 @@
 /**
 * Context
 **/
-@mixin context {
+@mixin context($max-width: $context, $width: 90%) {
 	margin: 0 auto;
-	max-width: $context;
-	width: 95%;
+	max-width: $max-width;
+	width: $width;
 }
 
 /**
@@ -202,7 +215,7 @@
  * http://chrisltd.com/blog/2013/05/retina-images-sass/
  */
 @mixin bg-retina($file, $type, $width, $height) {
-	background-image: url("../images/bgs/" + $file + '.' + $type);
+	background-image: url("../images/" + $file + '.' + $type);
 	@media only screen and (-webkit-min-device-pixel-ratio: 2),
 		only screen and (-moz-min-device-pixel-ratio: 2),
 		only screen and (-o-min-device-pixel-ratio: 2/1),
@@ -210,7 +223,7 @@
 		only screen and (min-resolution: 192dpi),
 		only screen and (min-resolution: 2dppx){
 		& {
-			background-image: url("../images/bgs/" + $file + '@2x.' + $type);
+			background-image: url("../images/" + $file + '@2x.' + $type);
 			-webkit-background-size: $width $height;
 			-moz-background-size: $width $height;
 			-o-background-size: $width $height;

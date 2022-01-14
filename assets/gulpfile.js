@@ -17,6 +17,9 @@ var sourcemaps  	= require('gulp-sourcemaps');
 var jshint      	= require('gulp-jshint');
 var terser 			= require('gulp-terser');
 var download 		= require("gulp-download");
+var newer 			= require("gulp-newer");
+var cached 			= require("gulp-cached");
+var dependents 		= require("gulp-dependents");
 
 // encode the external url with the querystring
 // so as to make it unique within the list of
@@ -39,7 +42,8 @@ String.prototype.hashCode = function() {
 // optionally, place a ?v=# to make each url unique
 gulp.task('external-js', function(){
 	return download([
-		"https://s7.addthis.com/js/300/addthis_widget.js"
+		"https://www.gstatic.com/charts/loader.js?v=1",
+		"https://s7.addthis.com/js/300/addthis_widget.js",
 	])
 	// for each external download, create a unique reference
 	// so as to differentiate from same-named files 
@@ -85,20 +89,17 @@ gulp.task('sass', function(){
 
 			this.emit('end');
 		}}))
-		.pipe(sourcemaps.init())
+		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sassglob())
 		.pipe(sass())
+		.pipe(cached('sass_compiled'))
 		.pipe(autoprefixer({
-			cascade: false
+			cascade: false,
+			flexbox: 'no-2009',
 		}))
-		.pipe(cleancss({
-			compatibility: '*',
-			format: 'beautify',
-			sourceMap: true
-		}))
-		.pipe(sourcemaps.write())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('styles'))
-		.pipe(livereload());
+		.pipe(livereload())
 });
 
 // preps CSS for prod
@@ -129,6 +130,7 @@ gulp.task('sass-build', function(){
 // compiles SCSS -> CSS inside gutenberg
 gulp.task('sass-gutenberg', function () {
 	return gulp.src('styles/gutenberg/gutenberg.scss')
+		.pipe(newer({ dest: 'styles', ext: '.css', extra: ['styles/sass/**/**/**/*.scss','styles/gutenberg/**/**/**/*.scss']}))
 		.pipe(plumber({errorHandler: function(err) {
 			notify.onError({
 						title:    "Gulp: [sass-gutenberg]",
@@ -139,7 +141,7 @@ gulp.task('sass-gutenberg', function () {
 
 			this.emit('end');
 		}}))
-		.pipe(sourcemaps.init())
+		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sassglob())
 		.pipe(sass())
 		.pipe(autoprefixer({
@@ -150,8 +152,6 @@ gulp.task('sass-gutenberg', function () {
 		}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('styles'))
-		.pipe(livereload());
-		done();
 });
 
 // preps gutenberg CSS for prod
@@ -203,27 +203,9 @@ gulp.task('sprites', function generateSpritesheets (done) {
 	done();
 });
 
-// minifies SVGs
-gulp.task('svgmin', function(){
-	return gulp.src('images/**/*.{svg}')
-		.pipe(plumber({errorHandler: function(err) {
-			notify.onError({
-						title:    "Gulp: [sass-svgmin]",
-						subtitle: "Error",
-						message:  "<%= error.message %>",
-						sound:    false
-					})(err);
-
-			this.emit('end');
-		}}))
-		.pipe(imagemin([imagemin.svgo({plugins: [{removeViewBox: true}]})]))
-		.pipe(rename({dirname: ''}))
-		.pipe(gulp.dest('images/'))
-});
-
-// minifies PNG, GIF, JPEG, and JPG
+// minifies PNG, GIF, JPEG, JPG, and SVG
 gulp.task('imagemin', function(){
-	return gulp.src('images/**/*.{png,gif,jpg,jpeg}')
+	return gulp.src('images/*.{png,gif,jpg,jpeg,svg}')
 		.pipe(plumber({errorHandler: function(err) {
 			notify.onError({
 						title:    "Gulp: [sass-imagemin]",
@@ -234,14 +216,23 @@ gulp.task('imagemin', function(){
 
 			this.emit('end');
 		}}))
-		.pipe(imagemin())
-		.pipe(rename({dirname: ''}))
-		.pipe(gulp.dest('images/'))
+		.pipe(imagemin([
+			imagemin.gifsicle({interlaced: true, optimizationLevel: 3}),
+			imagemin.mozjpeg({quality: 85, progressive: true}),
+			imagemin.optipng({optimizationLevel: 5}),
+			imagemin.svgo({
+				plugins: [
+					{removeViewBox: true},
+					{cleanupIDs: false}
+				]
+			})
+		]))
+		.pipe(gulp.dest('images'))
 });
 
 // checks app.init and modules for js errors
 gulp.task('jshint', function() {
-	return gulp.src(['js/app.init.js','js/modules/**/*.js'])
+	return gulp.src(['js/app.init.js','js/modules/**/**/*.js'])
 		.pipe(plumber({errorHandler: function(err) {
 			notify.onError({
 						title:    "Gulp: [jshint]",
@@ -259,7 +250,7 @@ gulp.task('jshint', function() {
 
 // compiles vendor JS and app/modules JS
 gulp.task('js', function() {
-	return gulp.src(['js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
+	return gulp.src(['js/vendor/**/*.js','js/app.init.js','js/app.utils.js','js/modules/**/**/*.js'])
 		.pipe(plumber({errorHandler: function(err) {
 			notify.onError({
 						title:    "Gulp: [js]",
@@ -272,13 +263,12 @@ gulp.task('js', function() {
 		}}))
 		.pipe(concat('app.js'))
 		.pipe(gulp.dest('js'))
-		.pipe(livereload());
-		done();
+		.pipe(livereload())
 });
 
 // preps JS for prod
 gulp.task('jsmin', function() {
-	return gulp.src(['js/vendor/**/*.js','js/app.init.js','js/modules/**/*.js'])
+	return gulp.src(['js/vendor/**/*.js','js/app.init.js','js/app.utils.js','js/modules/**/**/*.js'])
 		.pipe(plumber({errorHandler: function(err) {
 			notify.onError({
 						title:    "Gulp: [js]",
@@ -300,8 +290,6 @@ gulp.task('jsmin', function() {
 			console.log('\x07',err); return this.end();
 		})
 		.pipe(gulp.dest('js'))
-		.pipe(livereload());
-		done();
 });
 
 // fetches latest icons from fontello based on json
@@ -323,6 +311,7 @@ gulp.task('fontello', function () {
 			css: 'styles/sass/vendor/icons'
 		}))
 		.pipe(rename(function(file) { // we need to rename css files to scss
+			//file.basename = '_'+file.basename;
 			if (file.extname == '.css') {
 				file.extname = '.scss';
 			}
@@ -343,7 +332,7 @@ gulp.task('fontello-acf', function () {
 
 			this.emit('end');
 		}}))
-		.pipe(sourcemaps.init())
+		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sassglob())
 		.pipe(sass())
 		.pipe(sourcemaps.write())
@@ -352,12 +341,20 @@ gulp.task('fontello-acf', function () {
 
 gulp.task('watch', function(){
 	livereload.listen();
+	gulp.watch(['styles/sass/**/**/**/*.scss'], gulp.series(['sass']));
+	gulp.watch(['js/modules/**/**/*.js','js/vendor/*.js'], gulp.series(['jshint','js']));
+	gulp.watch(['../*.php','../includes/classes/**/*.php','../templates/**/*.php','../partials/**/*.php']).on('change', livereload.changed);
+});
+
+gulp.task('watch-gutenberg', function(){
+	livereload.listen();
 	gulp.watch(['styles/sass/**/**/**/*.scss','styles/gutenberg/**/**/**/*.scss'], gulp.series(['sass','sass-gutenberg']));
-	gulp.watch(['js/modules/*.js','js/vendor/*.js'], gulp.series(['jshint','js']));
+	gulp.watch(['js/modules/**/**/*.js','js/vendor/*.js'], gulp.series(['jshint','js']));
 	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', livereload.changed);
-})
+});
 
 gulp.task('external', gulp.series('external-js','external-css'));
-gulp.task('default', gulp.series('jshint', gulp.parallel(['sass','js','sass-gutenberg']), 'watch'));
+gulp.task('default', gulp.series('jshint', gulp.parallel(['sass','js']), 'watch'));
+gulp.task('gutenberg', gulp.series('jshint', gulp.parallel(['sass','sass-gutenberg']), 'watch-gutenberg'));
 gulp.task('fontello', gulp.series('fontello','fontello-acf'));
-gulp.task('build', gulp.series('jshint',gulp.parallel(['sass-build','jsmin','sprites','fontello'],'imagemin','svgmin','sass-gutenberg-build')));
+gulp.task('build', gulp.series('jshint',gulp.parallel(['sass-build','jsmin','fontello'],'imagemin','sass-gutenberg-build')));
