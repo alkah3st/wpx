@@ -49,7 +49,7 @@ function custom_uac_pages($template) {
 
 	// color map (only local)
 	if ( array_key_exists( 'wpx_local', $template_vars ) && 'color-map' == $template_vars['wpx_local'] ) {
-		return WPX_THEME_PATH.'/templates/api/color-map.php';
+		return WPX_THEME_PATH.'/templates/color-map.php';
 	}
 
 	return $template;
