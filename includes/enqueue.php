@@ -17,6 +17,9 @@ function enqueue_assets() {
 	// some plugins need jquery, enqueued in the header
 	// so we let that happen with 2.2.4
 	wp_deregister_script('jquery');
+	wp_deregister_script( 'hoverintent-js' );
+	wp_deregister_script( 'regenerator-runtime' );
+	wp_deregister_script( 'wp-polyfill' );
 	wp_enqueue_script('jquery', assets_url().'/js/jquery.js', false, '2.2.4', false);
 
 	// the following are enqueued into css min via gulp
@@ -24,6 +27,7 @@ function enqueue_assets() {
 	wp_deregister_style( 'wp-block-library' );
 	wp_deregister_style( 'wp-block-library-theme' );
 	wp_deregister_style( 'contact-form-7' );
+
 
 	// we enqueue assets based on the build status, with cache busting
 	if (wp_get_environment_type() === 'development' || wp_get_environment_type() === 'local') {
