@@ -11,15 +11,6 @@
 namespace WPX\Dashboard;
 
 /**
- * Remove Editor Styles Inline CSS
- */
-function remove_guten_wrapper_styles( $settings ) {
-	unset($settings['styles'][0]);
-	return $settings;
-}
-add_filter( 'block_editor_settings_all' , '\WPX\Dashboard\remove_guten_wrapper_styles' );
-
-/**
  * Remove Customizer
  */
 add_action( 'admin_menu', function () {

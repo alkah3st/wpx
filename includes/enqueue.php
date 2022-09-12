@@ -143,16 +143,6 @@ function gutenberg_assets() {
 add_action( 'enqueue_block_editor_assets', '\WPX\Enqueue\gutenberg_assets' );
 
 /**
- * Remove Editor Styles from Gutenberg
- */
-function remove_editor_styles($editor_settings, $post) {
-	unset($editor_settings['styles'][0]);
-	return $editor_settings;
-}
-
-add_filter('block_editor_settings_all', '\WPX\Enqueue\remove_editor_styles', 2, 10);
-
-/**
 * Google Analytics
 */
 function enqueue_ga() {
