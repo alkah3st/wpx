@@ -37,7 +37,7 @@ function remove_default_blocks($allowed_blocks){
 	return $registered_blocks;
 }
 
-add_filter('allowed_block_types_all', '\WPX\Dashboard\remove_default_blocks');
+add_filter('allowed_block_types_all', '\WPX\Blocks\remove_default_blocks');
 
 /**
  * Adds a "Custom Blocks" Category
