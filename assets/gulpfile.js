@@ -44,6 +44,9 @@ gulp.task('external-js', function(){
 	return download([
 		"https://www.gstatic.com/charts/loader.js?v=1",
 		"https://s7.addthis.com/js/300/addthis_widget.js",
+		"http://wpx.test/wp-includes/js/hoverintent-js.min.js",
+		"http://wpx.test/wp-includes/js/dist/vendor/regenerator-runtime.min.js",
+		"http://wpx.test/wp-includes/js/dist/vendor/wp-polyfill.min.js",
 	])
 	// for each external download, create a unique reference
 	// so as to differentiate from same-named files 
@@ -63,7 +66,6 @@ gulp.task('external-js', function(){
 gulp.task('external-css', function(){
 	return download([
 		"http://wpx.test/wp-includes/css/dashicons.min.css",
-		"http://wpx.test/wp-includes/css/admin-bar.min.css",
 		"http://wpx.test/wp-includes/css/dist/block-library/style.min.css",
 		"http://wpx.test/wp-includes/css/dist/block-library/theme.min.css",
 		"http://wpx.test/wp-content/plugins/contact-form-7/includes/css/styles.css"

@@ -11,37 +11,6 @@
 namespace WPX\Dashboard;
 
 /**
- * Disable Specific Blocks in Gutenberg
- * @param  [type] $allowed_blocks [description]
- * @return [type]                 [description]
- */
-function remove_default_blocks($allowed_blocks){
-	// Get all registered blocks
-	$registered_blocks =\ WP_Block_Type_Registry::get_instance()->get_all_registered();
-
-	// Disable default Blocks you want to remove individually
-	unset($registered_blocks['core/calendar']);
-	unset($registered_blocks['core/legacy-widget']);
-	unset($registered_blocks['core/rss']);
-	unset($registered_blocks['core/archives']);
-	unset($registered_blocks['core/categories']);
-	unset($registered_blocks['core/latest-comments']);
-	unset($registered_blocks['core/latest-posts']);
-	unset($registered_blocks['core/social-links']);
-	unset($registered_blocks['core/search']);
-	unset($registered_blocks['core/tag-cloud']);
-
-
-	// Get keys from array
-	$registered_blocks = array_keys($registered_blocks);
-
-	// Merge allowed core blocks with plugins blocks
-	return $registered_blocks;
-}
-
-add_filter('allowed_block_types_all', '\WPX\Dashboard\remove_default_blocks');
-
-/**
  * Remove Editor Styles Inline CSS
  */
 function remove_guten_wrapper_styles( $settings ) {

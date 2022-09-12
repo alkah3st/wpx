@@ -116,6 +116,8 @@ add_action( 'init', '\WPX\Rewrites\custom_endpoints' );
 function custom_rewrites() {
 
 	add_rewrite_tag( '%api_id%', '([^/]*)' );
+	add_rewrite_rule( 'magazine/([^/]+)/(.+)/?$', 'index.php?wpx-articles=$matches[2]', 'top' );
+	add_rewrite_rule( 'magazine/(.+)/?$', 'index.php?wpx-issues=$matches[1]', 'top' );
 	add_rewrite_rule( '^api/([^/]*)/?', 'index.php?api_id=$matches[1]', 'top' );
 	add_rewrite_rule( '^wpx-local/([^/]*)/?','index.php?wpx_local=$matches[1]','top');
 
