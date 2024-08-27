@@ -7,11 +7,12 @@
  * @since 0.1.0
  * @version 1.0
  */
-the_post(); 
-get_header(); ?>
+the_post();
 
-<h1><?php the_title(); ?></h1>
+get_header(); 
 
-<div class="tinymce"><?php the_content(); ?></div>
+echo '<h1>'.get_the_title($post).'</h1>';
 
-<?php get_footer(); ?>
+the_content();
+
+get_footer();

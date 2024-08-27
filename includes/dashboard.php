@@ -67,7 +67,7 @@ add_action( 'admin_menu', '\WPX\Dashboard\no_version_number' );
 function remove_tags() {
 	remove_meta_box( 'tagsdiv-post_tag','post','normal' ); // Tags Metabo
 }
-add_action( 'admin_menu', '\WPX\Dashboard\remove_tags' );
+// add_action( 'admin_menu', '\WPX\Dashboard\remove_tags' );
 
 /**
  * Remove Tags Menu
@@ -75,7 +75,7 @@ add_action( 'admin_menu', '\WPX\Dashboard\remove_tags' );
 function remove_tags_menu() {
 	remove_submenu_page('edit.php', 'edit-tags.php?taxonomy=post_tag');
 }
-add_action('admin_menu', '\WPX\Dashboard\remove_tags_menu');
+// add_action('admin_menu', '\WPX\Dashboard\remove_tags_menu');
 
 
 /**

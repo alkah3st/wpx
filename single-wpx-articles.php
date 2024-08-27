@@ -15,8 +15,6 @@ echo '<h1>'.get_the_title($post).'</h1>';
 
 the_content();
 
-// comments_template();
-
 get_footer(); 
 
 ?>

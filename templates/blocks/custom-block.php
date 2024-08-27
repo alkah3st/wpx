@@ -8,12 +8,17 @@
  * @version 1.0
  */
 
-$id = (isset($block['id']) ? $block['id'] : false);
-$class = (isset($block['className']) ? $block['className'] : false);
+$testimonial = (get_field('testimonial') ? get_field('testimonial') : 'Testimonial text goes here...');
+$author = (get_field('author') ? get_field('author') : 'Jane Smith');
+$role = (get_field('role') ? get_field('role') : 'CEO');
 
 ?>
 
-<div class="wpx-custom-block block-custom-block <?php echo $class; ?>" <?php if ($id) : ?>id="<?php echo $id; ?>"<?php endif; ?>>
+<div <?php echo get_block_wrapper_attributes() ?>>
 
+	<blockquote>
+		<p><?php echo $testimonial; ?></p>
+		<cite><?php echo $author; ?>, <?php echo $role; ?></cite>
+	</blockquote>
 
 </div>

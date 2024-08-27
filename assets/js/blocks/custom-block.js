@@ -14,11 +14,7 @@
 	 */
 	var initializeBlock = function( $block ) {
 
-		$('[data-controller="customBlock"]').each(function( idx, item ) {
-
-			WPX.CustomBlock.sampleFunction();
-
-		});
+		WPX.CustomBlock.initializeBlock();
 
 	}
 

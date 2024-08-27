@@ -20,10 +20,8 @@
 	"predef": [
 		"jQuery",
 		"alert",
-		"Stimulus",
 		"Cookies",
 		"MicroModal",
-		"pageTransition",
 		"google",
 		"$",
 		"SITE_ROOT",

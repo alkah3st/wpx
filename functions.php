@@ -16,11 +16,13 @@ define( 'WPX_THEME_PATH', dirname( __FILE__ ) . '/' );
 define( 'WPX_DOMAIN', get_site_url() );
 define( 'WPX_SITE_NAME', get_bloginfo('name'));
 define( 'WPX_GA_ID', false);
-define( 'WPX_ADDTHIS_ID', false);
+define( 'WPX_SHARETHIS_ID', '66cc9f89e5d1da0019713f6b');
 define( 'WPX_GMAPS_API', false);
 
 /**
  * Classes
+ * You can drop classes in /includes/classes/ under desired folders
+ * and reference them as $ui = new \WPX\Classes\MyFolder\MyClass();
 */
 function wpx_autoloader($class) {
 	$namespace = 'WPX\Classes';
@@ -43,8 +45,7 @@ function wpx_autoloader($class) {
 spl_autoload_register('wpx_autoloader');
 
 // kick off any filters on init
-// $theme = new \WPX\Classes\Theme\Globals();
-// $theme->filters();
+$theme = new \WPX\Classes\Theme\Globals();
 
 /**
  * Utility Functions
@@ -68,38 +69,26 @@ require_once(WPX_THEME_PATH."/includes/templates.php");
 /**
  * Custom ACF Fields
  */
-require_once(WPX_THEME_PATH."/includes/custom-acf/brand-colors/brand-colors.php");
+require_once(WPX_THEME_PATH."/includes/custom-acf/color-palette/color-palette.php");
 require_once(WPX_THEME_PATH."/includes/custom-acf/icon-picker/icon-picker.php");
 require_once(WPX_THEME_PATH."/includes/custom-acf/image-selector/image-selector.php");
 
 /**
- * Custom ACF Fields
- */
-require_once(WPX_THEME_PATH."includes/custom-acf/brand-colors/brand-colors.php");
-require_once(WPX_THEME_PATH."includes/custom-acf/icon-picker/icon-picker.php");
-require_once(WPX_THEME_PATH."includes/custom-acf/image-selector/image-selector.php");
-
-/**
  * APIs
  */
-require_once(WPX_THEME_PATH."templates/api/sample.php");
+// require_once(WPX_THEME_PATH."templates/api/archive.php");
 
-/**
- * Widgets
-*/
-require_once(WPX_THEME_PATH."includes/widgets/ve.php");
 
 /**
  * CPTs & Taxonomies
  */
 function wpx_architecture() {
 
-	// include taxonomies
-	require_once(WPX_THEME_PATH."includes/taxonomies/issues.php");
-
 	// include cpts
-	require_once(WPX_THEME_PATH."includes/content-types/articles.php");
-	require_once(WPX_THEME_PATH."includes/content-types/jobs.php");
+	require_once(WPX_THEME_PATH."includes/ia/content-types/wpx-articles.php");
+
+	// include taxonomies
+	require_once(WPX_THEME_PATH."includes/ia/taxonomies/wpx-issues.php");
 
 	// header/footer settings
 	if( function_exists('acf_add_options_page') ) {
@@ -120,13 +109,17 @@ function wpx_architecture() {
 			'parent_slug' 	=> $parent['menu_slug'],
 		));
 
+
+		// add sub page
+		acf_add_options_sub_page(array(
+			'page_title' 	=> 'Footer',
+			'menu_title' 	=> 'Footer',
+			'parent_slug' 	=> $parent['menu_slug'],
+		));
 	}
 
-	// alter Gutenberg UI with JS
-	wp_register_script('wpx-block-script', get_stylesheet_directory_uri() .'/assets/js/ui.js',  array( 'wp-blocks', 'wp-edit-post' ));
-
-	// register block editor script
-	register_block_type( 'cc/ma-block-files', array('editor_script' => 'wpx-block-script') );
+	// allow us to alter Gutenberg UI with custom JS
+	wp_register_script('wpx-block-script', get_stylesheet_directory_uri() .'/assets/js/ui.js',  array( 'wp-blocks', 'wp-edit-post', 'wpx-dom-ready' ));
 
 }
 // the 0, 1 forces init to happen before widgets_init
@@ -142,7 +135,7 @@ function wpx_setup() {
 	 *
 	 * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
 	 */
-	add_theme_support('post-thumbnails', array('post','page') );
+	add_theme_support('post-thumbnails', array('post','page', 'wpx-articles', 'wpx-jobs') );
 
 	/*
 	 * Let WordPress manage the document title.
@@ -167,7 +160,7 @@ function wpx_setup() {
 	// Add theme support for selective refresh for widgets.
 	add_theme_support( 'customize-selective-refresh-widgets' );
 
-	// enable excerpt meta box for Pages
+	// enable excerpt meta box for pages
 	add_post_type_support('page', 'excerpt');
 
 	// hide version #
@@ -175,51 +168,16 @@ function wpx_setup() {
 
 	// nav menus
 	register_nav_menus( array(
-		'primary' => 'Primary Navigation'
+		'primary' => 'Primary Navigation',
+		'footer' => 'Footer Navigation',
+		'utility' => 'Utility Navigation'
 	) );
 
-	// Add support for Block Styles.
+	// add support for block styles
 	add_theme_support( 'wp-block-styles' );
 
-	// Add support for full and wide align images.
+	// add support for full and wide align images.
 	add_theme_support( 'align-wide' );
-
-	// Add custom editor font sizes.
-	add_theme_support(
-		'editor-font-sizes',
-		array(
-			array(
-				'name'      => __( 'Small', 'twentynineteen' ),
-				'shortName' => __( 'S', 'twentynineteen' ),
-				'size'      => 16,
-				'slug'      => 'small',
-			),
-			array(
-				'name'      => __( 'Normal', 'twentynineteen' ),
-				'shortName' => __( 'M', 'twentynineteen' ),
-				'size'      => 18,
-				'slug'      => 'normal',
-			),
-			array(
-				'name'      => __( 'Large', 'twentynineteen' ),
-				'shortName' => __( 'L', 'twentynineteen' ),
-				'size'      => 24,
-				'slug'      => 'large',
-			),
-			array(
-				'name'      => __( 'Huge', 'twentynineteen' ),
-				'shortName' => __( 'XL', 'twentynineteen' ),
-				'size'      => 30,
-				'slug'      => 'huge',
-			),
-		)
-	);
-
-	// Editor color palette.
-	add_theme_support(
-		'editor-color-palette',
-		wpx_color_palette()
-	);
 
 	// prevent maximum upload limit
 	add_filter( 'big_image_size_threshold', '__return_false' );
@@ -227,60 +185,15 @@ function wpx_setup() {
 	// Add support for responsive embedded content.
 	add_theme_support( 'responsive-embeds' );
 
+	// disable block pattern suggestions
+	add_filter( 'should_load_remote_block_patterns', '__return_false' );
+
 	// image crops
 	set_post_thumbnail_size( 1200, 675, true ); // rec social sharing size
-	add_image_size( 'carousel-bg', 1024, 768, true );
-	add_image_size( 'carousel-mobile', 300, 450, true);
-	add_image_size( 'carousel-tablet', 600, 900, true);
+	// add_image_size( 'custom-size', 1024, 768, true );
 
 }
 add_action( 'after_setup_theme', 'wpx_setup', 0 );
-
-/**
- * Color Map Array
- */
-function wpx_color_array() {
-
-	$color_map = array(
-		array(
-			'name'  => 'Black',
-			'slug'  => 'black',
-			'color' => '#000000',
-		),
-		array(
-			'name'  => 'White',
-			'slug'  => 'white',
-			'color' => '#FFFFFF',
-		)
-	);
-
-	return $color_map;
-
-}
-
-/**
- * Theme Color Palette
- */
-function wpx_color_palette() {
-
-	$color_map = wpx_color_array();
-
-	// return the set to WP
-	return $color_map;
-
-}
-
-/**
- * Triggered by Visiting /wpx-color-map/
- */
-function wpx_update_color_map() {
-
-	$color_map = wpx_color_array();
-
-	// write the set to a file for SASS
-	\WPX\Enqueue\get_color_sass($color_map);
-
-}
 
 /**
 * Pre Get Posts
@@ -294,7 +207,7 @@ function wpx_pre_get_posts( $wp_query ) {
 		return $wp_query;
 	}
 }
-add_action( 'pre_get_posts', 'wpx_pre_get_posts' );
+// add_action( 'pre_get_posts', 'wpx_pre_get_posts' );
 
 /**
  * Assets Path

@@ -1,0 +1,353 @@
+{
+    "key": "group_65cd7c09a9b7b",
+    "title": "Archive",
+    "fields": [
+        {
+            "key": "field_66bd6286b9fba",
+            "label": "Archive",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "This block outputs an archive of posts with specified filters.",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_65cd7cca22c2a",
+            "label": "Template Settings",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_65cd7fd24913e",
+            "label": "Post Type",
+            "name": "archive_type",
+            "aria-label": "",
+            "type": "post_type_selector",
+            "instructions": "Choose the type of posts you want to display.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "select_type": 0
+        },
+        {
+            "key": "field_65cd7d30ee4ad",
+            "label": "Taxonomy",
+            "name": "archive_taxonomy",
+            "aria-label": "",
+            "type": "advanced_taxonomy_selector",
+            "instructions": "Choose the taxonomy to allow in the filters section of the template.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "relevanssi_exclude": 0,
+            "data_type": "taxonomy",
+            "taxonomies": [
+                "all"
+            ],
+            "post_type": "",
+            "field_type": "select",
+            "allow_null": 1,
+            "return_value": "term_id"
+        },
+        {
+            "key": "field_66aae447931ae",
+            "label": "Initial Terms",
+            "name": "archive_hidden_terms",
+            "aria-label": "",
+            "type": "advanced_taxonomy_selector",
+            "instructions": "What terms should this archive be filtered on by default? The user will not be able to remove this filter.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "relevanssi_exclude": 0,
+            "data_type": "terms",
+            "taxonomies": [
+                "all"
+            ],
+            "post_type": "",
+            "field_type": "multiselect",
+            "allow_null": 1,
+            "return_value": "object"
+        },
+        {
+            "key": "field_65ce3827f973e",
+            "label": "Posts Per Page",
+            "name": "archive_posts_per_page",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 12,
+            "min": "",
+            "max": "",
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_65ce3838f973f",
+            "label": "Sort Order",
+            "name": "archive_order",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "desc": "DESC",
+                "asc": "ASC"
+            },
+            "default_value": "desc",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "horizontal",
+            "save_other_choice": 0
+        },
+        {
+            "key": "field_65ce3870f9740",
+            "label": "Order By",
+            "name": "archive_orderby",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "date": "Date",
+                "custom": "Custom",
+                "title": "Title",
+                "alpha": "Alphabetical (Last Name)"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "horizontal",
+            "save_other_choice": 0
+        },
+        {
+            "key": "field_65cd7e4ea2e53",
+            "label": "Show Paging",
+            "name": "archive_paging",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "This option toggles the pagination at the bottom of the archive.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "message": "Show Paging?",
+            "default_value": 1,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_66bd227516eb2",
+            "label": "Layout",
+            "name": "archive_layout",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "This option toggles the pagination at the bottom of the archive.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "relevanssi_exclude": 0,
+            "choices": {
+                "layout1": "Layout 1",
+                "layout2": "Layout 2",
+                "layout3": "Layout 3"
+            },
+            "default_value": "layout1",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_65cd7e83a2e54",
+            "label": "Post Settings",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_66bd227516eb2",
+                        "operator": "!=",
+                        "value": "table"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_65cd7e8ea2e55",
+            "label": "Show Date Field",
+            "name": "archive_date_field",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Toggles the display of the publication date.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "message": "Show Date Field?",
+            "default_value": 1,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_66bcf6db9a216",
+            "label": "Show CTA",
+            "name": "archive_cta",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Toggles the display of the publication date.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "message": "Show CTA Link?",
+            "default_value": 1,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_65ce522f3a7ea",
+            "label": "Show Excerpt",
+            "name": "archive_excerpt",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Toggles the display of the excerpt.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "message": "Show Excerpt?",
+            "default_value": 1,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_66bd1f9d92bf7",
+            "label": "Show Thumbnail",
+            "name": "archive_thumbnail",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Toggles the display of the excerpt.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "message": "Show Thumbnail?",
+            "default_value": 1,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/archive"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1724736833
+}

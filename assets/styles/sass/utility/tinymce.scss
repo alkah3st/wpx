@@ -1,16 +1,49 @@
 @mixin tinymce() {
 	position: relative;
-	line-height: 1.5;
+	line-height: 1.6;
 	font-family: $body;
 
-	@each $class, $hex in $colors {
+	// screenreader
+	.screenreader {
+		font-size: 0 !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		position: absolute !important;
+		clip: rect(1px, 1px, 1px, 1px) !important;
+		transition: none !important;
 
-		&.has-#{$class}-color {
-			color: $hex;
+		&:focus {
+			font-size: 14px !important;
+			bottom: 10px !important;
+			left: 10px !important;
+			clip: auto !important;
+			width: auto !important;
+			text-decoration: none !important;
+			height: auto !important	;
+			position: fixed !important;
+			line-height: 1.4 !important;
+			z-index: 9999999 !important;
+			background-color: white !important;
+			padding: 10px 15px !important;
+			color: hsl(206deg, 1, 0.52) !important;
 		}
 
 	}
 
+	// alignment
+	.text-align-center {
+		text-align: center !important;
+	}
+
+	.text-align-left {
+		text-align: left !important;
+	}
+
+	.text-align-right {
+		text-align: right !important;
+	}
+
+	// hover selection
 	::-moz-selection { }
 	::selection { }
 	::-ms-clear {
@@ -25,27 +58,7 @@
 		margin-top: 0;
 
 		@include breakpoint($viewport_mobile) {
-			margin-bottom: $rhythm*0.75;
-		}
-
-		@each $class, $hex in $colors {
-
-			&.has-#{$class}-color {
-				color: $hex;
-			}
-
-		}
-
-		&.has-small-font-size {
-		}
-
-		&.has-normal-font-size {
-		}
-
-		&.has-large-font-size {
-		}
-
-		&.has-huge-font-size {
+			margin-bottom: $rhythm;
 		}
 
 		&.has-drop-cap:not(:focus)::first-letter {
@@ -53,10 +66,7 @@
 		}
 
 		&.has-drop-cap {
-
-			&::first-letter {
-
-			}
+			&::first-letter {}
 		}
 
 		&:first-child {
@@ -76,16 +86,7 @@
 		font-weight: 800;
 		text-decoration: underline;
 
-		@each $class, $hex in $colors {
-
-			&.has-#{$class}-color {
-				color: $hex;
-			}
-
-		}
-
-		&:hover {
-		}
+		&:hover {}
 	}
 
 	strong { 
@@ -99,8 +100,9 @@
 	h5,
 	h6 {
 		margin-top: $rhythm*2;
-		margin-bottom: $rhythm/1.5;
+		margin-bottom: $rhythm;
 		font-family: $heading;
+		line-height: 1.4;
 
 		@include breakpoint($viewport_mobile) {
 			margin-top: $rhythm;
@@ -118,12 +120,14 @@
 	}
 
 	h1 {
+		font-size: var(--wp--preset--font-size--xxx-large);
 
 		a {
 		}
 	}
 
 	h2 {
+		font-size: var(--wp--preset--font-size--x-large);
 
 		a {
 		}
@@ -131,6 +135,7 @@
 	}
 
 	h3 {
+		font-size: var(--wp--preset--font-size--large);
 
 		a {
 		}
@@ -138,6 +143,7 @@
 	}
 
 	h4 {
+		font-size: var(--wp--preset--font-size--medium);
 
 		a {
 		}
@@ -146,6 +152,7 @@
 	}
 
 	h5 {
+		font-size: var(--wp--preset--font-size--small);
 
 		a {
 		}
@@ -153,6 +160,7 @@
 	}
 
 	h6 {
+		font-size: var(--wp--preset--font-size--extra-small);
 
 		a {
 		}
@@ -177,29 +185,6 @@
 		line-height: 1;
 		position: relative;
 		vertical-align: baseline;
-	}
-
-	/**
-	 * lists
-	 */
-	ol,
-	ul {
-		margin: $rhythm 0 $rhythm $rhythm;
-		padding: 0;
-
-		@include breakpoint($viewport_mobile) {
-			margin-bottom: $rhythm;
-			margin-left: $rhythm;
-		}
-
-		li {
-			margin-bottom: $rhythm;
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-
-		}
 	}
 
 }
