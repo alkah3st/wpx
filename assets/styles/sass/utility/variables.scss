@@ -1,10 +1,4 @@
 /**
- * global context
- */
-$context: 1200px;
-$context-wide: 1400px;
-
-/**
  * animations
  */
 $transition: all .2s ease-in-out;
@@ -17,45 +11,14 @@ $rhythm: 20px;
 /**
  * font families
  */
-$heading: "Arial Black", "Arial Bold", Gadget, sans-serif; 
-$body: "Helvetica", "Arial", Gadget, sans-serif; 
+$heading: "Oswald", "Arial Bold", Gadget, sans-serif; 
+$body: "Montserrat", "Arial", Gadget, sans-serif; 
 
 /**
  * viewports
  */
-$viewport_ultrawide: 1600px;
-$viewport_desktop: 1200px;
+$viewport_ultrawide: var(--wp--style--global--wide-size);
+$viewport_desktop: var(--wp--style--global--content-size);
 $viewport_tablet: 800px;
 $viewport_phablet: 600px;
 $viewport_mobile: 500px;
-
-/**
- * global color classes
- */
-@each $class, $hex in $colors {
-
-	.has-#{$class}-border-color {
-		border-color: $hex;
-	}
-
-	.has-#{$class}-background-color {
-		background-color: $hex;
-	}
-
-	.has-#{$class}-color {
-		color: $hex;
-	}
-
-}
-
-@mixin border-color() {
-
-	@each $class, $hex in $colors {
-
-		&.has-#{$class}-border-color {
-			border-color: $hex;
-		}
-
-	}
-
-}

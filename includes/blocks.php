@@ -10,34 +10,16 @@
 namespace WPX\Blocks;
 
 /**
- * Disable Specific Blocks in Gutenberg
- * @param  [type] $allowed_blocks [description]
- * @return [type]                 [description]
+ * Disable Specific Blocks
+ * (in the js/blacklist.js)
  */
-function remove_default_blocks($allowed_blocks){
-	// Get all registered blocks
-	$registered_blocks = \WP_Block_Type_Registry::get_instance()->get_all_registered();
+function disable_specific_blocks() {
 
-	// Disable default Blocks you want to remove individually
-	// unset($registered_blocks['core/calendar']);
-	// unset($registered_blocks['core/legacy-widget']);
-	// unset($registered_blocks['core/rss']);
-	// unset($registered_blocks['core/archives']);
-	// unset($registered_blocks['core/categories']);
-	// unset($registered_blocks['core/latest-comments']);
-	// unset($registered_blocks['core/latest-posts']);
-	// unset($registered_blocks['core/social-links']);
-	// unset($registered_blocks['core/search']);
-	// unset($registered_blocks['core/tag-cloud']);
+	wp_enqueue_script( 'wpx-disable-core-blocks', assets_url().'/js/blacklist.js', array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ), null, false);
 
-	// Get keys from array
-	$registered_blocks = array_keys($registered_blocks);
-
-	// Merge allowed core blocks with plugins blocks
-	return $registered_blocks;
 }
 
-add_filter('allowed_block_types_all', '\WPX\Blocks\remove_default_blocks');
+add_action( 'enqueue_block_editor_assets', '\WPX\Blocks\disable_specific_blocks' );
 
 /**
  * Adds a "Custom Blocks" Category
@@ -63,27 +45,97 @@ function acf_blocks_register() {
 
 	if( function_exists('acf_register_block_type') ) {
 
-		// sliced slider
+		/* Note that supports can use any options here: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-supports/ */
+
+		/*
+		acf_register_block(array(
+			'name'				=> 'archive',
+			'title'				=> __('Archive'),
+			'description'		=> __('Displays an archive of filterable posts.'),
+			'render_template'	=> WPX_THEME_PATH."/templates/blocks/archive.php",
+			'category'			=> 'wpx',
+			'align' 			=> 'wide',
+			'icon'				=> 'grid-view',
+			'keywords'			=> array('archive'),
+			'mode'			=> 'edit',
+			'supports'		=> [
+				'align'	=> false,
+				'anchor'=> true,
+				'customClassName'=> true,
+				'mode'=>false,
+				'multiple'=>false,
+				'align_text'=>false,
+				'full_height'=>false,
+				'align_content'=>false,
+				'renaming'=>true,
+				'spacing'=>array(
+					'margin'=>true,
+					'padding'=>true,
+					'blockGap'=>true,
+				)
+			]
+		));
+		*/
+
+		// custom block
 		acf_register_block(array(
 			'name'				=> 'custom-block',
 			'title'				=> __('Custom Block'),
 			'description'		=> __('This is a custom block.'),
-			'render_template'	=> WPX_THEME_PATH."/templates/blocks/sliced-slider.php",
+			'render_template'	=> WPX_THEME_PATH."/templates/blocks/custom-block.php",
 			'category'			=> 'wpx',
+			//'post_types'		=>	array('post','page'),
 			'enqueue_assets'    => function() {
 				if (is_admin()) {
 					wp_enqueue_script( 'init-custom-block', get_template_directory_uri() . '/assets/js/blocks/custom-block.js', array('block-custom-block'), null, true );
 					wp_enqueue_script( 'block-custom-block', get_template_directory_uri() . '/assets/js/modules/blocks/custom-block.js', array('jquery','wpx-app-init','wpx-app-utils',), null, true );
 				}
 			},
-			'align' 			=> 'wide',
-			'mode'				=> 'edit',
-			'icon'				=> 'grid',
+			'icon'				=> 'grid-view',
+			'mode'				=> 'auto',
 			'keywords'			=> array('block','custom'),
 			'supports'			=> array(
-				'align'=>false,
+				'align'=>true,
+				'align_text'=>true,
+				'full_height'=>true,
+				'align_content'=>'matrix',
 				'multiple'=>true,
-				'mode'=>true
+				'anchor'=>true,
+				'mode'=>true,
+				'renaming'=>true,
+				'background'=>array(
+					'backgroundImage'=>true,
+					'backgroundSize'=>true
+				),
+				'dimensions'=>array(
+					"aspectRatio"=>true,
+					"minHeight"=>true,
+				),
+				'shadow'=>true,
+				'position'=>array(
+					'sticky'=>true
+				),
+				'spacing'=>array(
+					'margin'=>true,
+					'padding'=>true,
+					'blockGap'=>true,
+				),
+				'color'=>array(
+					'background'=>true,
+					'gradients'=>true,
+					'text'=>true
+				)
+			),
+			'example' => array(
+				'attributes' => array(
+					'mode' => 'preview',
+					'data' => array(
+						'testimonial'   => "Blocks are...",
+						'author'        => "Jane Smith",
+						'role'          => "Person",
+						'is_preview'    => true
+					)
+				)
 			)
 		));
 

@@ -1,31 +1,74 @@
 {
     "key": "group_5d334de347b60",
-    "title": "My Custom Block",
+    "title": "Custom Block",
     "fields": [
         {
+            "key": "field_66cbdfeecc15b",
+            "label": "Custom Block",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "relevanssi_exclude": 0,
+            "message": "This is an example custom block, rendered with PHP.",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
             "key": "field_5d334de916f73",
-            "label": "Title",
-            "name": "title",
+            "label": "Testimonial",
+            "name": "testimonial",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "relevanssi_exclude": 0,
+            "default_value": "",
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_66cbdfd4cc15a",
+            "label": "Role",
+            "name": "role",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
+            "relevanssi_exclude": 0,
             "default_value": "",
+            "maxlength": "",
             "placeholder": "",
             "prepend": "",
-            "append": "",
-            "maxlength": ""
+            "append": ""
         },
         {
-            "key": "field_5e83ace999c37",
-            "label": "My Colors",
-            "name": "my_colors",
-            "type": "wpx-brand-colors",
+            "key": "field_66ccb10e75904",
+            "label": "Color",
+            "name": "color",
+            "aria-label": "",
+            "type": "wpx_color_palette",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -34,52 +77,8 @@
                 "class": "",
                 "id": ""
             },
-            "brand_colors": ""
-        },
-        {
-            "key": "field_5fe7b9b09076c",
-            "label": "My Colors",
-            "name": "my_colors2",
-            "type": "wpx-brand-colors",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "brand_colors": ""
-        },
-        {
-            "key": "field_5e83acf399c38",
-            "label": "My Icons",
-            "name": "my_icons",
-            "type": "wpx-icon-picker",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "icon": ""
-        },
-        {
-            "key": "field_5eab25b46f5c3",
-            "label": "My Icons2",
-            "name": "my_icons2",
-            "type": "wpx-icon-picker",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "icon": ""
+            "relevanssi_exclude": 0,
+            "default_value": ""
         }
     ],
     "location": [
@@ -99,5 +98,6 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1609021912
+    "show_in_rest": 0,
+    "modified": 1724691777
 }

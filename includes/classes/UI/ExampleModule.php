@@ -11,6 +11,8 @@ namespace WPX\Classes\UI;
 
 class ExampleModule {
 
+	public $args;
+
 	function __construct($params=false) {
 
 		$defaults = array (

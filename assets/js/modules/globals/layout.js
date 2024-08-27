@@ -4,18 +4,9 @@ jQuery(document).ready(function($) {
 
 	WPX.Layout = {
 
-		$loader: WPX.Utils.ctrl('loader'),
-		$loaderBar: WPX.Utils.target('loader', 'bar'),
-		totalImageCount: $('body img').size(),
 		$body: $('body'),
 
 		init: function() {
-
-			// page transition fx
-			pageTransition();
-
-			// fade in
-			this.fadeInPage();
 
 			// events
 			this.bindEvents();
@@ -43,17 +34,14 @@ jQuery(document).ready(function($) {
 				disableScroll: true,
 			});
 
-			// fitvids
-			$('.flex-video').fitVids();
-
 			// on scroll throttle
 			$(window).scroll( $.throttle( 10, function() { 
-
+				console.log('// WPX: Scrolling...');
 			} ) );
 
 			// on resize throttle
 			$(window).resize( $.throttle( 10, function() { 
-				
+				console.log('// WPX: Resizing...');
 			} ) );
 
 		},
@@ -64,30 +52,6 @@ jQuery(document).ready(function($) {
 
 		modalClose: function(modal) {
 			console.log('Modal Closed');
-		},
-
-		/**
-		 * gentle fade in
-		 */
-		fadeInPage: function() {
-
-			WPX.Layout.$body.imagesLoaded().always( function( instance ) {
-				WPX.Layout.$loader.fadeOut(500, function() {
-					WPX.Layout.$loader.addClass('hide');
-				});
-			}).progress( function( instance, image ) {
-
-				if(image.isLoaded) {
-					$(image.img).addClass('loaded');
-					var countLoadedImages = $('body img.loaded').size();
-					var width = 100 * (countLoadedImages / WPX.Layout.totalImageCount) + '%';
-					WPX.Layout.$loaderBar.css({
-						'width' : width
-					});
-				}
-
-			});
-
 		},
 
 		/**

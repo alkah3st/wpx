@@ -1,40 +1,15 @@
 /**
- * block defaults
+ * width wide
  */
-@mixin block-defaults() {
-
-	&:last-child {
-		margin-bottom: 0;
-	}
-
-}
-
-/**
- * wide width
- */
-@mixin wide-width($width, $margin) {
+@mixin width-wide($width: 120%, $margin: -10%, $breakeven: 1000px) {
 	width: $width;
 	margin-left: $margin;
 
-	@include breakpoint(980px) {
-		max-width: 100%;
+	@include breakpoint($breakeven) {
+			max-width: 100%;
+			margin-left: 0;
 	}
 
-}
-
-/**
- * wider width
- */
-@mixin width-wide() {
-	width: 120%;
-	max-width: 120%;
-	margin-left: -10%;
-
-	@include breakpoint(1000px) {
-		width: 100%;
-		max-width: 100%;
-		margin-left: 0;
-	}
 }
 
 /**
@@ -44,13 +19,6 @@
 	width: 100vw;
 	margin-left: calc(-50vw + 50%);
 	position: relative;
-}
-
-/**
- * color
- */
-@function color($color) {
-	@return map-get($colors, $color);
 }
 
 /**
@@ -160,19 +128,10 @@
 /**
 * Context
 **/
-@mixin context($max-width: $context, $width: 90%) {
+@mixin context($max-width: var(--wp--style--global--content-size), $width: 90%) {
 	margin: 0 auto;
 	max-width: $max-width;
 	width: $width;
-}
-
-/**
- * Based on Sassbreak calc:
- * http://sassbreak.com/viewport-relative-headings-with-sass/
- */
-@function px-to-vm($target) { 
-	$vw-context: (1000*.01) * 1px;
-	@return ($target/$vw-context) * 1vw;
 }
 
 /**
@@ -187,27 +146,14 @@
 /// @example scss - 5vw font size (with 50px fallback), minumum of 35px and maximum of 150px:
 /// @include responsive-font(50px, 35px, 150px);
 */
-@mixin font-size($size, $min: $size, $max: $size, $fallback: $size) {
+@mixin font-size($preferred-size, $min-size, $max-size: $preferred-size, $viewport-context: 1000px) {
+  
+  // Convert the preferred size to viewport units
+   $preferred-size-vw: $preferred-size * 100 / $viewport-context;
 
-	$vm: px-to-vm($size);
+  // Generate the clamp value
+  font-size: clamp($min-size, #{$preferred-size-vw}vw, $max-size);
 
-	$responsive-unitless: $vm / ($vm - $vm + 1);
-	$dimension: if(unit($vm) == 'vh', 'height', 'width');
-	$min-breakpoint: $min / $responsive-unitless * 100;
-
-	@media only screen and (max-#{$dimension}: #{$min-breakpoint}) {
-		font-size: $min;
-	}
-
-	@if $max {
-		$max-breakpoint: $max / $responsive-unitless * 100;
-		@media only screen and (min-#{$dimension}: #{$max-breakpoint}) {
-			font-size: $max;
-		}
-	}
-
-	font-size: $fallback; // fallback, defaults to size
-	font-size: $vm;
 }
 
 /**

@@ -21,63 +21,6 @@ var newer 			= require("gulp-newer");
 var cached 			= require("gulp-cached");
 var dependents 		= require("gulp-dependents");
 
-// encode the external url with the querystring
-// so as to make it unique within the list of
-// external urls
-String.prototype.hashCode = function() {
-	var hash = 0;
-	if (this.length == 0) {
-		return hash;
-	}
-	for (var i = 0; i < this.length; i++) {
-		var char = this.charCodeAt(i);
-		hash = ((hash<<5)-hash)+char;
-		hash = hash & hash;
-	}
-	return hash;
-}
-
-// grabs external JS
-// (reduces # of hits for performance)
-// optionally, place a ?v=# to make each url unique
-gulp.task('external-js', function(){
-	return download([
-		"https://www.gstatic.com/charts/loader.js?v=1",
-		"https://s7.addthis.com/js/300/addthis_widget.js",
-		"http://wpx.test/wp-includes/js/hoverintent-js.min.js",
-		"http://wpx.test/wp-includes/js/dist/vendor/regenerator-runtime.min.js",
-		"http://wpx.test/wp-includes/js/dist/vendor/wp-polyfill.min.js",
-	])
-	// for each external download, create a unique reference
-	// so as to differentiate from same-named files 
-	// locally as well as externally
-	.pipe(rename(function(path) {
-		var hash = path.extname.hashCode();
-		path.basename = path.basename+'-'+hash;
-		path.extname = ".js";
-	}))
-	.pipe(gulp.dest("js/vendor/"));
-});
-
-// grabs external CSS (including WP core scripts)
-// (reduces # of hits for performance)
-// CHANGE WPX.TEST TO YOUR LOCAL ENVIRONMET
-// optionally, place a ?v=# to make each url unique
-gulp.task('external-css', function(){
-	return download([
-		"http://wpx.test/wp-includes/css/dashicons.min.css",
-		"http://wpx.test/wp-includes/css/dist/block-library/style.min.css",
-		"http://wpx.test/wp-includes/css/dist/block-library/theme.min.css",
-		"http://wpx.test/wp-content/plugins/contact-form-7/includes/css/styles.css"
-	])
-	.pipe(rename(function(path) {
-		var hash = path.extname.hashCode();
-		path.basename = path.basename+'-'+hash;
-		path.extname = ".scss";
-	}))
-	.pipe(gulp.dest("styles/sass/vendor/"));
-});
-
 // compiles SCSS -> CSS
 gulp.task('sass', function(){
 	return gulp.src('styles/sass/screen.scss')
@@ -355,7 +298,6 @@ gulp.task('watch-gutenberg', function(){
 	gulp.watch(['../*.php','../templates/**/*.php','../partials/**/*.php']).on('change', livereload.changed);
 });
 
-gulp.task('external', gulp.series('external-js','external-css'));
 gulp.task('default', gulp.series('jshint', gulp.parallel(['sass','js']), 'watch'));
 gulp.task('gutenberg', gulp.series('jshint', gulp.parallel(['sass','sass-gutenberg']), 'watch-gutenberg'));
 gulp.task('fontello', gulp.series('fontello','fontello-acf'));

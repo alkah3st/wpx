@@ -14,29 +14,12 @@ namespace WPX\Enqueue;
 */
 function enqueue_assets() {
 
-	// some plugins need jquery, enqueued in the header
-	// so we let that happen with 2.2.4
-	wp_deregister_script('jquery');
-	wp_deregister_script( 'hoverintent-js' );
-	wp_deregister_script( 'regenerator-runtime' );
-	wp_deregister_script( 'wp-polyfill' );
-	wp_enqueue_script('jquery', assets_url().'/js/jquery.js', false, '2.2.4', false);
-
-	// the following are enqueued into css min via gulp
-	wp_deregister_style( 'wp-block-library' );
-	wp_deregister_style( 'wp-block-library-theme' );
-	wp_deregister_style( 'contact-form-7' );
-
-	if (!is_user_logged_in()) {
-		wp_deregister_style( 'dashicons' ); 
-	}
-
 	// we enqueue assets based on the build status, with cache busting
 	if (wp_get_environment_type() === 'development' || wp_get_environment_type() === 'local') {
-		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.js', false, null, true);
-		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.css', false, null, 'screen');
+		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.js', array('jquery'), filemtime( get_template_directory().'/assets/js/app.js' ), true);
+		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.css', false, filemtime( get_template_directory().'/assets/styles/screen.css' ), 'screen');
 	} else {
-		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.min.js', false, filemtime( get_template_directory().'/assets/js/app.min.js' ), true);
+		wp_enqueue_script( 'wpx.js', assets_url().'/js/app.min.js', array('jquery'), filemtime( get_template_directory().'/assets/js/app.min.js' ), true);
 		wp_enqueue_style( 'wpx.styles', assets_url().'/styles/screen.min.css', false, filemtime( get_template_directory().'/assets/styles/screen.min.css' ), 'screen');
 	}
 
@@ -44,7 +27,7 @@ function enqueue_assets() {
 add_action( 'wp_enqueue_scripts', '\WPX\Enqueue\enqueue_assets' );
 
 /**
- * Disable the emoji's
+ * Disable the emojis
  */
 function disable_emojis() {
 	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
@@ -159,58 +142,11 @@ function enqueue_ga() {
 add_action('wp_head', '\WPX\Enqueue\enqueue_ga');
 
 /**
- * Color Sass File
- *
- * Writes the color array to a file
+ * Share This
  */
-function get_color_sass($color_array) {
-
-	$uncache_mode = (WP_ENVIRONMENT_TYPE == 'development' ? true : false);
-
-	if ($uncache_mode) {
-		$hours = 0;
-	} else {
-		$hours = 7200;
-	}
-	
-	$file = WPX_THEME_PATH.'/assets/styles/sass/utility/colors.scss';
-
-	$current_time = time(); 
-	$expire_time = $hours * 60 * 60; 
-	$file_time = filemtime($file);
-
-	if(file_exists($file) && ($current_time - $expire_time < $file_time)) {
-		return file_get_contents($file);
-	} else {
-
-		$output = false;
-		$color_set = false;
-
-		foreach($color_array as $color) {
-			$color_set[] = array('class'=>$color['slug'], 'hex'=>$color['color']);
-		}
-
-		if ($color_set) {
-
-			$output .= '/**'."\n";
-			$output .= '* colors'."\n";
-			$output .= '*/'."\n";
-			$output .= '$colors: ('."\n";
-			foreach($color_set as $color) : 
-				$output .= '"'.$color["class"].'":'.$color["hex"].','."\n";
-			endforeach;
-			$output .= ');';
-
-			$content = $output;
-
-		} else {
-
-			return false;
-
-		}
-
-		file_put_contents($file, $content);
-
-		return $content;
-	}
+function enqueue_sharethis() {
+	if (WPX_SHARETHIS_ID) : ?>
+	<script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=<?php echo WPX_SHARETHIS_ID; ?>&product=inline-share-buttons' async='async'></script>
+	<?php endif;
 }
+add_action('wp_head', '\WPX\Enqueue\enqueue_sharethis');

@@ -32,6 +32,11 @@ function add_body_classes($classes) {
 	global $wp;
 	$template = $wp->query_vars;
 
+	// add tinymce
+	if (!is_admin()) {
+		$classes[] = 'tinymce';
+	}
+
 	// allows slug-based classes
 	if ($post) {
 		$classes[] = 'slug'.'-'.$post->post_name;

@@ -1,225 +1,7 @@
 /**
- * nav links
+ * all custom blocks
  */
-p.post-nav-links {
-	@include minmax(margin, 5%, 5%);
-}
-
-/**
- * alignment
- */
-.wpx-custom-block.center {
-	text-align: center;
-}
-
-.wpx-custom-block.left {
-	text-align: left;
-}
-
-.wpx-custom-block.right {
-	text-align: right;
-}
-
-.is-content-justification-center {
-	text-align: center;
-}
-
-/**
- * custom blocks
- */
-.wpx-custom-block {
-
-	.wpx-block-inner {
-		@include context();
-	}
-
-}
-
-/**
- * padding
- */
-
-// default
-.wp-block-group.padding,
-.wpx-custom-block.padding,
-.wp-block-columns.padding,
-.wpx-custom-block.padding {
-	@include minmax(padding, 8%, 8%);
-}
-
-// less
-.wp-block-group.alignfull.padding-less,
-.wp-block-group.padding-less
-.wp-block-columns.padding-less,
-.wpx-custom-block.padding-less {
-	@include minmax(padding, 5%, 5%);
-}
-
-// less top
-.wp-block-group.alignfull.padding-less-top,
-.wp-block-group.padding-less-top,
-.wp-block-columns.padding-less-top,
-.wpx-custom-block.padding-less-top {
-	@include minmax(padding, 5%, 0);
-}
-
-// less bottom
-.wp-block-group.alignfull.padding-less-bottom,
-.wp-block-group.padding-less-bottom,
-.wp-block-columns.padding-less-bottom,
-.wpx-custom-block.padding-less-bottom {
-	@include minmax(padding, 0, 5%);
-}
-
-// least
-.wp-block-group.alignfull.padding-least,
-.wp-block-group.padding-least,
-.wp-block-columns.padding-least,
-.wpx-custom-block.padding-least {
-	@include minmax(padding, 2.5%, 2.5%);
-}
-
-// least top
-.wp-block-group.alignfull.padding-least-top,
-.wp-block-group.padding-least-top,
-.wp-block-columns.padding-least-top,
-.wpx-custom-block.padding-least-top {
-	@include minmax(padding, 2.5%, 0);
-}
-
-
-// least bottom
-.wp-block-group.alignfull.padding-least-bottom,
-.wp-block-group.padding-least-bottom,
-.wp-block-columns.padding-least-bottom,
-.wpx-custom-block.padding-least-bottom {
-	@include minmax(padding, 0, 2.5%);
-}
-
-// greater
-.wp-block-group.alignfull.padding-greater,
-.wp-block-group.padding-greater,
-.wp-block-columns.padding-greater,
-.wpx-custom-block.padding-greater {
-	@include minmax(padding, 12%, 12%);
-}
-
-// greater top
-.wp-block-group.alignfull.padding-greater-top,
-.wp-block-group.padding-greater-top,
-.wp-block-columns.padding-greater-top,
-.wpx-custom-block.padding-greater-top {
-	@include minmax(padding, 12%, 0);
-}
-
-// greater bottom
-.wp-block-group.alignfull.padding-greater-bottom,
-.wp-block-group.padding-greater-bottom,
-.wp-block-columns.padding-greater-bottom,
-.wpx-custom-block.padding-greater-bottom {
-	@include minmax(padding, 0, 12%);
-}
-
-/**
- * margin (adjustments)
- */
-
-// default
-.wp-block-group.margin,
-.wpx-custom-block.margin,
-.wp-block-columns.margin,
-.wpx-custom-block.margin {
-	@include minmax(margin, 8%, 8%);
-}
-
-// less
-.wp-block-group.alignfull.margin-less,
-.wp-block-group.margin-less,
-.wpx-custom-block.margin-less,
-.wp-block-columns.margin-less {
-	@include minmax(margin, 4%, 4%);
-}
-
-// top
-.wp-block-group.alignfull.margin-top,
-.wp-block-group.margin-top,
-.wpx-custom-block.margin-top,
-.wp-block-columns.margin-top {
-	@include minmax(margin, 8%, 0);
-}
-
-// bottom
-.wp-block-group.alignfull.margin-bottom,
-.wpx-custom-group.margin-bottom,
-.wpx-custom-block.margin-bottom,
-.wp-block-columns.margin-bottom {
-	@include minmax(margin, 0, 8%);
-}
-
-// less top
-.wp-block-group.alignfull.margin-less-top,
-.wp-block-group.margin-less-top,
-.wp-block-columns.margin-less-top,
-.wpx-custom-block.margin-less-top {
-	@include minmax(margin, 4%, 0);
-}
-
-// less bottom
-.wp-block-group.alignfull.margin-less-bottom,
-.wp-block-group.margin-less-bottom,
-.wp-block-columns.margin-less-bottom,
-.wpx-custom-block.margin-less-bottom {
-	@include minmax(margin, 0, 4%);
-}
-
-// least
-.wp-block-group.alignfull.margin-least,
-.wp-block-group.margin-least,
-.wp-block-columns.margin-least,
-.wpx-custom-block.margin-least {
-	@include minmax(margin, 2.5%, 2.5%);
-}
-
-// least top
-.wp-block-group.alignfull.margin-least-top,
-.wp-block-group.margin-least-top,
-.wp-block-columns.margin-least-top,
-.wpx-custom-block.margin-least-top {
-	@include minmax(margin, 2.5%, 0);
-}
-
-// least bottom
-.wp-block-group.alignfull.margin-least-bottom,
-.wp-block-group.margin-least-bottom,
-.wp-block-columns.margin-least-bottom,
-.wpx-custom-block.margin-least-bottom {
-	@include minmax(margin, 0, 2.5%);
-}
-
-// greater
-.wp-block-group.margin-greater,
-.wpx-custom-block.margin-greater,
-.wp-block-columns.margin-greater,
-.wpx-custom-block.margin-greater {
-	@include minmax(margin, 12%, 12%);
-}
-
-// greater top
-.wp-block-group.alignfull.margin-greater-top,
-.wp-block-group.margin-greater-top,
-.wpx-custom-block.margin-greater-top,
-.wp-block-columns.margin-greater-top {
-	@include minmax(margin, 12%, 0);
-}
-
-// greater bottom
-.wp-block-group.alignfull.margin-greater-bottom,
-.wpx-custom-group.margin-greater-bottom,
-.wpx-custom-block.margin-greater-bottom,
-.wp-block-columns.margin-greater-bottom {
-	@include minmax(margin, 0, 12%);
-}
-
+.wpx-custom-block {}
 
 /**
  * negations
@@ -247,9 +29,15 @@ p.post-nav-links {
 	margin-bottom: $rhythm;
 	position: relative;
 
-	.aligncenter {
+	&.aligncenter {
+		margin-left: auto;
+		margin-right: auto;
 		margin-top: $rhythm;
 		margin-bottom: $rhythm;
+
+		.wp-element-caption {
+			text-align: center;
+		}
 
 		@include breakpoint($viewport_phablet) {
 			margin-top: $rhythm;
@@ -261,6 +49,10 @@ p.post-nav-links {
 		@include width-wide();
 		margin-top: $rhythm;
 		margin-bottom: $rhythm;
+
+		.wp-element-caption {
+			text-align: center;
+		}
 	}
 
 	&.alignfull {
@@ -268,19 +60,57 @@ p.post-nav-links {
 		margin-top: $rhythm;
 		margin-bottom: $rhythm;
 		display: block;
+
+		.wp-element-caption {
+			text-align: center;
+		}
 	}
 
 	figure {
 		position: relative;
 	}
 
-	.alignright {
+	&.alignright {
+		float: right;
+		margin-left: $rhythm;
+
+		@include breakpoint(600px) {
+			float: none;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.wp-element-caption {
+			text-align: right;
+
+			@include breakpoint(600px) {
+				text-align: center;
+			}
+		}
 	}
 	
-	.alignleft {
+	&.alignleft {
+		float: left;
+		margin-right: $rhythm;
+
+		@include breakpoint(600px) {
+			float: none;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.wp-element-caption {
+
+			@include breakpoint(600px) {
+				text-align: center;
+			}
+		}
+
 	}
 
-	figcaption {
+	.wp-element-caption {
+		text-transform: uppercase;
+		text-align: left;
 	}
 
 	img {
@@ -295,29 +125,12 @@ p.post-nav-links {
  */
 .wp-block-quote {
 	@include minmax(margin, 5%, 5%);
-
-	&.has-text-align-center {}
-
-	&.has-text-align-right {}
-
-	&.is-style-large {
-		@include minmax(margin, 5%, 5%);
-	}
-
-	cite {}
-
-	@include block-defaults();
-
 }
 
 /**
- * block: code
+ * block: pre, code
  */
-.wp-block-code {}
-
-/**
- * block: pre
- */
+.wp-block-code,
 .wp-block-preformatted {}
 
 /**
@@ -328,9 +141,8 @@ p.post-nav-links {
 
 	&.alignleft {
 		float: left;
-		max-width: 400px;
-		margin-right: $rhythm*2;
-		margin-bottom: $rhythm*2;
+		margin-right: $rhythm;
+		margin-bottom: $rhythm;
 		margin-top: 5px;
 
 		@include breakpoint(800px) {
@@ -343,9 +155,8 @@ p.post-nav-links {
 
 	&.alignright {
 		float: right;
-		max-width: 400px;
-		margin-left: $rhythm*2;
-		margin-bottom: $rhythm*2;
+		margin-left: $rhythm;
+		margin-bottom: $rhythm;
 		margin-top: 5px;
 
 		@include breakpoint(800px) {
@@ -357,16 +168,11 @@ p.post-nav-links {
 
 	}
 
-	&.is-style-solid-color {
-
-	}
-
 	&.alignfull {
 		@include explode-width();
 
 		blockquote {
 			width: 100%;
-			max-width: 650px;
 
 			@include breakpoint(780px) {
 				width: 90%;
@@ -376,41 +182,23 @@ p.post-nav-links {
 	}
 
 	&.alignwide {
-		@include wide-width(120%, -10%);
-
-		@include breakpoint(980px) {
-			max-width: 100%;
-			margin-left: 0;
-		}
+		@include width-wide();
 
 		blockquote {
 			width: 100%;
-			max-width: 650px;
-		}
-
-		p, cite {
-			max-width: 650px;
-			margin: 0 auto;
 		}
 	}
 
 	blockquote {
 		@include context();
-		max-width: 650px;
-		width: 100%;
-
-		p {
-			@include breakpoint($viewport_mobile) {
-				margin-bottom: $rhythm*0.75 !important;
-			}
-		}
 
 		.wp-block-pullquote__citation,
 		cite {
+			@include font-size(16px, 14px);
+			text-transform: uppercase;
 		}
 	}
 
-	@include block-defaults();
 }
 
 /**
@@ -428,7 +216,9 @@ p.post-nav-links {
 		margin-bottom: 0;
 	}
 
-	figcaption {
+	.wp-element-caption {
+		@include font-size(16px, 14px);
+		margin-top: 10px;
 	}
 
 	table {
@@ -438,8 +228,7 @@ p.post-nav-links {
 			width: 750px !important;
 		}
 
-		td {
-		}
+		td {}
 	}
 
 	tfoot {
@@ -541,8 +330,6 @@ p.post-nav-links {
 		}
 	}
 
-	.blocks-gallery-caption {}
-
 	figure {
 		position: relative;
 	}
@@ -552,25 +339,12 @@ p.post-nav-links {
 		img {
 			transition: $transition;
 		}
-
-		&:hover {
-			a {
-				img {}
-			}
-			a + figcaption {}
-		}
-
-		figcaption {}
-
 	}
 
 	&:last-child {
 		margin-bottom: 0;
 	}
 
-	.blocks-gallery-grid {
-		margin: 0;
-	}
 }
 
 /**
@@ -579,10 +353,12 @@ p.post-nav-links {
 .wp-block-audio {
 	@include minmax(margin, 5%, 5%);
 
-	figcaption {}
-
 	audio {
 		display: block;
+	}
+
+	.wp-element-caption {
+		@include font-size(16px, 14px);
 	}
 }
 
@@ -594,9 +370,8 @@ p.post-nav-links {
 
 	&.alignleft {
 		float: left;
-		max-width: 400px;
-		margin-right: $rhythm*2;
-		margin-bottom: $rhythm*2;
+		margin-right: $rhythm;
+		margin-bottom: $rhythm;
 		margin-top: 5px;
 
 		@include breakpoint(800px) {
@@ -609,9 +384,8 @@ p.post-nav-links {
 
 	&.alignright {
 		float: right;
-		max-width: 400px;
-		margin-left: $rhythm*2;
-		margin-bottom: $rhythm*2;
+		margin-left: $rhythm;
+		margin-bottom: $rhythm;
 		margin-top: 5px;
 
 		@include breakpoint(800px) {
@@ -628,12 +402,7 @@ p.post-nav-links {
 	}
 
 	&.alignwide {
-		@include wide-width(120%, -10%);
-
-		@include breakpoint(980px) {
-			max-width: 100%;
-			margin-left: 0;
-		}
+		@include width-wide();
 	}
 
 }
@@ -654,7 +423,9 @@ p.post-nav-links {
 
 	&.is-stacked-on-mobile {
 		.wp-block-media-text__content {
-			margin-top: $rhythm;
+			@include breakpoint($viewport_phablet) {
+				margin-top: $rhythm;
+			}
 		}
 	}
 
@@ -663,11 +434,13 @@ p.post-nav-links {
 	}
 
 	&.alignwide {
-		@include wide-width(120%, -10%);
+		@include width-wide();
 
-		@include breakpoint(980px) {
-			max-width: 100%;
-			margin-left: 0;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		&:first-child {
+			margin-top: 0;
 		}
 	}
 
@@ -692,9 +465,8 @@ p.post-nav-links {
 
 	&.alignleft {
 		float: left;
-		max-width: 400px;
-		margin-right: $rhythm*2;
-		margin-bottom: $rhythm*2;
+		margin-right: $rhythm;
+		margin-bottom: $rhythm;
 		margin-top: 5px;
 
 		@include breakpoint(800px) {
@@ -707,9 +479,8 @@ p.post-nav-links {
 
 	&.alignright {
 		float: right;
-		max-width: 400px;
-		margin-left: $rhythm*2;
-		margin-bottom: $rhythm*2;
+		margin-left: $rhythm;
+		margin-bottom: $rhythm;
 		margin-top: 5px;
 
 		@include breakpoint(800px) {
@@ -726,12 +497,11 @@ p.post-nav-links {
 	}
 
 	&.alignwide {
-		@include wide-width(120%, -10%);
+		@include width-wide();
+	}
 
-		@include breakpoint(980px) {
-			max-width: 100%;
-			margin-left: 0;
-		}
+	.wp-element-caption {
+		@include font-size(16px, 14px);
 	}
 
 }
@@ -743,21 +513,22 @@ p.post-nav-links {
 
 	&.alignwide {
 		@include width-wide();
+		padding: 0 5%;
+
+		@include breakpoint(1000px) {
+			padding: 0;
+		}
 	}
 
 	&.alignfull {
 		@include explode-width();
 		padding: 0 5%;
 
-		@include breakpoint(782px) { // overrides WP core sheet
-			padding: 0;
+		@include breakpoint(1000px) {
 			width: 100%;
+			margin-left: 0;
+			padding: 0;
 		}
-
-	}
-
-	@include breakpoint(782px) { // overrides WP core sheet
-		margin: 0 !important;
 	}
 
 	.wp-block-column {
@@ -769,24 +540,10 @@ p.post-nav-links {
 			}
 		}
 
-		@include breakpoint(782px) { // overrides WP core sheet
-			margin-bottom: $rhythm;
-		}
-
 		.wp-block-image {
 			&:last-child {
 				margin-bottom: 0;
 			}
-		}
-
-		&:nth-child(2n) {
-			@include breakpoint(782px) { // overrides WP core sheet
-				margin-left: 0;
-			}
-		}
-
-		@include breakpoint(782px) { // overrides WP core sheet
-			flex-basis: 100% !important;
 		}
 
 		div:last-child  {
@@ -807,8 +564,6 @@ p.post-nav-links {
 	@include minmax(margin, 5%, 5%);
 
 	&.has-background {
-		@include minmax(margin, 5%, 5%);
-		@include minmax(padding, 5%, 5%);
 		padding-left: 0;
 		padding-right: 0;
 	}
@@ -819,13 +574,11 @@ p.post-nav-links {
 
 	&.alignfull {
 		@include explode-width();
-		display: block;
 
 		.wp-block-group__inner-container {
 			width: 90%;
 		}
 
-		@include block-defaults();
 	}
 
 	.wp-block-columns:last-child {
@@ -833,9 +586,6 @@ p.post-nav-links {
 	}
 
 	.wp-block-group__inner-container {
-		max-width: $context;
-		width: 90%;
-		margin: 0 auto;
 
 		p:first-child,
 		h1:first-child,
@@ -858,69 +608,8 @@ p.post-nav-links {
  * block: separator
  */
 .wp-block-separator {
-	@include minmax(margin, 5%, 5%);
-
-	&.is-style-dots {}
-
-}
-
-/**
- * block: social
- */
-body ul.wp-block-social-links {
-	@include minmax(margin, 5%, 5%);
-	margin-left: 0;
-
-	li {
-		&:before {
-			display: none !important;
-		}
-	}
-
-	&.items-justified-space-between {
-		justify-content: space-between;
-	}
-
-	&.items-justified-left {
-		justify-content: left;
-	}
-
-	&.items-justified-right {
-		justify-content: right;
-	}
-
-	&.alignright {
-		float: right;
-		max-width: 400px;
-		margin-left: $rhythm*2;
-		margin-bottom: $rhythm*2;
-		margin-top: 5px;
-
-		@include breakpoint(800px) {
-			@include minmax(margin, 5%, 5%);
-			max-width: 100%;
-			float: none;
-			margin-left: 0;
-		}
-
-	}
-
-	&.alignleft {
-		float: right;
-		max-width: 400px;
-		margin-right: $rhythm*2;
-		margin-bottom: $rhythm*2;
-		margin-top: 5px;
-
-		@include breakpoint(800px) {
-			@include minmax(margin, 5%, 5%);
-			max-width: 100%;
-			float: none;
-			margin-left: 0;
-		}
-
-	}
-
+	margin-top: $rhythm;
+	margin-bottom: $rhythm;
 }
 
 /**
@@ -948,30 +637,5 @@ body ul.wp-block-social-links {
 
 	&:last-child {
 		margin-bottom: 0;
-	}
-}
-
-/**
- * block: buttons
- */
-.wp-block-buttons {
-	@include minmax(margin, 5%, 5%);
-
-	.wp-block-button {
-		margin-top: 5px;
-
-		@include breakpoint(500px) {
-			display: block;
-		}
-
-		&:last-child {
-			@include breakpoint(500px) {
-				margin-bottom: 0;
-			}
-		}
-
-		a {
-			text-decoration: none;
-		}
 	}
 }

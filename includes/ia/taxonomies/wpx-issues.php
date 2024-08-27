@@ -30,13 +30,13 @@ $args = array(
 	),
 	'public'=>true,
 	'show_in_rest'=>true,
-	'rewrite'=>array('slug'=>'magazine','with_front'=>false),
+	'rewrite'=>array('slug'=>'articles','with_front'=>false),
 	'show_ui'=>true,
-	'show_in_nav_menus'=>false,
+	'show_in_nav_menus'=>true,
 	'show_tagcloud'=>false,
 	'show_admin_column'=>true,
 	'hierarchical'=>true
 );
-register_taxonomy( 'wpx-issues', array('wpx-magazine'), $args );
+register_taxonomy( 'wpx-issues', array('wpx-articles'), $args );
 
 ?>

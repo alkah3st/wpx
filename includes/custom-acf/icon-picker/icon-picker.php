@@ -111,7 +111,6 @@ if (class_exists('acf')) {
 		*/
 		
 		function render_field( $field ) {
-			
 
 			// parse the icons in fontello.json
 			$fontello_json = json_decode(file_get_contents(get_template_directory().'/assets/fontello.json'), true);

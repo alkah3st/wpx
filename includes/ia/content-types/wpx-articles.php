@@ -26,9 +26,11 @@ $args = array(
 		'parent_item_colon'=>'Parent Article'
 	),
 	'public'=>true,
+	'publicly_queryable' =>true,
 	'exclude_from_search'=>false,
-	'rewrite'=>array('slug'=>'magazine/%issue%','with_front'=>false),
+	'rewrite'=>array('slug'=>'articles/%issues%','with_front'=>false),
 	'show_ui'=>true,
+	'has_archive'=>'articles',
 	'hierarchical'=>false,
 	'show_in_nav_menus'=>true,
 	'show_in_menu'=>true,
@@ -41,9 +43,10 @@ $args = array(
 		'editor',
 		'thumbnail',
 		'excerpt',
-		'revisions'
+		'revisions',
+		'page-attributes'
 	),
-	'taxonomies'=>array('category')
+	'taxonomies'=>array('wpx-issues')
 );
 
 register_post_type( 'wpx-articles', $args );
