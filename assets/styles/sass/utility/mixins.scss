@@ -146,7 +146,7 @@
 /// @example scss - 5vw font size (with 50px fallback), minumum of 35px and maximum of 150px:
 /// @include responsive-font(50px, 35px, 150px);
 */
-@mixin font-size($preferred-size, $min-size, $max-size: $preferred-size, $viewport-context: 1000px) {
+@mixin font-size($preferred-size, $min-size: $preferred-size, $max-size: $preferred-size, $viewport-context: 1000px) {
   
   // Convert the preferred size to viewport units
    $preferred-size-vw: $preferred-size * 100 / $viewport-context;

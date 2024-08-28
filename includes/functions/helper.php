@@ -10,120 +10,12 @@
 namespace WPX\Helper;
 
 /**
- * Get Tax Colors
- */
-function get_term_color($taxonomy) {
-
-	switch ($taxonomy) {
-		case 'wpx-analysis-cats':
-			return 'teal';
-			break;
-		case 'wpx-briefs-cats':
-			return 'blue';
-			break;
-		case 'wpx-companies-cats':
-			return 'black';
-			break;
-		case 'wpx-oodacons-cats':
-			return 'sky';
-			break;
-		case 'category':
-			return 'purple';
-			break;
-		default:
-			return 'navy';
-	}
-
-}
-
-/**
- * Get Primary Taxomomy
- */
-function get_primary_tax($content_type) {
-
-	switch ($content_type) {
-		case 'wpx-analysis':
-			return 'wpx-analysis-cats';
-			break;
-		case 'wpx-briefs':
-			return 'wpx-briefs-cats';
-			break;
-		case 'wpx-companies':
-			return 'wpx-companies-cats';
-			break;
-		case 'wpx-oodacons':
-			return 'wpx-oodacons-cats';
-			break;
-		case 'wpx-oodacasts':
-			return 'wpx-oodacasts-cats';
-			break;
-		default:
-			return 'category';
-	}
-
-}
-
-/**
  * Sort by Last Name
  */
 function posts_orderby_lastname($orderby_statement) {
 	$orderby_statement = "RIGHT(post_title, LOCATE(' ', CONCAT(REVERSE(post_title), ' ')) - 1) ASC";
 	return $orderby_statement;
 }
-
-/**
- * Inject Classes into Custom Block
- */
-function wpx_custom_block_classes( $block_content, $block ) {
-
-	// Check if it's an ACF block
-	if ( isset( $block['blockName'] ) && strpos( $block['blockName'], 'acf/' ) === 0 ) {
-
-		$id = !empty($block['attrs']['metadata']['name']) ? sanitize_title($block['attrs']['metadata']['name']) : false;
-		if( !empty($block['attrs']['anchor']) ) { $id = esc_attr($block['attrs']['anchor']); }
-
-		// Build the class array
-		$classes = array();
-		$classes[] = !empty($block['attrs']['alignText']) ? 'text-align-' . $block['attrs']['alignText'] : false;
-		$classes[] = !empty($block['attrs']['alignContent']) ? 'inner-align-' . $block['attrs']['alignContent'] : false;
-		$classes[] = !empty($block['attrs']['fullHeight']) ? 'has-full-height' : false;
-		$classes[] = !empty($block['attrs']['gradient']) ? 'has-' . $block['attrs']['gradient'] . '-gradient-background' : false;
-		$classes[] = !empty($block['attrs']['backgroundColor']) ? 'has-' . $block['attrs']['backgroundColor'] . '-background-color' : false;
-		$classes[] = !empty($block['attrs']['textColor']) ? 'has-' . $block['attrs']['textColor'] . '-color' : false;
-		$classes[] = 'wpx-custom-block';
-		$classes[] = 'block-'.str_replace('acf/', '', $block['blockName']);
-
-		// Remove empty values
-		$valid_classes = array_filter( $classes );
-
-		// Inject the custom class into the block content
-		if ( !empty( $valid_classes ) ) {
-			// Ensure the block content contains the wrapper class and inject the new ones
-			$block_content = preg_replace(
-				'/class="/',
-				'class="' . esc_attr( implode( ' ', $valid_classes ) ) . ' ',
-				$block_content,
-				1
-			);
-		}
-
-		// Inject the custom ID into the block content
-		if ( !empty( $id ) ) {
-			// Ensure the block content contains the wrapper tag and inject the new ID
-			$block_content = preg_replace(
-				'/<([a-z0-9\-]+)([^>]*)>/',
-				'<$1$2 id="' . $id . '">',
-				$block_content,
-				1
-			);
-		}
-
-	}
-
-	return $block_content;
-}
-
-add_filter( 'render_block', '\WPX\Helper\wpx_custom_block_classes', 10, 2 );
 
 /**
  * Serialize for Cache

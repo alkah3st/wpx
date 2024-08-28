@@ -10,6 +10,17 @@
 namespace WPX\Blocks;
 
 /**
+ * Append Classes to Custom Block Interior
+ */
+function custom_block_classes($extra_classes=false) {
+
+	$classes = 'wpx-custom-block '.$extra_classes;
+
+	echo $classes;
+
+}
+
+/**
  * Disable Specific Blocks
  * (in the js/blacklist.js)
  */
@@ -96,9 +107,6 @@ function acf_blocks_register() {
 			'keywords'			=> array('block','custom'),
 			'supports'			=> array(
 				'align'=>true,
-				'align_text'=>true,
-				'full_height'=>true,
-				'align_content'=>'matrix',
 				'multiple'=>true,
 				'anchor'=>true,
 				'mode'=>true,
@@ -118,7 +126,6 @@ function acf_blocks_register() {
 				'spacing'=>array(
 					'margin'=>true,
 					'padding'=>true,
-					'blockGap'=>true,
 				),
 				'color'=>array(
 					'background'=>true,
@@ -126,14 +133,11 @@ function acf_blocks_register() {
 					'text'=>true
 				)
 			),
-			'example' => array(
+			'example'  => array(
 				'attributes' => array(
 					'mode' => 'preview',
 					'data' => array(
-						'testimonial'   => "Blocks are...",
-						'author'        => "Jane Smith",
-						'role'          => "Person",
-						'is_preview'    => true
+						'wpx_preview_image' => assets_url().'/images/gutenberg/custom-block.png',
 					)
 				)
 			)
